@@ -27,3 +27,4 @@ Sistema gestão de biblioteca desenvolvido para a biblioteca do IFPE Igarassu. A
  * [Luisa](https://github.com/luisavmf0)
  * [João Vitor](https://github.com/vitorcorreiia)
  * [Yuri](https://github.com/yuriceleste)
+
