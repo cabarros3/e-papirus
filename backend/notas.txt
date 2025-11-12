@@ -1,0 +1,3 @@
+para rodar o projeto
+
+php -S localhost:8000 -t public
