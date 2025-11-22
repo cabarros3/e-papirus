@@ -1,0 +1,60 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body{
+     background: linear-gradient(to bottom, #f1f6ff, #02cbfe,#6cadf1,#0359bc);
+
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-login{
+    width: 380px;
+    padding: 37px;
+    border-radius: 12px;
+
+    background: linear-gradient(to bottom, #f1f6ff, #02cbfe,#6cadf1,#0359bc);
+
+border: 1px solid #ffffff;
+}
+.card-login h1 {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    
+}
+form input{
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    font-size: 14px;
+}
+form button{
+    width: 60%;
+    padding: 10px;
+    margin-top: 12px;
+      
+    background: linear-gradient(to bottom, #02cbfe,#6cadf1,#0359bc);
+     
+    border: 1px solid #000;
+    border-radius:  15px;
+
+    cursor: pointer;
+    transition: .2s;
+}
+form button:hover{
+background-color: #02cbfe;
+}
+.info-text{
+    
+font-size: 12px;
+margin-top: 15px;
+color: #000000;
+}
