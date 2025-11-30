@@ -4,23 +4,30 @@ USE e_papirus
 CREATE TABLE assunto (
     id_assunto INT PRIMARY KEY AUTO_INCREMENT,
     nome_assunto VARCHAR (100)
+    NOT NULL
+    UNIQUE
 );
 
 CREATE TABLE autor (
     id_autor INT PRIMARY KEY AUTO_INCREMENT,
     nome_autor VARCHAR (100)
+    NOT NULL
 );
 
 CREATE TABLE livro (
-  id_livro INT PRIMARY KEY AUTO_INCREMENT,
-  id_assunto INT,
-  titulo VARCHAR(150),
-  editora VARCHAR(100),
-  ano YEAR,
-  FOREIGN KEY (id_assunto) REFERENCES assunto(id_assunto)
+    id_livro INT PRIMARY KEY AUTO_INCREMENT,
+    id_assunto INT NOT NULL,
+    titulo VARCHAR(150) NOT NULL,
+    editora VARCHAR(100) NOT NULL,
+    cidade_publicacao VARCHAR(100) NULL,
+    ano_publicacao YEAR NOT NULL,
+    nota_resumo TEXT,
+    capa VARCHAR(255),
+    descricao_fisica TEXT,
+    FOREIGN KEY (id_assunto) REFERENCES assunto(id_assunto)
 );
 
-CREATE TABLE escreve (
+CREATE TABLE livro_autor (
     id_livro INT,
     id_autor INT,
     PRIMARY KEY (id_livro, id_autor),
@@ -31,46 +38,41 @@ CREATE TABLE escreve (
 CREATE TABLE exemplar (
     id_exemplar INT PRIMARY KEY AUTO_INCREMENT,
     id_livro INT,
-    disponibilidade BOOLEAN,
     localizacao VARCHAR(100),
-    FOREIGN KEY (id_livro) REFERENCES livro(id_livro)
+    FOREIGN KEY (id_livro) REFERENCES livro(id_livro),
+    disponibilidade ENUM('disponivel','emprestado','reservado') DEFAULT 'disponivel'
 );
 
-CREATE TABLE funcionario (
-    id_funcionario INT PRIMARY KEY AUTO_INCREMENT,
-    nome_funcionario VARCHAR(100),
-    cpf_funcionario VARCHAR(14),
-    email_funcionario VARCHAR(100)
-);
-
--- Tabela única de pessoas (usuário ou professor)
 CREATE TABLE pessoa (
     id_pessoa INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100),
-    cpf VARCHAR(14),
-    email VARCHAR(100),
+    nome VARCHAR(100) NOT NULL,
+    matricula VARCHAR(14) NOT NULL UNIQUE,
+    cpf VARCHAR(11)
+      NOT NULL
+      UNIQUE
+      CHECK (cpf REGEXP '^[0-9]{11}$'),
+    email VARCHAR(100) NOT NULL UNIQUE,
     telefone VARCHAR(20),
-    tipo ENUM('usuario', 'professor')
+    tipo ENUM('aluno', 'professor', 'funcionario')
+);
+
+CREATE TABLE usuario_sistema (
+    id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+    id_pessoa INT UNIQUE,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_pessoa) REFERENCES pessoa(id_pessoa)
 );
 
 CREATE TABLE emprestimo (
     id_emprestimo INT PRIMARY KEY AUTO_INCREMENT,
     id_exemplar INT,
     id_pessoa INT,
-    id_funcionario INT,
     data_emprestimo DATE,
-    data_devolucao DATE,
+    data_prevista DATE NOT NULL,
+    data_devolucao DATE NULL,
     FOREIGN KEY (id_exemplar) REFERENCES exemplar(id_exemplar),
-    FOREIGN KEY (id_pessoa) REFERENCES pessoa(id_pessoa),
-    FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario)
-);
-
-CREATE TABLE registra (
-    id_funcionario INT,
-    id_emprestimo INT,
-    PRIMARY KEY (id_funcionario, id_emprestimo),
-    FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario),
-    FOREIGN KEY (id_emprestimo) REFERENCES emprestimo(id_emprestimo)
+    FOREIGN KEY (id_pessoa) REFERENCES pessoa(id_pessoa)
 );
 
 CREATE TABLE renovacao (
