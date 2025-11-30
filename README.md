@@ -28,3 +28,8 @@ Sistema gestão de biblioteca desenvolvido para a biblioteca do IFPE Igarassu. A
  * [João Vitor](https://github.com/vitorcorreiia)
  * [Yuri](https://github.com/yuriceleste)
 
+## Rodar o frontend
+- entrar na pasta frontend
+- npm install (esta linha 1 vez apenas)
+- npm run dev
+
