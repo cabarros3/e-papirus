@@ -1,0 +1,21 @@
+ASSUNTO
+/api/assunto/create.php   // para criar ou fazer o POST
+/api/assunto/index.php    // para listar ou fazer o GET
+/api/assunto/delete.php   // para deletar
+/api/assunto/update.php   // para atualizar ou fazer o PUT
+
+// types para cada endpoit de assunto
+
+create_assunto {
+    id_assunto: number;
+    nome_assunto: string;
+}
+
+delete_assunto {
+    id_assunto: number;
+}
+
+update_assunto {
+    nome_assunto: string;
+}
+
