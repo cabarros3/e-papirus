@@ -2,6 +2,13 @@ export default function LoginScreen() {
   return (
     <div className="min-h-screen flex bg-blue-100 items-center justify-center  p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
+
+        <img
+          src="/img/papirus-img.png"
+          alt="Logo"
+          className="w-28 mx-auto"
+        />
+
         <h1 className="text-2xl font-semibold text-gray-800 text-center">Bem-vindo</h1>
 
         <p className="text-center text-gray-600">Selecione o seu tipo de conta</p>
@@ -20,11 +27,11 @@ export default function LoginScreen() {
 
           <button className="w-full py-3 border-2 border-gray-500 rounded-xl text-gray-800 font-medium hover:bg-blue-500 hover:border-2 hover:border-white hover:text-white transition"><a href="/aluno">Cadastrar como Aluno</a>
           </button>
-          
+
           <button className="w-full py-3 border-2 border-gray-500 rounded-xl text-gray-800 font-medium hover:bg-blue-500 hover:border-2 hover:border-white hover:text-white transition">
-            <a href="/professor">Cadastrar como Professor</a>  
+            <a href="/professor">Cadastrar como Professor</a>
           </button>
-          
+
           <button className="w-full py-3 border-2 border-gray-500 rounded-xl text-gray-800 font-medium hover:bg-blue-500 hover:border-2 hover:border-white hover:text-white transition">
             <a href="/funcionario">Cadastrar como Funcionário</a>
           </button>
