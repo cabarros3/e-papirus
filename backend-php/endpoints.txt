@@ -19,3 +19,86 @@ update_assunto {
     nome_assunto: string;
 }
 
+
+AUTH (autenticação)
+
+/api/auth/register.php  // POST na tabela Pessoa e usuario_sistema
+/api/auth/login.php     // POST na tabela usuario_sistema (faz select para comparar os dados)
+/api/auth/me.php        // GET por meio de join nas tabelas pessoa e usuario_sistema
+
+
+TYPES para registro e login
+
+register {
+  nome: string,
+  matricula: string,
+  cpf: string,
+  email: string,
+  senha: string,
+  tipo: string,
+  telefone: string
+}
+
+
+login {
+    email: string,
+    senha: string
+}
+
+AUTORES
+
+/api/autores/create.php
+/api/autores/index.php
+/api/autores/update.php
+/api/autores/delete.php
+
+// types para cada endpoit de assunto
+
+create_autor {
+    id_autor: number;
+    nome_autor: string;
+}
+
+delete_autor {
+    id_autor: number;
+}
+
+update_autor {
+    id_autor: number
+    nome_autor: string;
+}
+
+
+LIVROS
+
+/api/livros/create.php
+/api/livros/index.php
+
+
+body da requisição para criar LIVROS
+
+{
+  "titulo": "Harry Potter e a Pedra Filosofal",
+  "id_assunto": 1,
+  "editora": "Rocco",
+  "ano_publicacao": 1997,
+  "cidade_publicacao": "Rio de Janeiro",
+  "nota_resumo": "O livro conta a história de um menino bruxo...",
+  "capa": "https://exemplo.com/capa-harry-potter.jpg",
+  "descricao_fisica": "224 p.; 21 cm",
+  "autores": [1]
+}
+
+TYPE 
+
+{
+  titulo: string,
+  id_assunto: number,
+  editora: string,
+  ano_publicacao: number,
+  cidade_publicacao: string,
+  nota_resumo: string,
+  capa: string,
+  descricao_fisica: string,
+  autores: Autores[]  // array do tipo autores
+}
