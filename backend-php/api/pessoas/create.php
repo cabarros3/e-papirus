@@ -9,32 +9,41 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $data = json_decode(file_get_contents("php://input"));
 
-// Validação
-if(!isset($data->nome) || !isset($data->cpf) || !isset($data->tipo)) {
-    enviarResposta("erro", "Dados incompletos (nome, cpf, tipo).", null, 400);
-}
-
-// Validar se o tipo é válido (enum)
-$tiposValidos = ['usuario', 'professor'];
-if (!in_array($data->tipo, $tiposValidos)) {
-    enviarResposta("erro", "Tipo inválido. Use 'usuario' ou 'professor'.", null, 400);
+// Validação dos campos NOT NULL do banco
+if(
+    !isset($data->nome) || 
+    !isset($data->matricula) || 
+    !isset($data->cpf) || 
+    !isset($data->email)
+) {
+    enviarResposta("erro", "Dados incompletos. Informe nome, matricula, cpf e email.", null, 400);
 }
 
 try {
-    $sql = "INSERT INTO pessoa (nome, cpf, email, telefone, tipo) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO pessoa (nome, matricula, cpf, email, telefone, tipo) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $pdo->prepare($sql);
     
-    // Tratando campos opcionais
-    $email = $data->email ?? null;
-    $telefone = $data->telefone ?? null;
+    // Telefone e Tipo são opcionais no JSON, mas Tipo tem ENUM no banco
+    $telefone = isset($data->telefone) ? $data->telefone : null;
+    $tipo = isset($data->tipo) ? $data->tipo : 'aluno'; // Default para aluno
 
-    if($stmt->execute([$data->nome, $data->cpf, $email, $telefone, $data->tipo])) {
-        enviarResposta("sucesso", "Pessoa cadastrada!", ["id" => $pdo->lastInsertId()], 201);
-    } else {
-        enviarResposta("erro", "Falha ao cadastrar.", null, 503);
-    }
+    $stmt->execute([
+        $data->nome, 
+        $data->matricula, 
+        $data->cpf, 
+        $data->email, 
+        $telefone, 
+        $tipo
+    ]);
+
+    enviarResposta("sucesso", "Pessoa cadastrada com sucesso!", ["id_pessoa" => $pdo->lastInsertId()], 201);
+
 } catch (PDOException $e) {
-    enviarResposta("erro", "Erro no banco: " . $e->getMessage(), null, 500);
+    // Erro 23000 = Violação de Unique (CPF, Email ou Matrícula repetidos)
+    if ($e->getCode() == '23000') {
+        enviarResposta("erro", "Já existe uma pessoa cadastrada com esse CPF, Matrícula ou Email.", null, 409);
+    } else {
+        enviarResposta("erro", "Erro no banco: " . $e->getMessage(), null, 500);
+    }
 }
-
 ?>
