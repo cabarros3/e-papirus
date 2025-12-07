@@ -9,24 +9,67 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $data = json_decode(file_get_contents("php://input"));
 
-if(!isset($data->id_emprestimo) || !isset($data->nova_data_devolucao)) {
-    enviarResposta("erro", "Informe id_emprestimo e nova data.", null, 400);
+if (!isset($data->id_emprestimo)) {
+    enviarResposta("erro", "Informe o ID do empréstimo.", null, 400);
 }
-
-$data_renovacao = $data->data_renovacao ?? date('Y-m-d');
 
 try {
-    $sql = "INSERT INTO renovacao (id_emprestimo, data_renovacao, nova_data_devolucao) VALUES (?, ?, ?)";
-    $stmt = $pdo->prepare($sql);
-    
-    if($stmt->execute([$data->id_emprestimo, $data_renovacao, $data->nova_data_devolucao])) {
-        // Dica: Seria ideal fazer um UPDATE na tabela emprestimo atualizando a data final também
-        enviarResposta("sucesso", "Renovação registrada!", ["id" => $pdo->lastInsertId()], 201);
-    } else {
-        enviarResposta("erro", "Falha ao registrar renovação.", null, 503);
-    }
-} catch (PDOException $e) {
-    enviarResposta("erro", "Erro no banco: " . $e->getMessage(), null, 500);
-}
+    $pdo->beginTransaction();
 
+    // 1. Buscar dados do empréstimo
+    // Usamos FOR UPDATE para garantir consistência
+    $stmt = $pdo->prepare("SELECT data_prevista, data_devolucao FROM emprestimo WHERE id_emprestimo = ? FOR UPDATE");
+    $stmt->execute([$data->id_emprestimo]);
+    $emp = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$emp) {
+        $pdo->rollBack();
+        enviarResposta("erro", "Empréstimo não encontrado.", null, 404);
+        exit;
+    }
+
+    // 2. Validações de Regra de Negócio
+
+    // A: O livro já foi devolvido?
+    if ($emp['data_devolucao'] !== null) {
+        $pdo->rollBack();
+        enviarResposta("erro", "Não é possível renovar: este livro já foi devolvido.", null, 409);
+        exit;
+    }
+
+    $dataHoje = date('Y-m-d');
+    $dataPrevistaAtual = $emp['data_prevista'];
+
+    // B: O livro está atrasado? (Sua regra: permite antes ou no dia, bloqueia depois)
+    if ($dataHoje > $dataPrevistaAtual) {
+        $pdo->rollBack();
+        enviarResposta("erro", "Renovação negada: O livro está atrasado. Por favor, devolva no balcão.", null, 409);
+        exit;
+    }
+
+    // 3. Calcular a nova data
+    // Lógica: Adiciona 14 dias à data prevista atual
+    $novaData = date('Y-m-d', strtotime($dataPrevistaAtual . ' + 7 days'));
+
+    // 4. Inserir registro na tabela RENOVAÇÃO (Histórico)
+    $sqlLog = "INSERT INTO renovacao (id_emprestimo, data_renovacao, nova_data_devolucao) VALUES (?, ?, ?)";
+    $stmtLog = $pdo->prepare($sqlLog);
+    $stmtLog->execute([$data->id_emprestimo, $dataHoje, $novaData]);
+
+    // 5. Atualizar a tabela EMPRESTIMO com a nova data
+    // Isso é crucial para que o sistema pare de cobrar o usuário
+    $sqlUp = "UPDATE emprestimo SET data_prevista = ? WHERE id_emprestimo = ?";
+    $stmtUp = $pdo->prepare($sqlUp);
+    $stmtUp->execute([$novaData, $data->id_emprestimo]);
+
+    $pdo->commit();
+    enviarResposta("sucesso", "Renovação realizada com sucesso!", [
+        "data_anterior" => $dataPrevistaAtual,
+        "nova_data_entrega" => $novaData
+    ], 201);
+
+} catch (PDOException $e) {
+    $pdo->rollBack();
+    enviarResposta("erro", "Erro ao renovar: " . $e->getMessage(), null, 500);
+}
 ?>
