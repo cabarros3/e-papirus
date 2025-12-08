@@ -13,6 +13,7 @@ export interface Livro {
   cidade_publicacao?: string;
   descricao_fisica?: string;
   nota_resumo?: string;
+  capa: string;
 }
 
 // Interface para CADASTRO (O que você manda no POST)
