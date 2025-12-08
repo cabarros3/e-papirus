@@ -13,9 +13,11 @@ $busca = isset($_GET['q']) ? $_GET['q'] : null;
 
 try {
     // 1. A Query Base permanece a mesma (com os JOINs necessários)
+    // 1. A Query Base corrigida
     $sql = "SELECT 
                 l.id_livro, 
                 l.titulo, 
+                l.capa,  /* <--- ADICIONADO AQUI */
                 l.editora, 
                 l.ano_publicacao,
                 l.cidade_publicacao,
