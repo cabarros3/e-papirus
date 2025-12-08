@@ -10,6 +10,7 @@ import { BookSlider } from "@/components/sliders/book-slider";
 import { BookService } from "@/services/book-service";
 import { SearchBookCommand } from "@/commands/book-command";
 import { Livro } from "@/types/livros"; // Confirme se o arquivo é 'livro.ts' ou 'livros.ts'
+import NotificationSlider from "@/components/sliders/notification-slider";
 
 export default function Home() {
   // 3. Estado para armazenar os livros que vêm do PHP
@@ -48,6 +49,10 @@ export default function Home() {
         <div className="w-full sm:w-3/4 md:w-2/3">
           <SearchBar />
         </div>
+      </div>
+
+      <div>
+        <NotificationSlider></NotificationSlider>
       </div>
 
       <div>
