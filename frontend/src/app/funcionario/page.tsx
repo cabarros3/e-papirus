@@ -41,15 +41,6 @@ export default function CadastroFuncionario() {
                     </div>
 
                     <div className="text-left">
-                        <label className="font-medium">Nº Cadastro do Funcionário</label>
-                        <input
-                            type="text"
-                            className="w-full p-3 rounded-xl bg-[#e8f1ff] outline-none mt-1"
-                            placeholder="Número da matrícula"
-                        />
-                    </div>
-
-                    <div className="text-left">
                         <label className="font-medium">CPF (Apenas Números)</label>
                         <input
                             type="text"

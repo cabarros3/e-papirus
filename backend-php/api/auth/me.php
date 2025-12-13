@@ -3,25 +3,18 @@ require_once '../../config/cors.php';
 require_once '../../config/utils.php';
 require_once '../../db/db.php';
 
-// Este endpoint é apenas de leitura (GET)
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     enviarResposta("erro", "Método inválido. Use GET.", null, 405);
 }
 
-// Em um sistema real com JWT, você pegaria o ID do token aqui.
-// Por enquanto, vamos pegar da URL: /api/auth/me.php?id=1
 $id_usuario = isset($_GET['id']) ? $_GET['id'] : null;
 
-if (!$id_usuario) {
-    enviarResposta("erro", "ID do usuário não fornecido.", null, 400);
-}
-
 try {
-    // Buscamos os dados completos (Sistema + Pessoa)
-    // Ocultamos a senha e o ID interno da pessoa se não for relevante
+    // AQUI ESTÁ O TRUQUE: Adicionei p.id_pessoa na seleção
     $sql = "SELECT 
                 u.id_usuario, 
                 u.email, 
+                p.id_pessoa, 
                 p.nome, 
                 p.matricula, 
                 p.cpf, 
