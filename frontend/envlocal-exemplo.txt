@@ -1,4 +1,0 @@
-NEXT_PUBLIC_API_URL=http://localhost:8000/api
-
-# se usar XAMPP / WAMP / Apache clássico DESCOMENTE ISSO AQUI
-# NEXT_PUBLIC_API_URL=http://localhost/nome-da-sua-pasta-backend/api
