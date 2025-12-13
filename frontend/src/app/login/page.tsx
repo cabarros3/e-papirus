@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function LoginScreen() {
   return (
-    <div className="min-h-screen flex bg-blue-100 items-center justify-center  p-4">
+    <div className="min-h-screen flex bg-rudy-blue/50 items-center justify-center  p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
         {/* usar o Image do nextjs */}
         <Image
@@ -52,7 +52,8 @@ export default function LoginScreen() {
           </button>
         </div>
 
-        <div className="mt-6 border-t pt-6">
+          
+        {/* <div className="mt-6 border-t pt-6">
           <h2 className="text-lg font-semibold text-center mb-3">
             Já possui uma conta?
           </h2>
@@ -71,7 +72,7 @@ export default function LoginScreen() {
               Entrar
             </button>
           </form>
-        </div>
+        </div> */}
       </div>
     </div>
   );
