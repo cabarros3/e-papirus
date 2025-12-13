@@ -1,6 +1,6 @@
 export default function LoginScreen() {
   return (
-    <div className="min-h-screen flex bg-blue-100 items-center justify-center  p-4">
+    <div className="min-h-screen flex bg-rudy-blue/50 items-center justify-center  p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
 
         <img
@@ -14,16 +14,7 @@ export default function LoginScreen() {
         <p className="text-center text-gray-600">Selecione o seu tipo de conta</p>
 
         <div className="grid grid-cols-1 gap-3">
-          {/* <button className="w-full py-3 rounded-xl bg-blue-400 text-white font-medium hover:bg-blue-600 transition"><a href="/aluno">Cadastrar como Aluno</a>
-          </button>
 
-          <button className="w-full py-3 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-400 transition">
-            <a href="/professor">Cadastrar como Professor</a>  
-          </button>
-          
-          <button className="w-full py-3 rounded-xl bg-blue-900 text-white font-medium hover:bg-blue-600 transition">
-            <a href="/funcionario">Cadastrar como Funcionário</a>
-          </button> */}
 
           <button className="w-full py-3 border-2 border-gray-500 rounded-xl text-gray-800 font-medium hover:bg-blue-500 hover:border-2 hover:border-white hover:text-white transition"><a href="/aluno">Cadastrar como Aluno</a>
           </button>
@@ -38,7 +29,9 @@ export default function LoginScreen() {
 
         </div>
 
-        <div className="mt-6 border-t pt-6">
+
+        {/* implementação de login */}
+        {/* <div className="mt-6 border-t pt-6">
           <h2 className="text-lg font-semibold text-center mb-3">Já possui uma conta?</h2>
           <form className="space-y-4">
             <input
@@ -55,7 +48,9 @@ export default function LoginScreen() {
               Entrar
             </button>
           </form>
-        </div>
+        </div> */}
+
+
       </div>
     </div>
   );

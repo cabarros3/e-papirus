@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+
 
 @custom-variant dark (&:is(.dark *));
 

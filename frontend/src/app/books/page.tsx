@@ -1,7 +1,6 @@
 export default function Books() {
   return (
-
-    <div className="bg-background flex mt-40 items-center flex-col">
+    <div className="min-h-screen flex bg-rudy-blue/50 items-center justify-center flex-col  p-4">
 
       <div className="w-full max-w-md mx-auto text-center mt-[-30px]">
         
