@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export default function Books() {
   return (
 
@@ -9,8 +11,15 @@ export default function Books() {
 
       <main className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
         <header className="mb-6">
-          <h1 className="text-2xl font-semibold text-gray-800">📘 Cadastro de Livro</h1>
-          <p className="text-sm text-gray-500 mt-1">Área exclusiva para funcionários</p>
+          <Image
+            src="/img/logo.png"
+            alt="Logo e-Papirus"
+            width={80}
+            height={80}
+            className="mx-auto mb-4"
+          />
+          <h1 className="text-2xl font-semibold text-gray-800 text-center">Cadastro de Livro</h1>
+          <p className="text-sm text-gray-500 mt-1 text-center">Área exclusiva para funcionários</p>
         </header>
 
         <form className="space-y-4">
@@ -64,7 +73,6 @@ export default function Books() {
       </main>
 
     </div>
-
 
   );
 }

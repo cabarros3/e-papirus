@@ -17,7 +17,7 @@ export default function CadastroFuncionario() {
             <div className="w-full max-w-md mx-auto text-center mt-[-30px]">
 
                 <img
-                    src="/img/papirus-img.png"
+                    src="/img/logo.png"
                     alt="Logo"
                     className="w-28 mx-auto"
                 />

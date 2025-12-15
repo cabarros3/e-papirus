@@ -12,6 +12,9 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "e-Papirus",
   description: "Biblioteca",
+  icons: {
+    icon: "/img/logo.png",
+  },
 };
 
 export default function RootLayout({

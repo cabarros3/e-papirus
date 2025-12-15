@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"; // 1. Hooks necessários
 import Header from "@/components/header";
 import SearchBar from "@/components/search-bar";
 import { BookSlider } from "@/components/sliders/book-slider";
+import Image from "next/image";
 
 // 2. Imports da nossa Arquitetura
 import { BookService } from "@/services/book-service";
@@ -39,6 +40,14 @@ export default function Home() {
       <Header />
 
       <div className="flex flex-col gap-6 md:gap-10 justify-center items-center text-center max-w-3xl mx-auto mt-20">
+        <Image
+          src="/img/logo.png"
+          alt="Logo e-Papirus"
+          width={120}
+          height={120}
+          className="mx-auto"
+        />
+        
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
           <span className="text-denin">e</span>-Papirus
         </h1>

@@ -6,7 +6,7 @@ export default function LoginScreen() {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
         {/* usar o Image do nextjs */}
         <Image
-          src="/img/papirus-img.png"
+          src="/img/logo.png"
           width={200}
           height={200}
           alt="Logo do e-papirus"
@@ -14,7 +14,7 @@ export default function LoginScreen() {
         ></Image>
 
         {/* <img
-          src="/img/papirus-img.png"
+          src="/img/logo.png"
           alt="Logo"
           className="w-28 mx-auto"
         /> */}
