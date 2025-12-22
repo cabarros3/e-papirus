@@ -121,6 +121,16 @@
 }
 
 @layer base {
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  /* Garante que botões desativados não mostrem o pointer */
+  button:disabled {
+    cursor: not-allowed;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }

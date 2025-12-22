@@ -7,23 +7,26 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-import { Megaphone } from "lucide-react";
+import { BellRing } from "lucide-react";
 
 const avisos = [
   {
     id: 1,
-    titulo: "Alteração no horário de funcionamento",
+    tag: "Atualização",
+    titulo: "Alteração no funcionamento",
     texto:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+      "Informamos que a partir da próxima semana teremos novos horários de atendimento digital para suporte técnico.",
   },
   {
     id: 2,
+    tag: "Novidade",
     titulo: "Nova coleção disponível",
     texto:
       "Confira os novos livros que acabaram de chegar na biblioteca. Temos romances, ficção científica e muito mais esperando por você.",
   },
   {
     id: 3,
+    tag: "Feriado",
     titulo: "Aviso de Feriado",
     texto:
       "Neste próximo feriado, a biblioteca estará fechada. Retornaremos às atividades normais no dia seguinte às 08:00h.",
@@ -32,56 +35,58 @@ const avisos = [
 
 export default function NotificationSlider() {
   return (
-    <div className="w-full max-w-4xl mx-auto py-10 px-4">
-      <div className="bg-slate-50 rounded-xl p-10 shadow-sm border border-slate-100">
+    <div className="w-full max-w-5xl mx-auto py-8 px-4">
+      {/* Container com customização de Swiper via Tailwind 
+          As classes [&_...] selecionam elementos internos do Swiper sem precisar de CSS externo
+      */}
+      <div
+        className="relative overflow-hidden bg-white rounded-2xl shadow-xl shadow-denin/5 border border-denin/10
+        [&_.swiper-pagination]:bottom-4
+        [&_.swiper-pagination-bullet]:bg-gray-200 
+        [&_.swiper-pagination-bullet]:opacity-100
+        [&_.swiper-pagination-bullet-active]:bg-denin 
+        [&_.swiper-pagination-bullet-active]:w-6
+        [&_.swiper-pagination-bullet-active]:rounded-full
+        [&_.swiper-pagination-bullet]:transition-all
+        [&_.swiper-pagination-bullet]:duration-300"
+      >
+        {/* Detalhe lateral denin */}
+        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-denin z-10" />
+
         <Swiper
           modules={[Pagination, Autoplay]}
           spaceBetween={30}
           slidesPerView={1}
           pagination={{ clickable: true }}
-          autoplay={{ delay: 5000 }}
-          // 1. AUMENTEI O PADDING AQUI DE pb-10 PARA pb-12 OU pb-14
-          className="pb-14"
+          autoplay={{ delay: 6000 }}
+          className="pb-12"
         >
           {avisos.map((aviso) => (
             <SwiperSlide key={aviso.id}>
-              {/* Adicionei 'h-full' para garantir alinhamento */}
-              <div className="flex flex-col items-center justify-center text-center py-12 px-4 md:px-12 h-full">
-                <div className="flex items-center justify-center gap-4 mb-4">
-                  <Megaphone className="w-8 h-8 text-slate-400 rotate-[-15deg]" />
-                  <h2 className="text-xl md:text-2xl font-bold text-orange-500">
-                    {aviso.titulo}
-                  </h2>
-                  <Megaphone className="w-8 h-8 text-slate-400 rotate-[15deg] scale-x-[-1]" />
+              <div className="flex flex-col md:flex-row items-center gap-6 p-8 md:p-12">
+                {/* Ícone de Destaque */}
+                <div className="shrink-0 w-16 h-16 bg-denin/5 rounded-2xl flex items-center justify-center text-denin ring-1 ring-denin/10">
+                  <BellRing className="w-8 h-8 animate-pulse" />
                 </div>
 
-                <p className="text-gray-600 leading-relaxed max-w-2xl">
-                  {aviso.texto}
-                </p>
+                <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                  {/* Badge */}
+                  <span className="px-3 py-1 rounded-full bg-denin/10 text-denin text-[10px] font-bold uppercase tracking-widest mb-3">
+                    {aviso.tag}
+                  </span>
+
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">
+                    {aviso.titulo}
+                  </h2>
+
+                  <p className="text-gray-500 leading-relaxed max-w-2xl text-sm md:text-base">
+                    {aviso.texto}
+                  </p>
+                </div>
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
-
-        <style jsx global>{`
-          /* 2. ADICIONEI ESTA REGRA PARA EMPURRAR AS BOLINHAS PARA BAIXO */
-          .swiper-pagination {
-            bottom: 0px !important; /* Cola as bolinhas no fundo do padding */
-          }
-
-          .swiper-pagination-bullet {
-            width: 10px;
-            height: 10px;
-            background-color: #cbd5e1;
-            opacity: 1;
-            margin: 0 6px !important; /* Um pouco mais de espaço entre elas */
-          }
-          .swiper-pagination-bullet-active {
-            background-color: #f97316 !important;
-            width: 12px;
-            height: 12px;
-          }
-        `}</style>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
 
 // Configurando a fonte Poppins
@@ -7,6 +7,12 @@ const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"], // opcional, adiciona os pesos que você vai usar
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "500"], // Pesos para leitura
 });
 
 export const metadata: Metadata = {
@@ -24,7 +30,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body className={`${poppins.variable} antialiased`}>{children}</body>
+      <body
+        className={`${poppins.variable} ${inter.variable} font-sans antialiased`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
