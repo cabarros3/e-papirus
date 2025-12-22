@@ -23,12 +23,41 @@ export default function SobrePage() {
       foto: "https://avatars.githubusercontent.com/u/72764345?v=4",
     },
     {
-      nome: "Nome do Colega",
+      nome: "Dayvson",
       função: "Frontend Developer",
-      github: "https://github.com/colega-usuario",
-      foto: "https://github.com/colega-usuario.png",
+      github: "https://github.com/Devs097518",
+      foto: "https://avatars.githubusercontent.com/u/86844423?v=4",
     },
-    // Adicione mais se houver
+    {
+      nome: "Luhan Felipe",
+      função: "Frontend Developer",
+      github: "https://github.com/luhanfelipe",
+      foto: "https://avatars.githubusercontent.com/u/216249946?v=4",
+    },
+    {
+      nome: "Alan Santos",
+      função: "Frontend Developer",
+      github: "https://github.com/alan-santosBS",
+      foto: "https://avatars.githubusercontent.com/u/218152504?v=4",
+    },
+    {
+      nome: "Yuri Celeste",
+      função: "Frontend Developer",
+      github: "https://github.com/YuriCeleste",
+      foto: "https://avatars.githubusercontent.com/u/218382865?v=4",
+    },
+    {
+      nome: "Luisa",
+      função: "Frontend Developer",
+      github: "https://github.com/luisavmf0",
+      foto: "https://avatars.githubusercontent.com/u/222525409?v=4",
+    },
+    {
+      nome: "João Vitor",
+      função: "Frontend Developer",
+      github: "https://github.com/vitorcorreiia",
+      foto: "https://avatars.githubusercontent.com/u/210762782?v=4",
+    },
   ];
 
   return (
@@ -124,14 +153,14 @@ export default function SobrePage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link
-                    href="https://github.com/seu-repositorio"
+                    href="https://github.com/cabarros3/e-papirus"
                     target="_blank"
                     className="flex items-center gap-2 px-8 py-4 bg-denin text-white rounded-full font-bold hover:bg-blue-700 transition-all shadow-lg shadow-denin/30"
                   >
                     <Github size={20} /> Repositório do Código
                   </Link>
                   <Link
-                    href="https://github.com/users/seu-usuario/projects/X"
+                    href="https://github.com/users/cabarros3/projects/3"
                     target="_blank"
                     className="flex items-center gap-2 px-8 py-4 bg-white/10 text-white border border-white/20 rounded-full font-bold hover:bg-white hover:text-gray-900 transition-all"
                   >
