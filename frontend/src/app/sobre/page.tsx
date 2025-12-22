@@ -36,7 +36,7 @@ export default function SobrePage() {
     },
     {
       nome: "Alan Santos",
-      função: "Frontend Developer",
+      função: "Full Stack Developer",
       github: "https://github.com/alan-santosBS",
       foto: "https://avatars.githubusercontent.com/u/218152504?v=4",
     },

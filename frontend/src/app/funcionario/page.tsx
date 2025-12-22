@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 export default function CadastroFuncionario() {
     return (
-        <div className="min-h-screen bg-background flex flex-col">
+        <div className="min-h-screen bg-rudy-blue/50 flex flex-col">
 
             {/* Topo */}
             <header className="flex justify-end p-6 mt-2">
@@ -29,7 +29,7 @@ export default function CadastroFuncionario() {
                     Cadastro do funcionário
                 </p>
 
-                <form className="bg-[#dfeafb] p-8 rounded-2xl shadow-sm flex flex-col gap-4">
+                <form className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
 
                     <div className="text-left">
                         <label className="font-medium">Nome Completo</label>
@@ -62,11 +62,8 @@ export default function CadastroFuncionario() {
                         </select>
                     </div>
 
-                    <button
-                        type="button"
-                        className="bg-blue-600 text-white py-3 rounded-xl mt-4 text-lg hover:bg-blue-700 transition"
-                    >
-                        Cadastrar
+                    <button className="w-full py-3 border-2 border-gray-500 rounded-xl text-gray-800 font-medium hover:bg-blue-500 hover:border-2 hover:border-white hover:text-white transition">
+                        <a href="/aluno">Cadastrar</a>
                     </button>
 
                 </form>
