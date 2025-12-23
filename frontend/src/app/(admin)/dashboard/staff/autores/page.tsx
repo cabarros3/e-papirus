@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { AuthorService } from "@/services/author-service";
-import { Autor, CadastroAutorDTO, UpdateAutorDTO } from "@/types/autores";
+import { Autor } from "@/types/autores";
 import { toast } from "sonner";
 import {
   UserPlus,
@@ -134,7 +134,7 @@ export default function GerenciarAutores() {
         onSubmit={handleCadastrar}
         className="bg-white p-6 rounded-2xl border border-gray-200 flex gap-4 items-end shadow-sm"
       >
-        <div className="flex-grow space-y-2">
+        <div className="grow space-y-2">
           <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">
             Novo Autor
           </label>
@@ -263,7 +263,7 @@ export default function GerenciarAutores() {
 
       {/* MODAL DE EDIÇÃO */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
               <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -307,7 +307,7 @@ export default function GerenciarAutores() {
 
       {/* MODAL DE EXCLUSÃO */}
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-110 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-8 text-center space-y-4">
               <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">

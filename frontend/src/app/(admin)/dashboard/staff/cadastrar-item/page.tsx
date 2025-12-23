@@ -92,7 +92,7 @@ export default function CadastrarItem() {
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
       <div className="flex items-center gap-4">
         <Link
-          href="/dashboard/staff/acervo"
+          href="/dashboard/staff/"
           className="p-2 hover:bg-gray-100 rounded-full transition-all"
         >
           <ArrowLeft size={20} className="text-gray-500" />

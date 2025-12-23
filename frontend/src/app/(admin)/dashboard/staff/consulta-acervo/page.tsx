@@ -8,7 +8,9 @@ import { Livro } from "@/types/livros";
 import { Autor } from "@/types/autores";
 import { Assunto } from "@/types/assuntos";
 import { toast } from "sonner";
-import { Search, Edit3, X, Save, Loader2, Book } from "lucide-react";
+import { Search, Edit3, X, Save, Loader2, Book, ArrowLeft } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function ConsultarAcervo() {
   const [livros, setLivros] = useState<Livro[]>([]);
@@ -85,14 +87,22 @@ export default function ConsultarAcervo() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <header>
-        <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-tight">
-          Consulta ao Acervo
-        </h1>
-        <p className="text-sm text-gray-500 font-medium">
-          Gerencie os títulos cadastrados no e-Papirus.
-        </p>
-      </header>
+      <div className="flex items-center gap-4 mb-8">
+        <Link
+          href="/dashboard/staff"
+          className="p-2 hover:bg-gray-100 rounded-full transition-all"
+        >
+          <ArrowLeft size={20} className="text-gray-500" />
+        </Link>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-tight">
+            Consulta ao Acervo
+          </h1>
+          <p className="text-sm text-gray-500 font-medium">
+            Gerencie os títulos cadastrados no e-Papirus.
+          </p>
+        </div>
+      </div>
 
       <div className="relative group">
         <Search
@@ -139,10 +149,12 @@ export default function ConsultarAcervo() {
                   <td className="p-5">
                     <div className="flex items-center gap-4">
                       {livro.capa ? (
-                        <img
+                        <Image
                           src={livro.capa}
                           alt=""
                           className="w-10 h-14 object-cover rounded shadow-sm border border-gray-100"
+                          width={40}
+                          height={40}
                         />
                       ) : (
                         <div className="w-10 h-14 bg-gray-100 rounded flex items-center justify-center text-gray-300">
@@ -179,7 +191,7 @@ export default function ConsultarAcervo() {
 
       {/* MODAL EDITAR - SIMPLES E COMPATÍVEL COM O PAYLOAD */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
           <div className="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl relative overflow-hidden animate-in zoom-in-95">
             <div className="p-6 border-b flex justify-between items-center bg-white">
               <h2 className="text-xl font-bold text-gray-800 uppercase tracking-tighter">
