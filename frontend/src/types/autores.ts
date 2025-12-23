@@ -13,3 +13,8 @@ export interface CadastroAutorDTO {
 
 // A resposta completa da API
 export type AutorResponse = ApiResponse<Autor>;
+
+export interface UpdateAutorDTO {
+  id_autor: number;
+  nome_autor: string;
+}

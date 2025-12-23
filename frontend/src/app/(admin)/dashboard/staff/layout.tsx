@@ -10,13 +10,16 @@ import {
   LogOut,
   ChevronDown,
   BookPlus,
-  UserPen,
-  Tag,
   Repeat,
   RotateCcw,
   CalendarDays,
   HandHelping,
+  Users2,
+  Tags,
+  Search, // Ícone para consulta
+  BookMarked, // Ícone para o submenu de itens
 } from "lucide-react";
+import { Toaster } from "sonner";
 
 export default function DashboardLayout({
   children,
@@ -24,6 +27,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [openAcervo, setOpenAcervo] = useState(true);
+  const [openItens, setOpenItens] = useState(true); // Estado para o novo submenu
   const [openCirculacao, setOpenCirculacao] = useState(false);
 
   return (
@@ -33,7 +37,7 @@ export default function DashboardLayout({
           e-Papirus
         </div>
 
-        <nav className="flex-grow p-4 space-y-1 overflow-y-auto">
+        <nav className="grow p-4 space-y-1 overflow-y-auto">
           {/* Dashboard */}
           <Link
             href="/dashboard/staff"
@@ -62,24 +66,55 @@ export default function DashboardLayout({
             </button>
 
             {openAcervo && (
-              <div className="ml-9 mt-1 space-y-1">
+              <div className="ml-6 mt-1 space-y-1 border-l border-gray-100">
+                {/* SUBMENU: Gerenciar Itens (Aninhado) */}
+                <div className="ml-3">
+                  <button
+                    onClick={() => setOpenItens(!openItens)}
+                    className="w-full flex items-center justify-between p-2 rounded-lg text-gray-500 hover:text-denin transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <BookMarked size={15} />
+                      <span className="text-xs font-semibold">Itens</span>
+                    </div>
+                    <ChevronDown
+                      size={12}
+                      className={`transition-transform ${
+                        openItens ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {openItens && (
+                    <div className="ml-6 mt-1 space-y-1">
+                      <Link
+                        href="/dashboard/staff/consulta-acervo"
+                        className="flex items-center gap-2 p-2 text-[11px] text-gray-400 hover:text-denin transition-colors"
+                      >
+                        <Search size={13} /> Consulta ao Acervo
+                      </Link>
+                      <Link
+                        href="/dashboard/staff/cadastrar-item"
+                        className="flex items-center gap-2 p-2 text-[11px] text-gray-400 hover:text-denin transition-colors"
+                      >
+                        <BookPlus size={13} /> Cadastrar Novo Item
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                {/* Autores e Assuntos (Nível 2 do Acervo) */}
                 <Link
-                  href="/dashboard/staff/cadastrar-livro"
-                  className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
+                  href="/dashboard/staff/autores"
+                  className="ml-3 flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
                 >
-                  <BookPlus size={14} /> Cadastro de Item
+                  <Users2 size={15} /> Autores
                 </Link>
                 <Link
-                  href="/dashboard/staff/auxiliares"
-                  className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
+                  href="/dashboard/staff/assuntos"
+                  className="ml-3 flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
                 >
-                  <UserPen size={14} /> Cadastro de Autor
-                </Link>
-                <Link
-                  href="/dashboard/staff/auxiliares"
-                  className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
-                >
-                  <Tag size={14} /> Cadastro de Assunto
+                  <Tags size={15} /> Assuntos
                 </Link>
               </div>
             )}
@@ -151,7 +186,7 @@ export default function DashboardLayout({
         </nav>
       </aside>
 
-      <main className="flex-grow flex flex-col">
+      <main className="grow flex flex-col">
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shadow-sm">
           <div className="text-sm text-gray-500 font-medium">
             Painel Administrativo <span className="mx-2 text-gray-300">|</span>
@@ -168,13 +203,10 @@ export default function DashboardLayout({
               </span>
             </div>
 
-            {/* Avatar com Menu de Sair Embutido */}
             <div className="group relative">
               <div className="w-10 h-10 rounded-full bg-denin flex items-center justify-center text-white text-sm font-bold cursor-pointer ring-2 ring-transparent group-hover:ring-denin/20 transition-all">
                 AD
               </div>
-
-              {/* Dropdown de Logout ao passar o mouse ou clicar */}
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
                 <button
                   onClick={() => alert("Saindo...")}
@@ -189,6 +221,8 @@ export default function DashboardLayout({
 
         <div className="p-8 overflow-y-auto">{children}</div>
       </main>
+
+      <Toaster position="top-right" richColors closeButton />
     </div>
   );
 }
