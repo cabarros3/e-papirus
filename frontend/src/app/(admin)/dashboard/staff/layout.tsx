@@ -1,0 +1,272 @@
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import {
+  LayoutDashboard,
+  BookOpen,
+  Users,
+  Settings,
+  LogOut,
+  ChevronDown,
+  BookPlus,
+  UserPen,
+  Tag,
+  Repeat,
+  RotateCcw,
+  CalendarDays,
+  HandHelping,
+} from "lucide-react";
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [openAcervo, setOpenAcervo] = useState(true);
+  const [openCirculacao, setOpenCirculacao] = useState(false);
+
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
+        <div className="p-6 border-b border-gray-100 font-bold text-2xl text-denin">
+          e-Papirus
+        </div>
+
+        <nav className="flex-grow p-4 space-y-1 overflow-y-auto">
+          {/* Dashboard */}
+          <Link
+            href="/dashboard/staff"
+            className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            <LayoutDashboard size={18} />
+            <span className="text-sm font-medium">Dashboard</span>
+          </Link>
+
+          {/* Gerenciar Acervo com Submenu */}
+          <div>
+            <button
+              onClick={() => setOpenAcervo(!openAcervo)}
+              className="w-full flex items-center justify-between p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <BookOpen size={18} />
+                <span className="text-sm font-medium">Gerenciar Acervo</span>
+              </div>
+              <ChevronDown
+                size={14}
+                className={`transition-transform ${
+                  openAcervo ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {openAcervo && (
+              <div className="ml-9 mt-1 space-y-1">
+                <Link
+                  href="/dashboard/staff/cadastrar-livro"
+                  className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
+                >
+                  <BookPlus size={14} /> Cadastro de Item
+                </Link>
+                <Link
+                  href="/dashboard/staff/auxiliares"
+                  className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
+                >
+                  <UserPen size={14} /> Cadastro de Autor
+                </Link>
+                <Link
+                  href="/dashboard/staff/auxiliares"
+                  className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
+                >
+                  <Tag size={14} /> Cadastro de Assunto
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Circulação (Empréstimos) com Submenu */}
+          <div>
+            <button
+              onClick={() => setOpenCirculacao(!openCirculacao)}
+              className="w-full flex items-center justify-between p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <HandHelping size={18} />
+                <span className="text-sm font-medium">Circulação</span>
+              </div>
+              <ChevronDown
+                size={14}
+                className={`transition-transform ${
+                  openCirculacao ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {openCirculacao && (
+              <div className="ml-9 mt-1 space-y-1">
+                <Link
+                  href="#"
+                  className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
+                >
+                  <HandHelping size={14} /> Novo Empréstimo
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
+                >
+                  <RotateCcw size={14} /> Devolução
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
+                >
+                  <Repeat size={14} /> Renovação
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
+                >
+                  <CalendarDays size={14} /> Reservas
+                </Link>
+              </div>
+            )}
+          </div>
+
+          <Link
+            href="#"
+            className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            <Users size={18} />{" "}
+            <span className="text-sm font-medium">Usuários</span>
+          </Link>
+
+          <Link
+            href="#"
+            className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            <Settings size={18} />{" "}
+            <span className="text-sm font-medium">Configurações</span>
+          </Link>
+        </nav>
+      </aside>
+
+      <main className="flex-grow flex flex-col">
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shadow-sm">
+          <div className="text-sm text-gray-500 font-medium">
+            Painel Administrativo <span className="mx-2 text-gray-300">|</span>
+            <span className="text-denin">e-Papirus</span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-end mr-2">
+              <span className="text-xs font-bold text-gray-800">
+                Admin Staff
+              </span>
+              <span className="text-[10px] text-gray-500">
+                Bibliotecário(a)
+              </span>
+            </div>
+
+            {/* Avatar com Menu de Sair Embutido */}
+            <div className="group relative">
+              <div className="w-10 h-10 rounded-full bg-denin flex items-center justify-center text-white text-sm font-bold cursor-pointer ring-2 ring-transparent group-hover:ring-denin/20 transition-all">
+                AD
+              </div>
+
+              {/* Dropdown de Logout ao passar o mouse ou clicar */}
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
+                <button
+                  onClick={() => alert("Saindo...")}
+                  className="w-full flex items-center gap-3 p-4 text-sm text-red-500 hover:bg-red-50 transition-colors font-bold"
+                >
+                  <LogOut size={16} /> Encerrar Sessão
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="p-8 overflow-y-auto">{children}</div>
+      </main>
+    </div>
+  );
+}
+
+// "use client";
+
+// import React from "react";
+// import Link from "next/link";
+// import {
+//   LayoutDashboard,
+//   BookOpen,
+//   Users,
+//   Settings,
+//   LogOut,
+// } from "lucide-react";
+
+// export default function DashboardLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div className="flex min-h-screen bg-gray-50">
+//       {/* Sidebar - Fixa na esquerda */}
+//       <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
+//         <div className="p-6 border-b border-gray-100 font-bold text-2xl text-denin">
+//           e-Papirus
+//         </div>
+
+//         <nav className="flex-grow p-4 space-y-2">
+//           <Link
+//             href="/dashboard/admin"
+//             className="flex items-center gap-3 p-3 rounded-lg bg-denin/10 text-denin font-medium"
+//           >
+//             <LayoutDashboard size={20} /> Dashboard
+//           </Link>
+//           <Link
+//             href="/resultados"
+//             className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+//           >
+//             <BookOpen size={20} /> Gerenciar Acervo
+//           </Link>
+//           <Link
+//             href="#"
+//             className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+//           >
+//             <Users size={20} /> Usuários
+//           </Link>
+//           <Link
+//             href="#"
+//             className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+//           >
+//             <Settings size={20} /> Configurações
+//           </Link>
+//         </nav>
+
+//         <div className="p-4 border-t border-gray-100">
+//           <button className="flex items-center gap-3 w-full p-3 text-red-500 hover:bg-red-50 rounded-lg transition-colors font-medium">
+//             <LogOut size={20} /> Sair
+//           </button>
+//         </div>
+//       </aside>
+
+//       {/* Conteúdo Principal */}
+//       <main className="flex-grow flex flex-col">
+//         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8">
+//           <div className="text-sm text-gray-500 font-medium italic">
+//             Bem-vindo, Bibliotecário(a)
+//           </div>
+//           <div className="flex items-center gap-4">
+//             <div className="w-8 h-8 rounded-full bg-denin flex items-center justify-center text-white text-xs font-bold">
+//               AD
+//             </div>
+//           </div>
+//         </header>
+
+//         <div className="p-8">{children}</div>
+//       </main>
+//     </div>
+//   );
+// }
