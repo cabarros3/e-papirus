@@ -17,6 +17,7 @@
     "next": "^16.0.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "sonner": "^2.0.7",
     "swiper": "^12.0.3",
     "tailwind-merge": "^3.4.0"
   },
