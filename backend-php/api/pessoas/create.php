@@ -20,7 +20,7 @@ if(
 }
 
 try {
-    $sql = "INSERT INTO pessoa (nome, cpf, email, telefone, tipo) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO pessoa (nome, matricula , cpf, email, telefone) VALUES (?, ?, ?, ?, ?)";
     $stmt = $pdo->prepare($sql);
     
     // Telefone e Tipo são opcionais no JSON, mas Tipo tem ENUM no banco
@@ -29,11 +29,10 @@ try {
 
     $stmt->execute([
         $data->nome, 
-        // $data->matricula, 
+        $data->matricula, 
         $data->cpf, 
         $data->email, 
         $telefone, 
-        $tipo
     ]);
 
     enviarResposta("sucesso", "Pessoa cadastrada com sucesso!", ["id_pessoa" => $pdo->lastInsertId()], 201);

@@ -59,38 +59,54 @@ export default function CadastroAluno() {
   
 
 
-// nome , tipo , cpf , email , telefone
+// nome , matricula , cpf , email , telefone , tipo , cargo. esses são os atributos da tabela 
 
 const [nome, setNome] = useState('');
-const [tipo, setTipo] = useState('');
+const [matricula, setMatricula] = useState('');
 const [cpf, setCpf] = useState('');
 const [email, setEmail] = useState('');
 const [telefone, setTelefone] = useState('');
+const [mensagem, setMensagem] = useState('');
+const [tipoMensagem, setTipoMensagem] = useState<'sucesso' | 'erro' | ''>('');
+
 
 //http://localhost:8000/api/pessoas/create.php
 const API_URL = 'http://localhost:8000/api/pessoas';
 
  // Criar novo item
-  const criarItem = async (e) => {
+  const criarItem = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validação dos campos obrigatórios
+    if (!nome || !matricula || !cpf || !email ) {
+      setMensagem('Preencha os campos.');
+      setTipoMensagem('erro');
+      return;
+    }
 
     try {
       const response = await fetch(`${API_URL}/create.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, tipo , cpf , email , telefone})
+        body: JSON.stringify({ nome, matricula , cpf , email , telefone })
       });
       const data = await response.json();
-      if (data) {
+      if (data && data.status === 'sucesso') {
         setNome('');
-        setTipo('');
+        setMatricula('');
         setCpf('');
         setEmail('');
         setTelefone('');
+        setMensagem('Cadastro realizado com sucesso!');
+        setTipoMensagem('sucesso');
       } else {
-        console.log('Erro: ' + data.message);
+        setMensagem(data?.message || 'Erro ao cadastrar.');
+        setTipoMensagem('erro');
+        console.log('Erro: ' + data?.message);
       }
     } catch (error) {
+      setMensagem('Erro ao cadastrar.');
+      setTipoMensagem('erro');
       console.log('Erro ao criar: ' + error);
     }
   };
@@ -127,10 +143,15 @@ const API_URL = 'http://localhost:8000/api/pessoas';
           Cadastro do aluno
         </p>
 
-
-
-
-
+        {mensagem && (
+          <div
+            className={`mb-4 text-center text-white rounded p-2 animate-fade-in ${
+              tipoMensagem === 'sucesso' ? 'bg-green-500' : tipoMensagem === 'erro' ? 'bg-red-500' : ''
+            }`}
+          >
+            {mensagem}
+          </div>
+        )}
         <form className="w-200 max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
 
 
@@ -150,18 +171,26 @@ const API_URL = 'http://localhost:8000/api/pessoas';
               className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" /> */}
 
             <input 
-              type="text" placeholder="Tipo"
-              value={tipo}
-              onChange= {(e) => setTipo(e.target.value)}
+              type="text" placeholder="Matrícula"
+              value={matricula}
+              onChange= {(e) => setMatricula(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
   
 
-            <input 
-              type="text" 
-              placeholder="CPF"
+            <input
+              type="text"
+              placeholder="CPF (apenas números)"
               value={cpf}
-              onChange= {(e) => setCpf(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+              maxLength={11}
+              inputMode="numeric"
+              pattern="[0-9]*"
+              onChange={(e) => {
+                // Remove tudo que não for número
+                const valor = e.target.value.replace(/\D/g, '');
+                setCpf(valor);
+              }}
+              className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            />
           </div>
 
 
@@ -177,7 +206,7 @@ const API_URL = 'http://localhost:8000/api/pessoas';
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             <input 
               type="text" 
-              placeholder="Telefone"
+              placeholder="Telefone (opcional)"
               onChange= {(e) => setTelefone(e.target.value)}
               value={telefone}
               className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
