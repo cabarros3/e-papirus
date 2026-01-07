@@ -1,6 +1,103 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+
+/*
+
+  ------------------ FRONT ---------------------------
+
+
+  <div className="mb-4">
+              <label className="block text-gray-700 mb-2">Nome</label>
+              <input
+                type="text"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+
+
+            <div className="mb-4">
+              <label className="block text-gray-700 mb-2">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+
+
+
+              <div className="flex gap-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
+              >
+                {editando ? 'Atualizar' : 'Criar'}
+              </button>
+              {editando && (
+                <button
+                  type="button"
+                  onClick={cancelarEdicao}
+                  className="px-6 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+                >
+                  Cancelar
+                </button>
+              )}
+            </div>
+
+*/
 
 export default function CadastroAluno() {
+
+  
+
+
+// nome , tipo , cpf , email , telefone
+
+const [nome, setNome] = useState('');
+const [tipo, setTipo] = useState('');
+const [cpf, setCpf] = useState('');
+const [email, setEmail] = useState('');
+const [telefone, setTelefone] = useState('');
+
+//http://localhost:8000/api/pessoas/create.php
+const API_URL = 'http://localhost:8000/api/pessoas';
+
+ // Criar novo item
+  const criarItem = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}/create.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, tipo , cpf , email , telefone})
+      });
+      const data = await response.json();
+      if (data) {
+        setNome('');
+        setTipo('');
+        setCpf('');
+        setEmail('');
+        setTelefone('');
+      } else {
+        console.log('Erro: ' + data.message);
+      }
+    } catch (error) {
+      console.log('Erro ao criar: ' + error);
+    }
+  };
+
+
+
+
   return (
     <div className="min-h-screen bg-rudy-blue/50 flex flex-col">
 
@@ -38,33 +135,60 @@ export default function CadastroAluno() {
 
 
 
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-            <input type="text" placeholder="Nome completo"
-              className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4"> 
+            <input 
+              type="text" 
+              placeholder="Nome completo" 
+              onChange= {(e) => setNome(e.target.value)}
+              value={nome}
+              className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" 
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" placeholder="Matrícula"
-              className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+            {/* <input type="text" placeholder="Matrícula"
+              className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" /> */}
 
-            <input type="text" placeholder="CPF"
+            <input 
+              type="text" placeholder="Tipo"
+              value={tipo}
+              onChange= {(e) => setTipo(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+  
+
+            <input 
+              type="text" 
+              placeholder="CPF"
+              value={cpf}
+              onChange= {(e) => setCpf(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
           </div>
 
 
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-            <input type="text" placeholder="Email"
+            <input 
+              type="text" 
+              placeholder="Email"
+              onChange= {(e) => setEmail(e.target.value)}
+              value={email}
               className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-            <input type="text" placeholder="Telefone"
+            <input 
+              type="text" 
+              placeholder="Telefone"
+              onChange= {(e) => setTelefone(e.target.value)}
+              value={telefone}
               className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
           </div>
 
 
 
-          <button className="w-full py-3 border-2 border-gray-500 rounded-xl text-gray-800 font-medium hover:bg-blue-500 hover:border-2 hover:border-white hover:text-white transition">
+          <button 
+            type="submit"
+            onClick={criarItem}
+            className="w-full py-3 border-2 border-gray-500 rounded-xl text-gray-800 font-medium hover:bg-blue-500 hover:border-2 hover:border-white hover:text-white transition">
             <a href="/aluno">Cadastrar</a>
           </button>
 

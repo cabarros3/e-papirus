@@ -12,15 +12,15 @@ $data = json_decode(file_get_contents("php://input"));
 // Validação dos campos NOT NULL do banco
 if(
     !isset($data->nome) || 
-    !isset($data->matricula) || 
+    // !isset($data->matricula) || 
     !isset($data->cpf) || 
     !isset($data->email)
 ) {
-    enviarResposta("erro", "Dados incompletos. Informe nome, matricula, cpf e email.", null, 400);
+    enviarResposta("erro", "Dados incompletos. Informe nome, cpf e email.", null, 400);
 }
 
 try {
-    $sql = "INSERT INTO pessoa (nome, matricula, cpf, email, telefone, tipo) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO pessoa (nome, cpf, email, telefone, tipo) VALUES (?, ?, ?, ?, ?)";
     $stmt = $pdo->prepare($sql);
     
     // Telefone e Tipo são opcionais no JSON, mas Tipo tem ENUM no banco
@@ -29,7 +29,7 @@ try {
 
     $stmt->execute([
         $data->nome, 
-        $data->matricula, 
+        // $data->matricula, 
         $data->cpf, 
         $data->email, 
         $telefone, 
