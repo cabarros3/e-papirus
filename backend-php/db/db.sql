@@ -53,7 +53,8 @@ CREATE TABLE pessoa (
       CHECK (cpf REGEXP '^[0-9]{11}$'),
     email VARCHAR(100) NOT NULL UNIQUE,
     telefone VARCHAR(20),
-    tipo ENUM('aluno', 'professor', 'funcionario')
+    tipo ENUM('aluno', 'professor', 'funcionario'),
+    cargo ENUM('bibliotecario', 'auxiliar', 'estagiario')
 );
 
 CREATE TABLE usuario_sistema (

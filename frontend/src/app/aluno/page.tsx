@@ -2,76 +2,19 @@
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { pessoaService } from "@/services/pessoa-service";
 
-/*
-
-  ------------------ FRONT ---------------------------
-
-
-  <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Nome</label>
-              <input
-                type="text"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-
-
-
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-
-
-
-              <div className="flex gap-2">
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
-              >
-                {editando ? 'Atualizar' : 'Criar'}
-              </button>
-              {editando && (
-                <button
-                  type="button"
-                  onClick={cancelarEdicao}
-                  className="px-6 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
-                >
-                  Cancelar
-                </button>
-              )}
-            </div>
-
-*/
 
 export default function CadastroAluno() {
 
-  
+  const [nome, setNome] = useState('');
+  const [matricula, setMatricula] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [email, setEmail] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [mensagem, setMensagem] = useState('');
+  const [tipoMensagem, setTipoMensagem] = useState<'sucesso' | 'erro' | ''>('');
 
-
-// nome , matricula , cpf , email , telefone , tipo , cargo. esses são os atributos da tabela 
-
-const [nome, setNome] = useState('');
-const [matricula, setMatricula] = useState('');
-const [cpf, setCpf] = useState('');
-const [email, setEmail] = useState('');
-const [telefone, setTelefone] = useState('');
-const [mensagem, setMensagem] = useState('');
-const [tipoMensagem, setTipoMensagem] = useState<'sucesso' | 'erro' | ''>('');
-
-
-//http://localhost:8000/api/pessoas/create.php
-const API_URL = 'http://localhost:8000/api/pessoas';
 
  // Criar novo item
   const criarItem = async (e: React.FormEvent) => {
@@ -85,12 +28,17 @@ const API_URL = 'http://localhost:8000/api/pessoas';
     }
 
     try {
-      const response = await fetch(`${API_URL}/create.php`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, matricula , cpf , email , telefone })
-      });
-      const data = await response.json();
+      const dados = { nome, matricula , cpf , email , telefone };
+      const resultado = await pessoaService.criar(dados);
+
+      setNome('');
+      setMatricula('');
+      setCpf('');
+      setEmail('');
+      setTelefone('');
+      
+      
+      const data = await resultado;
       if (data && data.status === 'sucesso') {
         setNome('');
         setMatricula('');
@@ -105,11 +53,13 @@ const API_URL = 'http://localhost:8000/api/pessoas';
         console.log('Erro: ' + data?.message);
       }
     } catch (error) {
-      setMensagem('Erro ao cadastrar.');
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setMensagem('Erro ao cadastrar. ' + errorMessage);
       setTipoMensagem('erro');
       console.log('Erro ao criar: ' + error);
     }
   };
+
 
 
 
