@@ -31,29 +31,21 @@ export default function CadastroFuncionario() {
 
                 <form className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
 
-                    <div className="text-left">
-                        <label className="font-medium">Nome Completo</label>
-                        <input
-                            type="text"
-                            className="w-full p-3 rounded-xl bg-[#e8f1ff] outline-none mt-1"
-                            placeholder="Digite o nome"
-                        />
+                    <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                        <input type="text" placeholder="Nome completo"
+                            className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
                     </div>
 
-                    <div className="text-left">
-                        <label className="font-medium">CPF (Apenas Números)</label>
-                        <input
-                            type="text"
-                            maxLength={11}
-                            className="w-full p-3 rounded-xl bg-[#e8f1ff] outline-none mt-1"
-                            placeholder="00000000000"
-                        />
+                    <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                        <input type="text" placeholder="CPF (apenas números)"
+                            className="w-full px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
                     </div>
+
 
                     <div className="text-left">
                         <label className="font-medium">Cargo (Função na Biblioteca)</label>
                         <select
-                            className="w-full p-3 rounded-xl bg-[#e8f1ff] outline-none mt-1"
+                            className="w-full mt-2 px-4 py-2 border rounded-lg placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" 
                         >
                             <option value="">Selecione...</option>
                             <option value="bibliotecario">Bibliotecário</option>
