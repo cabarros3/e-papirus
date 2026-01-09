@@ -1,34 +1,61 @@
 "use client";
 
 import Image from 'next/image';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AuthorService } from '@/services/author-service';
+import { Autor } from '@/types/autores';
 
 export default function Books() {
 
   const [autor, setAutor] = useState('');
-  
-  
-  
-  //  Criar novo autor
-    const criarAutor = async (e: React.FormEvent) => {
-      e.preventDefault();
-  
-      // Validação dos campos obrigatórios
-      if (!autor) {
-        alert('Preencha os campos.');
-        return;
-      }
-  
-      try {
-        const dados = { nome_autor: autor };
-        const resultado = await AuthorService.createAuthor(dados);
-        setAutor('');
 
-      } catch (error) {
-        console.log('Erro ao criar: ' + error);
-      }
-    };
+  const authorService = new AuthorService();
+
+
+
+
+  //  Criar novo autor
+  const criarAutor = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validação dos campos obrigatórios
+    if (!autor) {
+      alert('Preencha os campos.');
+      return;
+    }
+
+    try {
+      const dados = { nome_autor: autor };
+      const resultado = await AuthorService.createAuthor(dados);
+      setAutor('');
+
+    } catch (error) {
+      console.log('Erro ao criar: ' + error);
+    }
+  };
+
+
+
+  // export default function SelectAutor() {
+  const [autores, setAutores] = useState<Autor[]>([]);
+  const [autorSelecionado, setAutorSelecionado] = useState('');
+
+  // Buscar autores quando o componente carregar
+  useEffect(() => {
+    buscarAutores();
+  }, []);
+
+  const buscarAutores = async () => {
+    try {
+      const resultado = await authorService.getAllAuthors();
+      setAutores(resultado);
+    } catch (error) {
+      console.error('Erro ao buscar autores:', error);
+      alert('Erro ao carregar autores');
+    }
+  };
+
+
 
   return (
 
@@ -82,10 +109,19 @@ export default function Books() {
             {/* Seção Autor */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Esquerda: Select */}
-              <select className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+              <select
+                value={autorSelecionado}
+                onChange={(e) => setAutorSelecionado(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
+              >
                 <option value="">Selecionar Autor</option>
-                {/* Aqui viriam os itens do banco */}
+                {autores.map((autor) => (
+                  <option key={autor.id_autor} value={autor.id_autor}>
+                    {autor.nome_autor}
+                  </option>
+                ))}
               </select>
+
 
 
 
@@ -161,4 +197,5 @@ export default function Books() {
     </div>
 
   );
+
 }
