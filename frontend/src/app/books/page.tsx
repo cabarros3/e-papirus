@@ -1,12 +1,41 @@
+"use client";
+
 import Image from 'next/image';
+import { useState } from "react";
+import { AuthorService } from '@/services/author-service';
 
 export default function Books() {
+
+  const [autor, setAutor] = useState('');
+  
+  
+  
+  //  Criar novo autor
+    const criarAutor = async (e: React.FormEvent) => {
+      e.preventDefault();
+  
+      // Validação dos campos obrigatórios
+      if (!autor) {
+        alert('Preencha os campos.');
+        return;
+      }
+  
+      try {
+        const dados = { nome_autor: autor };
+        const resultado = await AuthorService.createAuthor(dados);
+        setAutor('');
+
+      } catch (error) {
+        console.log('Erro ao criar: ' + error);
+      }
+    };
+
   return (
 
     <div className="bg-rudy-blue/50 min-h-screen flex justify-center items-center flex-col">
 
       <div className="w-full max-w-md mx-auto text-center mt-[-30px]">
-        
+
       </div>
 
       <main className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
@@ -24,34 +53,91 @@ export default function Books() {
 
         <form className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" placeholder="Código / Patrimônio"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+
 
             <input type="text" placeholder="Título do livro"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+
+            <input type="text" placeholder="Editora"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <input type="text" placeholder="Autor"
+            <input type="text" placeholder="Cidade de publicação"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
 
             <input type="number" placeholder="Ano de publicação"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
 
-            <input type="text" placeholder="Gênero"
+            <input type="text" placeholder="Capa"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" placeholder="Editora"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+            <textarea placeholder='Nota' className="w-full h-30 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" name="" id=""></textarea>
+          </div>
 
-            <select className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300">
-              <option>Status do livro</option>
-              <option>Disponível</option>
-              <option>Emprestado</option>
-              <option>Reservado</option>
-            </select>
+          <div className="space-y-6">
+            {/* Seção Autor */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Esquerda: Select */}
+              <select className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+                <option value="">Selecionar Autor</option>
+                {/* Aqui viriam os itens do banco */}
+              </select>
+
+
+
+
+              {/* Direita: Input + Botão */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Adicionar novo autor..."
+                  onChange={(e) => setAutor(e.target.value)}
+                  value={autor}
+                  className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                />
+                <button onClick={criarAutor} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-bold">
+                  +
+                </button>
+              </div>
+
+
+
+
+            </div>
+
+            {/* Seção Assunto */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Esquerda: Select */}
+              <select className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+                <option value="">Selecionar Assunto</option>
+              </select>
+
+              {/* Direita: Input + Botão */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Adicionar novo Assunto..."
+                  className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                />
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-bold">
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+
           </div>
 
           <div className="flex items-center gap-3 pt-2">

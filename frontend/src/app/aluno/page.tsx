@@ -38,6 +38,7 @@ export default function CadastroAluno() {
       setTelefone('');
       
       
+      
       const data = await resultado;
       if (data && data.status === 'sucesso') {
         setNome('');

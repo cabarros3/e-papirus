@@ -12,7 +12,7 @@ $data = json_decode(file_get_contents("php://input"));
 // Validação dos campos NOT NULL do banco
 if(
     !isset($data->nome) || 
-    // !isset($data->matricula) || 
+    !isset($data->matricula) || 
     !isset($data->cpf) || 
     !isset($data->email)
 ) {
