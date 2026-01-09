@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { useState, useEffect} from 'react';
 import { AuthorService } from '@/services/author-service';
 import { Autor } from '@/types/autores';
+import { SubjectService } from '@/services/subject-service';
+import { Assunto } from '@/types/assuntos';
 
 export default function Books() {
 
@@ -16,8 +18,6 @@ export default function Books() {
   //  Criar novo autor
   const criarAutor = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validação dos campos obrigatórios
     if (!autor) {
       alert('Preencha os campos.');
       return;
@@ -27,15 +27,11 @@ export default function Books() {
       const dados = { nome_autor: autor };
       const resultado = await AuthorService.createAuthor(dados);
       setAutor('');
-
       window.dispatchEvent(new Event('autorCriado'));
-
     } catch (error) {
       console.log('Erro ao criar: ' + error);
     }
   };
-
-
 
 
 
@@ -45,21 +41,15 @@ export default function Books() {
 
   useEffect(() => {
     buscarAutores();
-
-    // Escutar o evento de autor criado
     const handleAutorCriado = () => {
       buscarAutores();
     };
-
     window.addEventListener('autorCriado', handleAutorCriado);
-
-    // Limpar o listener quando o componente desmontar
     return () => {
       window.removeEventListener('autorCriado', handleAutorCriado);
     };
   }, []);
 
-  
 
   const buscarAutores = async () => {
     try {
@@ -69,6 +59,64 @@ export default function Books() {
       console.error('Erro ao buscar autores:', error);
     }
   };
+
+
+
+
+  // variáveis para criar assunto
+  const [assunto, setAssunto] = useState('');
+  const subjectService = new SubjectService();
+
+  //  Criar novo assunto
+  const criarAssunto = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validação dos campos obrigatórios
+    if (!assunto) {
+      alert('Preencha os campos.');
+      return;
+    }
+
+    try {
+      const dados = { nome_assunto: assunto };
+      const resultado = await subjectService.createSubject(dados);
+      setAssunto('');
+
+      window.dispatchEvent(new Event('assuntoCriado'));
+
+    } catch (error) {
+      console.log('Erro ao criar: ' + error);
+    }
+  };
+
+   // variáveis para listar Assuntos
+  const [assuntos, setAssuntos] = useState<Assunto[]>([]);
+  const [assuntoSelecionado, setAssuntoSelecionado] = useState('');
+
+  useEffect(() => {
+    buscarAssuntos();
+    const handleAssuntoCriado = () => {
+      buscarAssuntos();
+    };
+    window.addEventListener('assuntoCriado', handleAssuntoCriado);
+    return () => {
+      window.removeEventListener('assuntoCriado', handleAssuntoCriado);
+    };
+  }, []);
+
+
+  const buscarAssuntos = async () => {
+    try {
+      const resultado = await subjectService.getAllSubjects();
+      setAssuntos(resultado);
+    } catch (error) {
+      console.error('Erro ao buscar assuntos:', error);
+    }
+  };
+
+
+
+
 
 
 
@@ -139,8 +187,6 @@ export default function Books() {
 
 
 
-
-
                 {/* Direita: Input + Botão */}
                 <div className="flex gap-2">
                   <input
@@ -155,26 +201,42 @@ export default function Books() {
                   </button>
                 </div>
 
-
-
-
               </div>
+
+
 
               {/* Seção Assunto */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Esquerda: Select */}
-                <select className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+                {/* <select className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
                   <option value="">Selecionar Assunto</option>
+                </select>  */}
+
+                <select
+                  value={assuntoSelecionado}
+                  onChange={(e) => setAssuntoSelecionado(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-lg"
+                >
+                  <option value="">Selecionar assunto</option>
+                  {assuntos.map((assunto) => (
+                    <option key={assunto.id_assunto} value={assunto.id_assunto}>
+                      {assunto.nome_assunto}
+                    </option>
+                  ))}
                 </select>
+
+                
 
                 {/* Direita: Input + Botão */}
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Adicionar novo Assunto..."
+                    placeholder="Adicionar novo assunto..."
+                    onChange={(e) => setAssunto(e.target.value)}
+                    value={assunto}
                     className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
                   />
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-bold">
+                  <button onClick={criarAssunto} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-bold">
                     +
                   </button>
                 </div>
