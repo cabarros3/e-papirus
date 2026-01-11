@@ -1,11 +1,12 @@
 "use client";
 
 import Image from 'next/image';
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { AuthorService } from '@/services/author-service';
 import { Autor } from '@/types/autores';
 import { SubjectService } from '@/services/subject-service';
 import { Assunto } from '@/types/assuntos';
+import { BookService } from '@/services/book-service';
 
 export default function Books() {
 
@@ -13,7 +14,7 @@ export default function Books() {
   // variáveis para criar autor
   const [autor, setAutor] = useState('');
   const authorService = new AuthorService();
- 
+
 
   //  Criar novo autor
   const criarAutor = async (e: React.FormEvent) => {
@@ -89,7 +90,7 @@ export default function Books() {
     }
   };
 
-   // variáveis para listar Assuntos
+  // variáveis para listar Assuntos
   const [assuntos, setAssuntos] = useState<Assunto[]>([]);
   const [assuntoSelecionado, setAssuntoSelecionado] = useState('');
 
@@ -117,162 +118,293 @@ export default function Books() {
 
 
 
+  // variáveis para criar livro
+  const [titulo, setTitulo] = useState('');
+  const [editora, setEditora] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [ano, setAno] = useState('');
+  const [resumo, setResumo] = useState('');
+  const [capa, setCapa] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const bookService = new BookService();
 
 
 
-    return (
 
-      <div className="bg-rudy-blue/50 min-h-screen flex justify-center items-center flex-col">
+  // //  Criar novo livro
+  // const criarLivro = async (e: React.FormEvent) => {
+  //   e.preventDefault();
 
-        <div className="w-full max-w-md mx-auto text-center mt-[-30px]">
+  //   // Validação dos campos obrigatórios
+  //   if (!titulo || !editora || !cidade || !ano || !resumo || !capa || !descricao) {
+  //     alert('Preencha os campos obrigatórios');
+  //     return;
+  //   }
 
-        </div>
+  //   try {
+  //     const dados = {
+  //       nome_livro: titulo,
+  //       editora: editora,
+  //       cidade: cidade,
+  //       ano: ano,
+  //       resumo: resumo,
+  //       capa: capa,
+  //       descricao: descricao
+  //     };
 
-        <main className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
-          <header className="mb-6">
-            <Image
-              src="/img/logo.png"
-              alt="Logo e-Papirus"
-              width={80}
-              height={80}
-              className="mx-auto mb-4"
-            />
-            <h1 className="text-2xl font-semibold text-gray-800 text-center">Cadastro de Livro</h1>
-            <p className="text-sm text-gray-500 mt-1 text-center">Área exclusiva para funcionários</p>
-          </header>
+  //     const resultado = await bookService.createBook(dados);
 
-          <form className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  //     // Limpar os campos após criar o livro
+  //     setTitulo('');
+  //     setEditora('');
+  //     setCidade('');
+  //     setAno('');
+  //     setResumo('');
+  //     setCapa('');
+  //     setDescricao('');
 
+  //     window.dispatchEvent(new Event('livroCriado'));
+  //   } catch (erro) {
+  //     console.log('Erro ao criar: ' + erro);
+  //   }
+  // };
 
-              <input type="text" placeholder="Título do livro"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+    //  Criar novo livro
+  const criarLivro = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-              <input type="text" placeholder="Editora"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
-            </div>
+    // Validação dos campos obrigatórios
+    if (!titulo || !editora || !cidade || !ano || !resumo || !capa || !descricao) {
+      alert('Preencha os campos obrigatórios');
+      return;
+    }
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <input type="text" placeholder="Cidade de publicação"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+    try {
+      const dados = {
+        titulo: titulo,
+        nome_livro: titulo,
+        editora: editora,
+        cidade_publicacao: cidade,
+        ano_publicacao: ano,
+        nota_resumo: resumo,
+        capa: capa,
+        descricao_fisica: descricao,
+        id_assunto: Number(assuntoSelecionado),
+        autores: autorSelecionado ? [autorSelecionado] : []
+      };
 
-              <input type="number" placeholder="Ano de publicação"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+      const resultado = await bookService.createBook(dados);
 
-              <input type="text" placeholder="Capa"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+      // Limpar os campos após criar o livro
+      setTitulo('');
+      setEditora('');
+      setCidade('');
+      setAno('');
+      setResumo('');
+      setCapa('');
+      setDescricao('');
 
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-              <textarea placeholder='Nota' className="w-full h-30 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" name="" id=""></textarea>
-            </div>
-
-            <div className="space-y-6">
-              {/* Seção Autor */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                <select
-                  value={autorSelecionado}
-                  onChange={(e) => setAutorSelecionado(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg"
-                >
-                  <option value="">Selecionar Autor</option>
-                  {autores.map((autor) => (
-                    <option key={autor.id_autor} value={autor.id_autor}>
-                      {autor.nome_autor}
-                    </option>
-                  ))}
-                </select>
-
-
-
-                {/* Direita: Input + Botão */}
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Adicionar novo autor..."
-                    onChange={(e) => setAutor(e.target.value)}
-                    value={autor}
-                    className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                  />
-                  <button onClick={criarAutor} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-bold">
-                    +
-                  </button>
-                </div>
-
-              </div>
-
-
-
-              {/* Seção Assunto */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Esquerda: Select */}
-                {/* <select className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
-                  <option value="">Selecionar Assunto</option>
-                </select>  */}
-
-                <select
-                  value={assuntoSelecionado}
-                  onChange={(e) => setAssuntoSelecionado(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg"
-                >
-                  <option value="">Selecionar assunto</option>
-                  {assuntos.map((assunto) => (
-                    <option key={assunto.id_assunto} value={assunto.id_assunto}>
-                      {assunto.nome_assunto}
-                    </option>
-                  ))}
-                </select>
-
-                
-
-                {/* Direita: Input + Botão */}
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Adicionar novo assunto..."
-                    onChange={(e) => setAssunto(e.target.value)}
-                    value={assunto}
-                    className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                  />
-                  <button onClick={criarAssunto} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-bold">
-                    +
-                  </button>
-                </div>
-              </div>
-            </div>
+      window.dispatchEvent(new Event('livroCriado'));
+    } catch (erro) {
+      console.log('Erro ao criar: ' + erro);
+    }
+  };
 
 
 
 
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
 
 
-            </div>
+  return (
 
-            <div className="flex items-center gap-3 pt-2">
-              <button type="button"
-                className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                Cadastrar Livro
-              </button>
+    <div className="bg-rudy-blue/50 min-h-screen flex justify-center items-center flex-col">
 
-              <a href="listar_livros.html"
-                className="text-sm px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50">
-                Ver lista de livros
-              </a>
-            </div>
-          </form>
-
-          <footer className="mt-6 text-xs text-gray-400">
-            Acesso restrito — apenas funcionários podem cadastrar livros.
-          </footer>
-        </main>
+      <div className="w-full max-w-md mx-auto text-center mt-[-30px]">
 
       </div>
 
-    );
-   
-  }
+      <main className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
+        <header className="mb-6">
+          <Image
+            src="/img/logo.png"
+            alt="Logo e-Papirus"
+            width={80}
+            height={80}
+            className="mx-auto mb-4"
+          />
+          <h1 className="text-2xl font-semibold text-gray-800 text-center">Cadastro de Livro</h1>
+          <p className="text-sm text-gray-500 mt-1 text-center">Área exclusiva para funcionários</p>
+        </header>
+
+        <form className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+            <input type="text"
+              placeholder="Título do livro"
+              onChange={(e) => setTitulo(e.target.value)}
+              value={titulo}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+
+            <input
+              type="text"
+              placeholder="Editora"
+              onChange={(e) => setEditora(e.target.value)}
+              value={editora}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input
+              type="text" placeholder="Cidade de publicação"
+              onChange={(e) => setCidade(e.target.value)}
+              value={cidade}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+
+            <input
+              type="number" placeholder="Ano de publicação"
+              onChange={(e) => setAno(e.target.value)}
+              value={ano}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+
+            <input
+              type="text" placeholder="Capa"
+              onChange={(e) => setCapa(e.target.value)}
+              value={capa}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+
+          </div>
+
+
+
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+            <textarea
+              placeholder='Nota'
+              className="w-full h-30 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              name=""
+              id=""
+              onChange={(e) => setDescricao(e.target.value)}
+              value={descricao}>
+
+            </textarea>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+            <input
+              type="text" placeholder="Resumo"
+              onChange={(e) => setResumo(e.target.value)}
+              value={resumo}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+          </div>
+
+          <div className="space-y-6">
+            {/* Seção Autor */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+              <select
+                value={autorSelecionado}
+                onChange={(e) => setAutorSelecionado(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
+              >
+                <option value="">Selecionar Autor</option>
+                {autores.map((autor) => (
+                  <option key={autor.id_autor} value={autor.id_autor}>
+                    {autor.nome_autor}
+                  </option>
+                ))}
+              </select>
+
+
+
+              {/* Direita: Input + Botão */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Adicionar novo autor..."
+                  onChange={(e) => setAutor(e.target.value)}
+                  value={autor}
+                  className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                />
+                <button onClick={criarAutor} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-bold">
+                  +
+                </button>
+              </div>
+
+            </div>
+
+
+
+            {/* Seção Assunto */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Esquerda: Select */}
+              {/* <select className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
+                  <option value="">Selecionar Assunto</option>
+                </select>  */}
+
+              <select
+                value={assuntoSelecionado}
+                onChange={(e) => setAssuntoSelecionado(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
+              >
+                <option value="">Selecionar assunto</option>
+                {assuntos.map((assunto) => (
+                  <option key={assunto.id_assunto} value={assunto.id_assunto}>
+                    {assunto.nome_assunto}
+                  </option>
+                ))}
+              </select>
+
+
+
+              {/* Direita: Input + Botão */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Adicionar novo assunto..."
+                  onChange={(e) => setAssunto(e.target.value)}
+                  value={assunto}
+                  className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                />
+                <button onClick={criarAssunto} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-bold">
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+
+          </div>
+
+          <div className="flex items-center gap-3 pt-2">
+            <button type="button"
+              onClick={criarLivro}
+              className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-indigo-700 transition">
+              Cadastrar Livro
+            </button>
+
+            <a href="listar_livros.html"
+              className="text-sm px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50">
+              Ver lista de livros
+            </a>
+          </div>
+        </form>
+
+        <footer className="mt-6 text-xs text-gray-400">
+          Acesso restrito — apenas funcionários podem cadastrar livros.
+        </footer>
+      </main>
+
+    </div>
+
+  );
+
+}
