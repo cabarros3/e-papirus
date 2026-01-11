@@ -5,7 +5,7 @@ export class AuthorService {
   /**
    * POST: Cadastra um novo autor
    */
-  async createAuthor(dados: CadastroAutorDTO): Promise<void> {
+  static async createAuthor(dados: CadastroAutorDTO): Promise<void> {
     const response = await fetch(`${API_URL}/autores/create.php`, {
       method: "POST",
       headers: defaultHeaders,
