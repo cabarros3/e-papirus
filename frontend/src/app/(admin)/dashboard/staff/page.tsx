@@ -100,12 +100,15 @@ export default function AdminDashboard() {
           </div>
           <ArrowRight size={18} className="text-denin" />
         </Link>
-        <button className="flex items-center justify-between p-5 bg-white text-gray-700 border border-gray-200 rounded-2xl font-bold hover:bg-gray-50 transition-all opacity-60">
+        <Link
+          href="/dashboard/staff/emprestimo"
+          className="flex items-center justify-between p-5 bg-white text-gray-700 border border-gray-200 rounded-2xl font-bold hover:bg-gray-50 transition-all"
+        >
           <div className="flex items-center gap-3">
-            <ClipboardCheck size={24} className="text-green-500" />{" "}
+            <ClipboardCheck size={24} className="text-green-500" />
             <span>Novo Empréstimo</span>
           </div>
-        </button>
+        </Link>
       </div>
 
       {/* Cards de Estatísticas */}

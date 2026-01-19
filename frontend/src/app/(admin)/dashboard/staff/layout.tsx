@@ -141,7 +141,7 @@ export default function DashboardLayout({
             {openCirculacao && (
               <div className="ml-9 mt-1 space-y-1">
                 <Link
-                  href="#"
+                  href="/dashboard/staff/emprestimo"
                   className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
                 >
                   <HandHelping size={14} /> Novo Empréstimo
