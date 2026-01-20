@@ -99,6 +99,16 @@ export default function DashboardLayout({
                       >
                         <BookPlus size={13} /> Cadastrar Novo Item
                       </Link>
+
+
+                      <Link
+                        href="/dashboard/staff/cadastrar-exemplar"
+                        className="flex items-center gap-2 p-2 text-[11px] text-gray-400 hover:text-denin transition-colors"
+                      >
+                        <BookPlus size={13} /> Cadastrar Novo Exemplar
+                      </Link>
+
+
                     </div>
                   )}
                 </div>
