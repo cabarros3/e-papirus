@@ -85,6 +85,33 @@ class EmprestimoService {
             throw error;
         }
     }
+
+    // Realizar devolução de empréstimo
+    async devolver(idEmprestimo: number): Promise<any> {
+        try {
+            console.log('Realizando devolução do empréstimo:', idEmprestimo);
+            
+            const response = await fetch(`${API_URL}/emprestimos/devolver.php`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id_emprestimo: idEmprestimo }),
+            });
+
+            const result = await response.json();
+            console.log('Resposta do servidor:', result);
+
+            if (!response.ok || result.status === 'erro') {
+                throw new Error(result.message || 'Erro ao realizar devolução');
+            }
+
+            return result;
+        } catch (error) {
+            console.error('Erro ao realizar devolução:', error);
+            throw error;
+        }
+    }
 }
 
 export default new EmprestimoService();

@@ -233,8 +233,7 @@ export default function GerenciarExemplares() {
                                         {exemplar.id_exemplar}
                                     </td>
 
-
-                                    // parte que mostra o nome da obra (mostra o id na verdade)
+                                    {/* parte que mostra o nome da obra (mostra o id na verdade) */}
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                         {editingId === exemplar.id_exemplar ? (
                                             <input

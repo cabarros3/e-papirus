@@ -242,7 +242,7 @@ export default function Emprestimo() {
                                     disabled={loading}
                                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-denin outline-none bg-white"
                                 >
-                                    <option value="">Nenhum Livro</option>
+                                    <option value="">Selecione...</option>
                                     {livros.map((liv) => (
                                         <option key={liv.id_livro} value={liv.id_livro}>
                                             {liv.titulo}
