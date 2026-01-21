@@ -7,6 +7,11 @@ export interface Exemplar {
   disponibilidade: 'disponivel' | 'emprestado' | 'reservado';
 }
 
+export interface ExemplarComLivro extends Exemplar {
+  titulo: string;
+  editora: string;
+}
+
 export class ExemplaresService {
   static async getAllExemplares(): Promise<Exemplar[]> {
     const response = await fetch(`${API_URL}/exemplares/index.php`, {
@@ -22,6 +27,19 @@ export class ExemplaresService {
     // Tratando retorno direto ou dentro de data
     return json.data || (Array.isArray(json) ? json : []);
   }
+
+  static async getExemplaresComLivro(): Promise<ExemplarComLivro[]> {
+    const response = await fetch(`${API_URL}/exemplares/index.php`, {
+        method: "GET",
+        headers: defaultHeaders,
+        cache: "no-store"
+    });
+
+    if (!response.ok) return [];
+    
+    const result = await response.json();
+    return result.data || []; // ✅ IMPORTANTE: retornar result.data
+}
 
   static async createExemplar(dados: Exemplar): Promise<void> {
     const response = await fetch(`${API_URL}/exemplares/create.php`, {

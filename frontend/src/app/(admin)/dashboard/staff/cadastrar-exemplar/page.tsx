@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState , useMemo } from "react";
-import { ExemplaresService, Exemplar } from "@/services/exemplar-service";
+import { useEffect, useState, useMemo } from "react";
+import { ExemplaresService, Exemplar, ExemplarComLivro } from "@/services/exemplar-service";
 import { BookService } from "@/services/book-service";
 import { toast } from "sonner";
 import {
@@ -14,11 +14,11 @@ import {
 
 export default function GerenciarExemplares() {
   const [livros, setLivros] = useState<any[]>([]);
-  const [exemplares, setExemplares] = useState<Exemplar[]>([]);
+  const [exemplares, setExemplares] = useState<ExemplarComLivro[]>([]); // em vez de Exemplar[]
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<number | null>(null);
   const bookService = useMemo(() => new BookService(), []);
-  
+
   // Formulário para adicionar
   const [idLivro, setIdLivro] = useState("");
   const [localizacao, setLocalizacao] = useState("");
@@ -27,32 +27,32 @@ export default function GerenciarExemplares() {
   const [tempData, setTempData] = useState<Partial<Exemplar>>({});
 
   // Carregar exemplares
-useEffect(() => {
-  loadData();
-}, []);
+  useEffect(() => {
+    loadData();
+  }, []);
 
-const loadData = async () => {
-  try {
-    setLoading(true);
-    const [exemplaresData, livrosData] = await Promise.all([
-      ExemplaresService.getAllExemplares(),
-      bookService.getAllBooks()
-    ]);
-    setExemplares(exemplaresData);
-    setLivros(livrosData);
-  } catch (error) {
-    toast.error("Erro ao carregar dados");
-    console.error(error);
-  } finally {
-    setLoading(false);
-  }
-};
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [exemplaresData, livrosData] = await Promise.all([
+        ExemplaresService.getExemplaresComLivro(),  // ✅ MUDANÇA AQUI
+        bookService.getAllBooks()
+      ]);
+      setExemplares(exemplaresData);
+      setLivros(livrosData);
+    } catch (error) {
+      toast.error("Erro ao carregar dados");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loadExemplares = async () => {
     try {
       setLoading(true);
-      const data = await ExemplaresService.getAllExemplares();
-      setExemplares(data);
+      const exemplares = await ExemplaresService.getExemplaresComLivro();  // ✅ MUDANÇA AQUI
+      setExemplares(exemplares);
     } catch (error) {
       toast.error("Erro ao carregar exemplares");
       console.error(error);
@@ -74,7 +74,7 @@ const loadData = async () => {
         localizacao: localizacao,
         disponibilidade: "disponivel"
       });
-      
+
       toast.success("Exemplar cadastrado com sucesso!");
       setIdLivro("");
       setLocalizacao("");
@@ -97,7 +97,7 @@ const loadData = async () => {
         id_exemplar: id,
         ...tempData
       } as Exemplar);
-      
+
       toast.success("Exemplar atualizado com sucesso!");
       setEditingId(null);
       await loadExemplares();
@@ -151,7 +151,7 @@ const loadData = async () => {
           <h2 className="text-sm font-medium text-gray-700 mb-4">
             NOVO EXEMPLAR
           </h2>
-          
+
           <div className="flex gap-4 items-end">
             <div className="flex-1">
               <label className="block text-sm text-gray-600 mb-2">
@@ -159,26 +159,26 @@ const loadData = async () => {
               </label>
               <div className="flex-1">
 
-  <div className="relative">
-    <select 
-      className="w-full px-4 py-2 border border-gray-300 rounded-lg appearance-none bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      value={idLivro}
-      onChange={(e) => setIdLivro(e.target.value)}
-    >
-      <option value="">Selecione uma obra</option>
-      {livros.map((livro) => (
-        <option key={livro.id_livro} value={livro.id_livro}>
-          {livro.titulo}
-        </option>
-      ))}
-    </select>
-    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-      </svg>
-    </div>
-  </div>
-</div>
+                <div className="relative">
+                  <select
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg appearance-none bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={idLivro}
+                    onChange={(e) => setIdLivro(e.target.value)}
+                  >
+                    <option value="">Selecione uma obra</option>
+                    {livros.map((livro) => (
+                      <option key={livro.id_livro} value={livro.id_livro}>
+                        {livro.titulo}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="flex-1">
@@ -194,7 +194,7 @@ const loadData = async () => {
               />
             </div>
 
-            <button 
+            <button
               onClick={handleAdd}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
             >
@@ -233,16 +233,7 @@ const loadData = async () => {
                     {exemplar.id_exemplar}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                    {editingId === exemplar.id_exemplar ? (
-                      <input
-                        type="number"
-                        className="w-20 px-2 py-1 border rounded"
-                        value={tempData.id_livro || ""}
-                        onChange={(e) => setTempData({...tempData, id_livro: parseInt(e.target.value)})}
-                      />
-                    ) : (
-                      exemplar.id_livro
-                    )}
+                    {exemplar.titulo}  
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     {editingId === exemplar.id_exemplar ? (
@@ -250,7 +241,7 @@ const loadData = async () => {
                         type="text"
                         className="w-full px-2 py-1 border rounded"
                         value={tempData.localizacao || ""}
-                        onChange={(e) => setTempData({...tempData, localizacao: e.target.value})}
+                        onChange={(e) => setTempData({ ...tempData, localizacao: e.target.value })}
                       />
                     ) : (
                       exemplar.localizacao
@@ -261,7 +252,7 @@ const loadData = async () => {
                       <select
                         className="px-2 py-1 border rounded"
                         value={tempData.disponibilidade || ""}
-                        onChange={(e) => setTempData({...tempData, disponibilidade: e.target.value as any})}
+                        onChange={(e) => setTempData({ ...tempData, disponibilidade: e.target.value as any })}
                       >
                         <option value="disponivel">disponível</option>
                         <option value="emprestado">emprestado</option>
