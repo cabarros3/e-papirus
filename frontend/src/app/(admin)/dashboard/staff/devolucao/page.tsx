@@ -3,6 +3,7 @@ import { ArrowLeft, Calendar, User, BookOpen, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import emprestimoService from "@/services/emprestimo-service";
+import { toast } from "sonner";
 
 export default function Devolucao() {
     const [emprestimoSelecionado, setEmprestimoSelecionado] = useState("");
@@ -16,59 +17,7 @@ export default function Devolucao() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mensagemErro, setMensagemErro] = useState("");
 
-    // CÓDIGO ANTIGO - Carregava todos os empréstimos ativos automaticamente
-    /*
-    useEffect(() => {
-        const carregarEmprestimosAtivos = async () => {
-            try {
-                const response = await fetch('http://localhost:8000/api/emprestimos/');
-                const data = await response.json();
-                
-                const ativos = (data.data || []).filter((emp: any) => emp.data_devolucao === null);
-                setEmprestimosAtivos(ativos);
-            } catch (error) {
-                console.error('Erro ao carregar empréstimos:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        carregarEmprestimosAtivos();
-    }, []);
 
-    useEffect(() => {
-        if (emprestimoSelecionado) {
-            const emprestimo = emprestimosAtivos.find(
-                (emp: any) => emp.id_emprestimo === parseInt(emprestimoSelecionado)
-            );
-
-            if (emprestimo) {
-                setPessoaNome(emprestimo.nome_pessoa || "Não encontrado");
-                
-                const buscarDetalhesLivro = async () => {
-                    try {
-                        const response = await fetch(`http://localhost:8000/api/livros/?id=${emprestimo.id_livro}`);
-                        const data = await response.json();
-                        if (data.data) {
-                            setLivroDetalhes(data.data);
-                        }
-                    } catch (error) {
-                        console.error('Erro ao buscar detalhes do livro:', error);
-                    }
-                };
-
-                buscarDetalhesLivro();
-                setDataEmprestimo(emprestimo.data_emprestimo);
-                setDataPrevista(emprestimo.data_prevista);
-            }
-        } else {
-            setLivroDetalhes(null);
-            setPessoaNome("");
-            setDataEmprestimo("");
-            setDataPrevista("");
-        }
-    }, [emprestimoSelecionado, emprestimosAtivos]);
-    */
 
     // Buscar empréstimo por ID do exemplar
     const buscarEmprestimoPorExemplar = async () => {
@@ -79,11 +28,11 @@ export default function Devolucao() {
 
         setLoading(true);
         setMensagemErro("");
-        
+
         try {
             const response = await fetch('http://localhost:8000/api/emprestimos/');
             const data = await response.json();
-            
+
             // Buscar empréstimo ativo desse exemplar
             const emprestimo = (data.data || []).find(
                 (emp: any) => emp.id_exemplar === parseInt(idExemplarBusca) && emp.data_devolucao === null
@@ -130,7 +79,7 @@ export default function Devolucao() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!emprestimoSelecionado) {
             alert("Selecione um empréstimo para devolver");
             return;
@@ -139,14 +88,19 @@ export default function Devolucao() {
         setIsSubmitting(true);
         try {
             await emprestimoService.devolver(parseInt(emprestimoSelecionado));
-            alert("Devolução realizada com sucesso!");
-            
+            try {
+                toast.success("Devolução realizada com sucesso!");
+            }
+            catch (error) {
+                console.error("Erro ao exibir toast:", error);
+            }
+
             // Recarregar empréstimos ativos
             const response = await fetch('http://localhost:8000/api/emprestimos/');
             const data = await response.json();
             const ativos = (data.data || []).filter((emp: any) => emp.data_devolucao === null);
             setEmprestimosAtivos(ativos);
-            
+
             // Limpar seleção
             setEmprestimoSelecionado("");
             setIdExemplarBusca("");
@@ -177,7 +131,7 @@ export default function Devolucao() {
 
             <div className="bg-white p-8 rounded-[2.5rem] border border-gray-200 shadow-sm">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    
+
                     {/* Informações do Livro - Lado Esquerdo */}
                     {livroDetalhes ? (
                         <div className="flex flex-col items-center md:items-start gap-4">
@@ -286,7 +240,7 @@ export default function Devolucao() {
                             <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
                                 <Calendar size={14} /> Informações
                             </h2>
-                            
+
                             <div className="space-y-4">
                                 {/* Data do empréstimo */}
                                 <div className="space-y-1">

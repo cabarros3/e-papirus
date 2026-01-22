@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import emprestimoService from "@/services/emprestimo-service";
+import { toast } from "sonner";
 
 export default function Emprestimo() {
     const router = useRouter();
@@ -14,7 +15,7 @@ export default function Emprestimo() {
     const [dataEmprestimo, setDataEmprestimo] = useState("");
     const [dataPrevista, setDataPrevista] = useState("");
     const [tipoMensagem, setTipoMensagem] = useState<"sucesso" | "erro" | "">("");
-    
+
     const [livros, setLivros] = useState<any[]>([]);
     const [livroSelecionado, setLivroSelecionado] = useState("");
     const [livroDetalhes, setLivroDetalhes] = useState<any>(null);
@@ -27,7 +28,7 @@ export default function Emprestimo() {
     useEffect(() => {
         const dataHoje = new Date().toISOString().split('T')[0];
         setDataEmprestimo(dataHoje);
-        
+
         // Calcular data prevista: 7 dias após hoje
 
         /*const dataPrevistaCalc = new Date();
@@ -46,14 +47,14 @@ export default function Emprestimo() {
                     fetch('http://localhost:8000/api/exemplares/'),
                     fetch('http://localhost:8000/api/livros/')
                 ]);
-                
+
                 const pessoas = await resPessoas.json();
                 const exemplaresData = await resExemplares.json();
                 const livrosData = await resLivros.json();
-                
+
                 setEstudantes(pessoas.data || []);
                 setLivros(livrosData.data || []);
-                
+
                 // Filtrar apenas exemplares disponíveis
                 const exemplaresDisp = (exemplaresData.data || []).filter((ex: any) => ex.disponibilidade === 'disponivel');
                 setExemplares(exemplaresDisp);
@@ -64,7 +65,7 @@ export default function Emprestimo() {
                 setLoading(false);
             }
         };
-        
+
         carregarDados();
     }, []);
 
@@ -76,7 +77,7 @@ export default function Emprestimo() {
             );
             setExemplaresDisponiveis(exemplaresFiltrados);
             setIdExemplar(""); // Limpar seleção de exemplar
-            
+
             // Buscar detalhes completos do livro selecionado
             const buscarDetalhesLivro = async () => {
                 try {
@@ -128,13 +129,18 @@ export default function Emprestimo() {
                 data_emprestimo: dataEmprestimo,
                 data_prevista: dataPrevista,
             };
-            
+
             console.log('Dados a enviar:', dados);
             const data = await emprestimoService.create(dados);
             console.log('Resposta:', data);
-            
+
             if (data && (data.id_emprestimo || data.status === 'sucesso')) {
-                alert('Empréstimo realizado com sucesso!');
+                try {
+                    toast.success("Empréstimo realizado com sucesso!");
+                }
+                catch (error) {
+                    console.error("Erro ao exibir toast:", error);
+                }
                 setTipoMensagem("sucesso");
                 setIdExemplar("");
                 setIdPessoa("");
@@ -172,7 +178,7 @@ export default function Emprestimo() {
 
             <div className="bg-white p-8 rounded-[2.5rem] border border-gray-200 shadow-sm">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    
+
                     {/* Informações do Livro - Dados reais do banco */}
                     {livroDetalhes ? (
                         <div className="flex flex-col items-center md:items-start gap-4">
@@ -204,7 +210,7 @@ export default function Emprestimo() {
                             <p className="text-gray-500 font-medium">Selecione um livro para ver os detalhes</p>
                         </div>
                     )}
-                    
+
                     {/* Informações do Livro para exemplo - COMENTADO */}
                     {/*
                     <div className="flex flex-col items-center md:items-start gap-4">
