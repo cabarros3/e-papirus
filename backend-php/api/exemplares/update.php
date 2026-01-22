@@ -3,7 +3,7 @@ require_once '../../config/cors.php';
 require_once '../../config/utils.php';
 require_once '../../db/db.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
+if ($_SERVER['REQUEST_METHOD'] !== 'PUT' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     enviarResposta("erro", "Método inválido. Use PUT.", null, 405);
 }
 
