@@ -169,7 +169,7 @@ export default function DashboardLayout({
                   <Repeat size={14} /> Renovação
                 </Link>
                 <Link
-                  href="#"
+                  href="/dashboard/staff/reservas"
                   className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
                 >
                   <CalendarDays size={14} /> Reservas
