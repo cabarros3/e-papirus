@@ -7,37 +7,41 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     enviarResposta("erro", "Método inválido. Use POST.", null, 405);
 }
 
-$data = json_decode(file_get_contents("php://input"));
+$dados = json_decode(file_get_contents("php://input"), true);
 
-// O id_livro é obrigatório para saber de qual obra é este exemplar
-if (!isset($data->id_livro)) {
-    enviarResposta("erro", "Informe o ID do livro.", null, 400);
+$id_livro = $dados['id_livro'] ?? null;
+$localizacao = $dados['localizacao'] ?? null;
+$disponibilidade = $dados['disponibilidade'] ?? 'disponivel';
+
+if (!$id_livro || !$localizacao) {
+    enviarResposta("erro", "Campos obrigatórios: id_livro, localizacao", null, 400);
 }
 
 try {
-    // Passo opcional: Verificar se o livro realmente existe antes de tentar criar
-    // Isso ajuda a dar uma mensagem de erro mais clara que a do SQL puro
-    $check = $pdo->prepare("SELECT id_livro FROM livro WHERE id_livro = ?");
-    $check->execute([$data->id_livro]);
+    // Buscar o próximo numero_exemplar para este livro
+    $sqlCount = "SELECT COALESCE(MAX(numero_exemplar), 0) + 1 as proximo_numero 
+                 FROM exemplar 
+                 WHERE id_livro = ?";
+    $stmtCount = $pdo->prepare($sqlCount);
+    $stmtCount->execute([$id_livro]);
+    $resultado = $stmtCount->fetch(PDO::FETCH_ASSOC);
+    $numero_exemplar = $resultado['proximo_numero'];
     
-    if ($check->rowCount() === 0) {
-        enviarResposta("erro", "Livro não encontrado. Verifique o ID.", null, 404);
-        exit;
-    }
-
-    // Inserir o exemplar
-    // Note que não precisamos passar 'disponibilidade', o banco já coloca 'disponivel' por padrão (DEFAULT)
-    $sql = "INSERT INTO exemplar (id_livro, localizacao, disponibilidade) VALUES (?, ?, 'disponivel')";
+    // Inserir o novo exemplar
+    $sql = "INSERT INTO exemplar (id_livro, numero_exemplar, localizacao, disponibilidade) 
+            VALUES (?, ?, ?, ?)";
+    
     $stmt = $pdo->prepare($sql);
+    $stmt->execute([$id_livro, $numero_exemplar, $localizacao, $disponibilidade]);
     
-    // Se a localização não for informada, colocamos um valor padrão
-    $localizacao = isset($data->localizacao) ? $data->localizacao : 'Acervo Geral';
-
-    $stmt->execute([$data->id_livro, $localizacao]);
-
-    enviarResposta("sucesso", "Exemplar cadastrado com sucesso!", ["id_exemplar" => $pdo->lastInsertId()], 201);
-
+    $id_exemplar = $pdo->lastInsertId();
+    
+    enviarResposta("sucesso", "Exemplar criado com sucesso!", [
+        'id_exemplar' => $id_exemplar,
+        'numero_exemplar' => $numero_exemplar
+    ], 201);
+    
 } catch (PDOException $e) {
-    enviarResposta("erro", "Erro no banco: " . $e->getMessage(), null, 500);
+    enviarResposta("erro", "Erro ao criar exemplar: " . $e->getMessage(), null, 500);
 }
 ?>

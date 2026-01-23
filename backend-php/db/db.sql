@@ -40,7 +40,8 @@ CREATE TABLE exemplar (
     id_livro INT,
     localizacao VARCHAR(100),
     FOREIGN KEY (id_livro) REFERENCES livro(id_livro),
-    disponibilidade ENUM('disponivel','emprestado','reservado') DEFAULT 'disponivel'
+    disponibilidade ENUM('disponivel','emprestado','reservado') DEFAULT 'disponivel',
+    numero_exemplar INT AFTER id_livro
 );
 
 CREATE TABLE pessoa (
@@ -83,3 +84,21 @@ CREATE TABLE renovacao (
   nova_data_devolucao DATE,
   FOREIGN KEY (id_emprestimo) REFERENCES emprestimo(id_emprestimo)
 );
+
+
+
+
+    SET @num = 0;
+    SET @current_livro = 0;
+
+    UPDATE exemplar e1
+    JOIN (
+        SELECT 
+            id_exemplar,
+            id_livro,
+            @num := IF(@current_livro = id_livro, @num + 1, 1) as novo_numero,
+            @current_livro := id_livro
+        FROM exemplar
+        ORDER BY id_livro, id_exemplar
+    ) e2 ON e1.id_exemplar = e2.id_exemplar
+    SET e1.numero_exemplar = e2.novo_numero;
