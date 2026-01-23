@@ -1,10 +1,10 @@
-
 "use client";
 import { ArrowLeft, Calendar, Loader2, User, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import emprestimoService from "@/services/emprestimo-service";
+import { ExemplaresService, LivroComExemplares } from "@/services/exemplar-service";
 
 export default function Emprestimo() {
     const router = useRouter();
@@ -15,11 +15,10 @@ export default function Emprestimo() {
     const [dataPrevista, setDataPrevista] = useState("");
     const [tipoMensagem, setTipoMensagem] = useState<"sucesso" | "erro" | "">("");
     
-    const [livros, setLivros] = useState<any[]>([]);
+    const [livrosComExemplares, setLivrosComExemplares] = useState<LivroComExemplares[]>([]);
     const [livroSelecionado, setLivroSelecionado] = useState("");
     const [livroDetalhes, setLivroDetalhes] = useState<any>(null);
     const [estudantes, setEstudantes] = useState<any[]>([]);
-    const [exemplares, setExemplares] = useState<any[]>([]);
     const [exemplaresDisponiveis, setExemplaresDisponiveis] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -27,37 +26,21 @@ export default function Emprestimo() {
     useEffect(() => {
         const dataHoje = new Date().toISOString().split('T')[0];
         setDataEmprestimo(dataHoje);
-        
-        // Calcular data prevista: 7 dias após hoje
-
-        /*const dataPrevistaCalc = new Date();
-        dataPrevistaCalc.setDate(dataPrevistaCalc.getDate() + 7);
-        setDataPrevista(dataPrevistaCalc.toISOString().split('T')[0]);
-        */
-
     }, []);
 
-    // Buscar pessoas e exemplares disponíveis
+    // Buscar pessoas e livros com exemplares
     useEffect(() => {
         const carregarDados = async () => {
             try {
-                const [resPessoas, resExemplares, resLivros] = await Promise.all([
+                const [resPessoas, livrosData] = await Promise.all([
                     fetch('http://localhost:8000/api/pessoas/'),
-                    fetch('http://localhost:8000/api/exemplares/'),
-                    fetch('http://localhost:8000/api/livros/')
+                    ExemplaresService.getLivrosComExemplares()
                 ]);
                 
                 const pessoas = await resPessoas.json();
-                const exemplaresData = await resExemplares.json();
-                const livrosData = await resLivros.json();
                 
                 setEstudantes(pessoas.data || []);
-                setLivros(livrosData.data || []);
-                
-                // Filtrar apenas exemplares disponíveis
-                const exemplaresDisp = (exemplaresData.data || []).filter((ex: any) => ex.disponibilidade === 'disponivel');
-                setExemplares(exemplaresDisp);
-                setExemplaresDisponiveis(exemplaresDisp);
+                setLivrosComExemplares(livrosData || []);
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
             } finally {
@@ -68,45 +51,44 @@ export default function Emprestimo() {
         carregarDados();
     }, []);
 
-    // Filtrar exemplares e buscar detalhes quando um livro é selecionado
+    // Filtrar exemplares disponíveis quando um livro é selecionado
     useEffect(() => {
         if (livroSelecionado) {
-            const exemplaresFiltrados = exemplares.filter(
-                (ex: any) => ex.id_livro === parseInt(livroSelecionado)
+            // Encontrar o livro selecionado
+            const livro = livrosComExemplares.find(
+                (l) => l.id_livro === parseInt(livroSelecionado)
             );
-            setExemplaresDisponiveis(exemplaresFiltrados);
-            setIdExemplar(""); // Limpar seleção de exemplar
             
-            // Buscar detalhes completos do livro selecionado
-            const buscarDetalhesLivro = async () => {
-                try {
-                    const response = await fetch(`http://localhost:8000/api/livros/?id=${livroSelecionado}`);
-                    const data = await response.json();
-                    if (data.data) {
-                        setLivroDetalhes(data.data);
+            if (livro) {
+                // Filtrar apenas exemplares disponíveis
+                const exemplaresFiltrados = livro.exemplares.filter(
+                    (ex) => ex.disponibilidade === 'disponivel'
+                );
+                setExemplaresDisponiveis(exemplaresFiltrados);
+                setIdExemplar(""); // Limpar seleção de exemplar
+                
+                // Buscar detalhes completos do livro selecionado
+                const buscarDetalhesLivro = async () => {
+                    try {
+                        const response = await fetch(`http://localhost:8000/api/livros/?id=${livroSelecionado}`);
+                        const data = await response.json();
+                        if (data.data) {
+                            setLivroDetalhes(data.data);
+                        }
+                    } catch (error) {
+                        console.error('Erro ao buscar detalhes do livro:', error);
                     }
-                } catch (error) {
-                    console.error('Erro ao buscar detalhes do livro:', error);
-                }
-            };
-            buscarDetalhesLivro();
+                };
+                buscarDetalhesLivro();
+            } else {
+                setExemplaresDisponiveis([]);
+                setLivroDetalhes(null);
+            }
         } else {
-            setExemplaresDisponiveis(exemplares);
+            setExemplaresDisponiveis([]);
             setLivroDetalhes(null);
         }
-    }, [livroSelecionado, exemplares]);
-
-    // Dados para exemplo de livro (COMENTADO - agora usa dados reais do banco)
-    /*
-    const livro = {
-        capa: "https://covers.openlibrary.org/b/id/7984916-L.jpg",
-        titulo: "Harry Potter: E O CÁLICE DE FOGO",
-        autor: "J. K. Rowling",
-        ano: 2000,
-        sinopse:
-            "Harry Potter e o Cálice de Fogo mostra Harry sendo inesperadamente escolhido para o Torneio Tribruxo, uma competição perigosa entre escolas de magia.",
-    };
-    */
+    }, [livroSelecionado, livrosComExemplares]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -138,6 +120,7 @@ export default function Emprestimo() {
                 setTipoMensagem("sucesso");
                 setIdExemplar("");
                 setIdPessoa("");
+                setLivroSelecionado("");
                 setDataEmprestimo("");
                 setDataPrevista("");
                 setTimeout(() => {
@@ -165,7 +148,7 @@ export default function Emprestimo() {
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Empréstimo de Livro</h1>
                     <p className="text-sm text-gray-500 font-medium">
-                        Realize o empréstimo de um exemplar para mu usuário.
+                        Realize o empréstimo de um exemplar para um usuário.
                     </p>
                 </div>
             </div>
@@ -173,7 +156,7 @@ export default function Emprestimo() {
             <div className="bg-white p-8 rounded-[2.5rem] border border-gray-200 shadow-sm">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     
-                    {/* Informações do Livro - Dados reais do banco */}
+                    {/* Informações do Livro */}
                     {livroDetalhes ? (
                         <div className="flex flex-col items-center md:items-start gap-4">
                             <img
@@ -204,25 +187,6 @@ export default function Emprestimo() {
                             <p className="text-gray-500 font-medium">Selecione um livro para ver os detalhes</p>
                         </div>
                     )}
-                    
-                    {/* Informações do Livro para exemplo - COMENTADO */}
-                    {/*
-                    <div className="flex flex-col items-center md:items-start gap-4">
-                        <img
-                            src={livro.capa}
-                            alt={livro.titulo}
-                            className="w-40 h-56 object-cover rounded-xl shadow-md"
-                        />
-                        <div>
-                            <h2 className="text-lg font-bold text-gray-800">{livro.titulo}</h2>
-                            <p className="text-sm text-gray-700">Autor: {livro.autor}</p>
-                            <p className="text-sm text-gray-700">Ano: {livro.ano}</p>
-                            <p className="text-sm text-gray-700 mt-2">
-                                <span className="font-bold">Sobre:</span> {livro.sinopse}
-                            </p>
-                        </div>
-                    </div>
-                    */}
 
                     {/* Formulário de Empréstimo */}
                     <form
@@ -243,11 +207,16 @@ export default function Emprestimo() {
                                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-denin outline-none bg-white"
                                 >
                                     <option value="">Nenhum Livro</option>
-                                    {livros.map((liv) => (
-                                        <option key={liv.id_livro} value={liv.id_livro}>
-                                            {liv.titulo}
-                                        </option>
-                                    ))}
+                                    {livrosComExemplares.map((livro) => {
+                                        const exemplaresDisp = livro.exemplares.filter(
+                                            ex => ex.disponibilidade === 'disponivel'
+                                        ).length;
+                                        return (
+                                            <option key={livro.id_livro} value={livro.id_livro}>
+                                                {livro.titulo} ({exemplaresDisp} disponível{exemplaresDisp !== 1 ? 'eis' : ''})
+                                            </option>
+                                        );
+                                    })}
                                 </select>
                             </div>
                         </div>
@@ -287,18 +256,20 @@ export default function Emprestimo() {
                                     value={idExemplar}
                                     onChange={(e) => setIdExemplar(e.target.value)}
                                     required
-                                    disabled={loading}
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-denin outline-none bg-white"
+                                    disabled={loading || !livroSelecionado}
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-denin outline-none bg-white disabled:bg-gray-50 disabled:cursor-not-allowed"
                                 >
-                                    <option value="">Selecione...</option>
+                                    <option value="">
+                                        {!livroSelecionado ? 'Selecione um livro primeiro...' : 'Selecione um exemplar...'}
+                                    </option>
                                     {exemplaresDisponiveis.map((ex) => (
                                         <option key={ex.id_exemplar} value={ex.id_exemplar}>
-                                            {ex.titulo || 'Sem título'} - Exemplar #{ex.id_exemplar} ({ex.localizacao || 'Sem localização'})
+                                            Exemplar #{ex.numero_exemplar} - {ex.localizacao || 'Sem localização'}
                                         </option>
                                     ))}
                                 </select>
-                                {exemplaresDisponiveis.length === 0 && !loading && (
-                                    <p className="text-xs text-red-500">Nenhum exemplar disponível</p>
+                                {livroSelecionado && exemplaresDisponiveis.length === 0 && !loading && (
+                                    <p className="text-xs text-red-500">Nenhum exemplar disponível para este livro</p>
                                 )}
                             </div>
                         </div>
@@ -317,7 +288,7 @@ export default function Emprestimo() {
                                         value={dataEmprestimo}
                                         onChange={(e) => setDataEmprestimo(e.target.value)}
                                         required
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-denin outline-none"
                                     />
                                 </div>
                                 <div className="space-y-1">
@@ -328,7 +299,7 @@ export default function Emprestimo() {
                                         value={dataPrevista}
                                         onChange={(e) => setDataPrevista(e.target.value)}
                                         required
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-denin outline-none"
                                     />
                                 </div>
                             </div>
