@@ -2,6 +2,12 @@
 require_once '../../config/cors.php';
 require_once '../../config/utils.php';
 require_once '../../db/db.php';
+require_once '../../vendor/autoload.php';
+
+use Firebase\JWT\JWT;
+
+// Defina uma chave secreta forte. Em produção, use variáveis de ambiente (.env)
+define('SECRET_KEY', 'sua_chave_secreta_super_segura_123');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     enviarResposta("erro", "Método inválido. Use POST.", null, 405);
@@ -14,7 +20,6 @@ if(!isset($data->email) || !isset($data->senha)) {
 }
 
 try {
-    // Buscamos o usuário e fazemos JOIN com pessoa para pegar o nome e tipo
     $sql = "SELECT u.id_usuario, u.senha, p.id_pessoa, p.nome, p.tipo 
             FROM usuario_sistema u 
             JOIN pessoa p ON u.id_pessoa = p.id_pessoa 
@@ -24,21 +29,36 @@ try {
     $stmt->execute([$data->email]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Verifica se usuário existe e se a senha bate com o hash
     if ($usuario && password_verify($data->senha, $usuario['senha'])) {
-        
-        // Remove a senha do array antes de enviar para o front (segurança)
+        // Remove a senha por segurança
         unset($usuario['senha']);
 
-        // AQUI: No futuro, você geraria um Token JWT aqui.
-        // Por enquanto, retornamos os dados do usuário.
-        
-        enviarResposta("sucesso", "Login realizado!", $usuario, 200);
+        // --- GERAÇÃO DO TOKEN JWT ---
+        $payload = [
+            "iss" => "e-papirus",    // Emissor (Issuer)
+            "iat" => time(),                  // Gerado em (Issued At)
+            "exp" => time() + (60 * 60 * 24), // Expira em 24 horas
+            "data" => [                       // Dados úteis para o Front
+                "id_usuario" => $usuario['id_usuario'],
+                "id_pessoa"  => $usuario['id_pessoa'],
+                "tipo"       => $usuario['tipo'],
+                "nome"       => $usuario['nome']
+            ]
+        ];
+
+        // Gera o token assinado
+        $jwt = JWT::encode($payload, SECRET_KEY, 'HS256');
+
+        // Retornamos o token E os dados do usuário para facilitar o Front-end
+        enviarResposta("sucesso", "Login realizado!", [
+            "token" => $jwt,
+            "usuario" => $usuario
+        ], 200);
+
     } else {
         enviarResposta("erro", "Email ou senha incorretos.", null, 401);
     }
 
-} catch (PDOException $e) {
-    enviarResposta("erro", "Erro no banco: " . $e->getMessage(), null, 500);
+} catch (Exception $e) { // Use Exception genérica para pegar erros do JWT também
+    enviarResposta("erro", "Erro no processamento: " . $e->getMessage(), null, 500);
 }
-?>

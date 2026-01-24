@@ -1,12 +1,40 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { AuthService } from "@/services/auth-service"; // Verifique o caminho do arquivo
 
 export default function LoginScreen() {
-  // No futuro, aqui você usaria o authService.ts que criamos
-  const handleLogin = (e: React.FormEvent) => {
+  const router = useRouter();
+  const authService = new AuthService(); // Instanciando o serviço
+
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica de login aqui
+    if (loading) return;
+
+    setLoading(true);
+
+    try {
+      // Usando o serviço que criamos para processar o login e salvar o token
+      const { usuario } = await authService.login({ email, senha });
+
+      // Redirecionamento baseado no tipo estrito (UserRole)
+      if (usuario.tipo === "funcionario") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (error: any) {
+      // Captura a mensagem de erro vinda do PHP (ex: "Email ou senha incorretos")
+      alert(error.message || "Não foi possível realizar o login.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,8 +93,10 @@ export default function LoginScreen() {
               <input
                 type="email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="exemplo@email.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white text-black shadow-sm"
               />
             </div>
 
@@ -77,16 +107,19 @@ export default function LoginScreen() {
               <input
                 type="password"
                 required
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white text-black shadow-sm"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-gray-800 text-white rounded-xl font-semibold hover:bg-gray-900 transition shadow-lg shadow-gray-200"
+              disabled={loading}
+              className="w-full py-3 bg-gray-800 text-white rounded-xl font-semibold hover:bg-gray-900 transition shadow-lg shadow-gray-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              Entrar no Sistema
+              {loading ? "Entrando..." : "Entrar no Sistema"}
             </button>
 
             <p className="text-center text-xs text-gray-500 mt-4">

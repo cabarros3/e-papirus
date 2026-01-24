@@ -1,44 +1,48 @@
-// O objeto "Usuario" que vem dentro do "data" no /me
+// 1. Definição estrita dos tipos de usuário para evitar erros de digitação
+export type UserRole = "aluno" | "professor" | "funcionario";
+
 export interface Usuario {
   id_usuario: number;
   id_pessoa: number;
   nome: string;
   email: string;
+  tipo: UserRole; // Tipagem estrita em vez de string genérica
   matricula: string;
   cpf: string;
-  telefone: string;
-  tipo: string; // "aluno" | "admin" etc.
+  telefone?: string; // Opcional, pois pode ser nulo no banco
 }
 
-// DTO para LOGIN (POST)
+// 2. DTOs (Data Transfer Objects)
 export interface LoginDTO {
   email: string;
   senha: string;
 }
 
-// DTO para REGISTER (POST)
 export interface RegisterDTO {
   nome: string;
   matricula: string;
   cpf: string;
   email: string;
   senha: string;
-  tipo: string;
-  telefone: string;
+  tipo: UserRole;
+  telefone?: string;
 }
 
-// Resposta do endpoint "ME" (Perfil)
+// 3. Respostas da API (Baseadas na sua função enviarResposta do PHP)
+
+// Resposta genérica para rotas que retornam o perfil ou sucesso de cadastro
 export interface MeResponse {
-  status: string;
-  message: string;
-  data: Usuario; // Objeto único
+  status: "sucesso" | "erro";
+  mensagem: string; // Batendo com o PHP
+  dados: Usuario; // Batendo com o PHP
 }
 
-// Resposta de Login/Register (Geralmente retorna token ou sucesso simples)
-// Caso seu login retorne o mesmo formato do ME, pode reutilizar MeResponse.
+// Resposta específica de Login que inclui o Token JWT
 export interface AuthResponse {
-  status: string;
-  message: string;
-  // Se o login retornar token, adicione aqui.
-  // Se retornar dados do usuário, use: data?: Usuario;
+  status: "sucesso" | "erro";
+  mensagem: string;
+  dados: {
+    token: string;
+    usuario: Usuario;
+  };
 }
