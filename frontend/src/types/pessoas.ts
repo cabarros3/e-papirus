@@ -11,21 +11,26 @@ export interface Pessoa {
   matricula: string;
   cpf: string;
   email: string;
-  telefone: string | null; // Pode vir nulo do banco
+  telefone: string | null;
   tipo: TipoPessoa;
-  cargo: CargoFuncionario | null; // Alunos e professores terão isso como null
+  cargo: CargoFuncionario | null;
 }
 
 // Interface para CADASTRO (O que você manda no POST)
+// Agora inclui a senha necessária para a tabela usuario_sistema
 export interface CadastroPessoaDTO {
   nome: string;
   matricula: string;
   cpf: string;
   email: string;
-  telefone?: string; // Interrogação torna opcional no objeto
+  senha: string; // <-- ADICIONADO: Obrigatória para criar o login
   tipo: TipoPessoa;
-  cargo?: CargoFuncionario | null; // Opcional ou nulo
+  telefone?: string;
+  cargo?: CargoFuncionario | null;
 }
 
-// A resposta completa da API
+// Resposta para operações de uma única pessoa
 export type PessoaResponse = ApiResponse<Pessoa>;
+
+// Resposta para listagens de várias pessoas
+export type PessoasResponse = ApiResponse<Pessoa[]>;
