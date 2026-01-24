@@ -9,9 +9,10 @@ export default function CadastroProfessor() {
   const router = useRouter();
 
   const [nome, setNome] = useState("");
-  const [matricula, setMatricula] = useState(""); // Usado para o CNBD
+  const [matricula, setMatricula] = useState(""); // Representa o CNBD
   const [cpf, setCpf] = useState("");
   const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState(""); // Novo estado para senha
   const [telefone, setTelefone] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [tipoMensagem, setTipoMensagem] = useState<"sucesso" | "erro" | "">("");
@@ -19,8 +20,11 @@ export default function CadastroProfessor() {
   const criarItem = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nome || !matricula || !cpf || !email) {
-      setMensagem("Preencha os campos obrigatórios (Nome, CNBD, CPF e Email).");
+    // Validação atualizada incluindo a senha
+    if (!nome || !matricula || !cpf || !email || !senha) {
+      setMensagem(
+        "Preencha os campos obrigatórios (Nome, CNBD, CPF, Email e Senha).",
+      );
       setTipoMensagem("erro");
       return;
     }
@@ -31,6 +35,7 @@ export default function CadastroProfessor() {
         matricula,
         cpf,
         email,
+        senha, // Enviando a senha para criação do usuario_sistema
         telefone: telefone || undefined,
         tipo: "professor",
         cargo: null,
@@ -42,17 +47,18 @@ export default function CadastroProfessor() {
         setMensagem("Professor cadastrado com sucesso!");
         setTipoMensagem("sucesso");
 
+        // Limpar campos
         setNome("");
         setMatricula("");
         setCpf("");
         setEmail("");
+        setSenha("");
         setTelefone("");
 
         setTimeout(() => {
           router.push("/login");
         }, 2000);
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setMensagem(error.message || "Erro ao cadastrar.");
       setTipoMensagem("erro");
@@ -65,7 +71,7 @@ export default function CadastroProfessor() {
       className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6 text-left"
     >
       <div className="text-center">
-        <p className="text-gray-600 font-medium mb-2">
+        <p className="text-gray-600 font-medium mb-2 text-xl">
           Cadastro de Professores
         </p>
 
@@ -86,7 +92,7 @@ export default function CadastroProfessor() {
           placeholder="Nome completo"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black"
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -95,7 +101,7 @@ export default function CadastroProfessor() {
             placeholder="CNBD"
             value={matricula}
             onChange={(e) => setMatricula(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black"
           />
           <input
             type="text"
@@ -103,16 +109,25 @@ export default function CadastroProfessor() {
             value={cpf}
             maxLength={11}
             onChange={(e) => setCpf(e.target.value.replace(/\D/g, ""))}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black"
           />
         </div>
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder="E-mail Institucional"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black"
+        />
+
+        {/* CAMPO DE SENHA */}
+        <input
+          type="password"
+          placeholder="Defina uma senha"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black"
         />
 
         <input
@@ -120,7 +135,7 @@ export default function CadastroProfessor() {
           placeholder="Telefone (opcional)"
           value={telefone}
           onChange={(e) => setTelefone(e.target.value)}
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black"
         />
       </div>
 

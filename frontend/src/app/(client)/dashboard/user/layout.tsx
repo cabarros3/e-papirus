@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   BookMarked,
@@ -11,26 +12,70 @@ import {
   Bell,
   UserCircle,
 } from "lucide-react";
+import { Pessoa } from "@/types/pessoas";
 
 export default function ClientDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+
+  // SOLUÇÃO: Inicialização síncrona para evitar renderização em cascata
+  const [user, setUser] = useState<Pessoa | null>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("bib_user");
+      try {
+        return saved ? JSON.parse(saved) : null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
+
+  // PROTEÇÃO: Apenas redireciona se não houver usuário após a montagem
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [user, router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("bib_token");
+    localStorage.removeItem("bib_user");
+    router.push("/login");
+  };
+
+  const getInitials = (name: string) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2);
+  };
+
+  // Evita exibir o layout incompleto enquanto o redirecionamento não acontece
+  if (!user) {
+    return <div className="min-h-screen bg-gray-50" />;
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar - Segue o mesmo padrão do Staff */}
+      {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
         <div className="p-6 border-b border-gray-100 font-bold text-2xl text-denin">
           e-Papirus
           <span className="block text-[10px] uppercase tracking-widest text-gray-400 font-medium">
-            Portal do Leitor
+            Portal do {user.tipo === "professor" ? "Professor" : "Leitor"}
           </span>
         </div>
 
         <nav className="flex-grow p-4 space-y-1">
           <Link
-            href="/dashboard/user"
+            href="/dashboard"
             className="flex items-center gap-3 p-3 rounded-lg bg-denin/10 text-denin font-medium"
           >
             <LayoutDashboard size={18} />
@@ -62,23 +107,23 @@ export default function ClientDashboardLayout({
           </Link>
         </nav>
 
-        {/* Informações da Instituição no rodapé da Sidebar */}
         <div className="p-6 border-t border-gray-100">
           <div className="bg-gray-50 rounded-xl p-3">
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
-              Campus
+              Matrícula
             </p>
-            <p className="text-xs font-medium text-gray-600">IFPE Igarassu</p>
+            <p className="text-xs font-medium text-gray-600">
+              {user.matricula}
+            </p>
           </div>
         </div>
       </aside>
 
       {/* Conteúdo Principal */}
       <main className="flex-grow flex flex-col">
-        {/* Header - Idêntico ao do Staff para coerência */}
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8">
           <div className="text-sm text-gray-500 font-medium italic">
-            Olá, <span className="text-denin">Camilla Silva</span>
+            Olá, <span className="text-denin">{user.nome}</span>
           </div>
 
           <div className="flex items-center gap-6">
@@ -89,22 +134,29 @@ export default function ClientDashboardLayout({
             <div className="flex items-center gap-3 border-l pl-6">
               <div className="flex flex-col items-end">
                 <span className="text-xs font-bold text-gray-800">
-                  Camilla Silva
+                  {user.nome}
                 </span>
-                <span className="text-[10px] text-gray-500">Estudante</span>
+                <span className="text-[10px] text-gray-500 capitalize">
+                  {user.tipo}
+                </span>
               </div>
 
               <div className="group relative">
                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-sm font-bold cursor-pointer hover:ring-2 ring-denin transition-all">
-                  CS
+                  {getInitials(user.nome)}
                 </div>
 
-                {/* Menu de Sair (Coerente com Staff) */}
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
-                  <button className="w-full flex items-center gap-3 p-4 text-sm text-gray-700 hover:bg-gray-50">
+                  <Link
+                    href="/perfil"
+                    className="w-full flex items-center gap-3 p-4 text-sm text-gray-700 hover:bg-gray-50"
+                  >
                     <UserCircle size={16} /> Meu Perfil
-                  </button>
-                  <button className="w-full flex items-center gap-3 p-4 text-sm text-red-500 hover:bg-red-50 transition-colors font-bold border-t">
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 p-4 text-sm text-red-500 hover:bg-red-50 transition-colors font-bold border-t"
+                  >
                     <LogOut size={16} /> Encerrar Sessão
                   </button>
                 </div>

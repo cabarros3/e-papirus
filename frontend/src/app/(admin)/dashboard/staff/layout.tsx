@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   BookOpen,
@@ -16,19 +17,58 @@ import {
   HandHelping,
   Users2,
   Tags,
-  Search, // Ícone para consulta
-  BookMarked, // Ícone para o submenu de itens
+  Search,
+  BookMarked,
 } from "lucide-react";
 import { Toaster } from "sonner";
+import { Pessoa } from "@/types/pessoas";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+
+  // Estados de controle do menu
   const [openAcervo, setOpenAcervo] = useState(true);
-  const [openItens, setOpenItens] = useState(true); // Estado para o novo submenu
+  const [openItens, setOpenItens] = useState(true);
   const [openCirculacao, setOpenCirculacao] = useState(false);
+
+  // 1. Inicialização preguiçosa (Lazy Initialization)
+  // Isso carrega o usuário apenas no cliente, sem disparar renderizações em cascata.
+  const [user, setUser] = useState<Pessoa | null>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("bib_user");
+      try {
+        return saved ? JSON.parse(saved) : null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
+
+  // 2. Usamos o useEffect apenas para o efeito colateral de redirecionamento.
+  // Sem atualizar estados aqui, o erro desaparece.
+  useEffect(() => {
+    if (typeof window !== "undefined" && !user) {
+      router.push("/login");
+    }
+  }, [user, router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("bib_token");
+    localStorage.removeItem("bib_user");
+    router.push("/login");
+  };
+
+  // 3. Renderização Condicional Crítica:
+  // Se não houver usuário, retornamos nulo. Como o redirecionamento está no useEffect,
+  // o usuário não verá nada antes de ser mandado para o login.
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -38,7 +78,6 @@ export default function DashboardLayout({
         </div>
 
         <nav className="grow p-4 space-y-1 overflow-y-auto">
-          {/* Dashboard */}
           <Link
             href="/dashboard/staff"
             className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
@@ -47,7 +86,6 @@ export default function DashboardLayout({
             <span className="text-sm font-medium">Dashboard</span>
           </Link>
 
-          {/* Gerenciar Acervo com Submenu */}
           <div>
             <button
               onClick={() => setOpenAcervo(!openAcervo)}
@@ -59,15 +97,12 @@ export default function DashboardLayout({
               </div>
               <ChevronDown
                 size={14}
-                className={`transition-transform ${
-                  openAcervo ? "rotate-180" : ""
-                }`}
+                className={`transition-transform ${openAcervo ? "rotate-180" : ""}`}
               />
             </button>
 
             {openAcervo && (
               <div className="ml-6 mt-1 space-y-1 border-l border-gray-100">
-                {/* SUBMENU: Gerenciar Itens (Aninhado) */}
                 <div className="ml-3">
                   <button
                     onClick={() => setOpenItens(!openItens)}
@@ -79,9 +114,7 @@ export default function DashboardLayout({
                     </div>
                     <ChevronDown
                       size={12}
-                      className={`transition-transform ${
-                        openItens ? "rotate-180" : ""
-                      }`}
+                      className={`transition-transform ${openItens ? "rotate-180" : ""}`}
                     />
                   </button>
 
@@ -99,21 +132,16 @@ export default function DashboardLayout({
                       >
                         <BookPlus size={13} /> Cadastrar Novo Item
                       </Link>
-
-
                       <Link
                         href="/dashboard/staff/cadastrar-exemplar"
                         className="flex items-center gap-2 p-2 text-[11px] text-gray-400 hover:text-denin transition-colors"
                       >
                         <BookPlus size={13} /> Gerenciar Exemplares
                       </Link>
-
-
                     </div>
                   )}
                 </div>
 
-                {/* Autores e Assuntos (Nível 2 do Acervo) */}
                 <Link
                   href="/dashboard/staff/autores"
                   className="ml-3 flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
@@ -130,7 +158,6 @@ export default function DashboardLayout({
             )}
           </div>
 
-          {/* Circulação (Empréstimos) com Submenu */}
           <div>
             <button
               onClick={() => setOpenCirculacao(!openCirculacao)}
@@ -142,9 +169,7 @@ export default function DashboardLayout({
               </div>
               <ChevronDown
                 size={14}
-                className={`transition-transform ${
-                  openCirculacao ? "rotate-180" : ""
-                }`}
+                className={`transition-transform ${openCirculacao ? "rotate-180" : ""}`}
               />
             </button>
 
@@ -182,7 +207,7 @@ export default function DashboardLayout({
             href="#"
             className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
           >
-            <Users size={18} />{" "}
+            <Users size={18} />
             <span className="text-sm font-medium">Usuários</span>
           </Link>
 
@@ -190,7 +215,7 @@ export default function DashboardLayout({
             href="#"
             className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
           >
-            <Settings size={18} />{" "}
+            <Settings size={18} />
             <span className="text-sm font-medium">Configurações</span>
           </Link>
         </nav>
@@ -205,21 +230,21 @@ export default function DashboardLayout({
 
           <div className="flex items-center gap-4">
             <div className="flex flex-col items-end mr-2">
-              <span className="text-xs font-bold text-gray-800">
-                Admin Staff
+              <span className="text-xs font-bold text-gray-800 uppercase">
+                {user.nome}
               </span>
-              <span className="text-[10px] text-gray-500">
-                Bibliotecário(a)
+              <span className="text-[10px] text-gray-500 capitalize">
+                {user.cargo || "Bibliotecário(a)"}
               </span>
             </div>
 
             <div className="group relative">
               <div className="w-10 h-10 rounded-full bg-denin flex items-center justify-center text-white text-sm font-bold cursor-pointer ring-2 ring-transparent group-hover:ring-denin/20 transition-all">
-                AD
+                {user.nome.substring(0, 2).toUpperCase()}
               </div>
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
                 <button
-                  onClick={() => alert("Saindo...")}
+                  onClick={handleLogout}
                   className="w-full flex items-center gap-3 p-4 text-sm text-red-500 hover:bg-red-50 transition-colors font-bold"
                 >
                   <LogOut size={16} /> Encerrar Sessão
