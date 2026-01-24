@@ -1,13 +1,15 @@
 <?php
-// backend-php/config/auth_config.php
+require_once __DIR__ . '/../vendor/autoload.php';
 
-// Definindo o nome como SECRET_KEY para bater com o arquivo de login
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->safeLoad();
+
 if (!defined('SECRET_KEY')) {
-    define('SECRET_KEY', 'ge_papirus_sistema_biblioteca_chave_secreta_super_segura_2026_@#!');
+    // Busca a chave do .env ou usa um fallback (opcional)
+    define('SECRET_KEY', $_ENV['JWT_SECRET'] ?? 'chave_padrao_local');
 }
 
-// Configuração de expiração (24 horas)
 if (!defined('JWT_EXPIRATION')) {
-    define('JWT_EXPIRATION', 60 * 60 * 24); 
+    define('JWT_EXPIRATION', $_ENV['JWT_EXPIRATION'] ?? 3600); 
 }
 ?>
