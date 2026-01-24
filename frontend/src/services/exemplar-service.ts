@@ -5,7 +5,7 @@ export interface Exemplar {
   id_exemplar?: number;
   id_livro: number;
   localizacao: string;
-  disponibilidade: 'disponivel' | 'emprestado' | 'reservado';
+  disponibilidade: "disponivel" | "emprestado" | "reservado";
   numero_exemplar?: number;
 }
 
@@ -20,7 +20,7 @@ export interface ExemplarAgrupado {
   id_exemplar: number;
   numero_exemplar: number;
   localizacao: string;
-  disponibilidade: 'disponivel' | 'emprestado' | 'reservado';
+  disponibilidade: "disponivel" | "emprestado" | "reservado";
 }
 
 // Interface para livro com seus exemplares agrupados
@@ -32,125 +32,157 @@ export interface LivroComExemplares {
 }
 
 export class ExemplaresService {
+  /**
+   * GET: Todos os exemplares (Geral)
+   */
   static async getAllExemplares(): Promise<Exemplar[]> {
     const response = await fetch(`${API_URL}/exemplares/index.php`, {
       method: "GET",
-      headers: defaultHeaders,
-      cache: "no-store"
+      headers: defaultHeaders(), // AJUSTE: Adicionado ()
+      cache: "no-store",
     });
 
     if (!response.ok) return [];
-    
+
     const json = await response.json();
 
-    // Tratando retorno direto ou dentro de data
-    return json.data || (Array.isArray(json) ? json : []);
+    // AJUSTE: Seguindo seu padrão PHP de usar 'dados'
+    return json.dados || json.data || (Array.isArray(json) ? json : []);
   }
 
-  // Mantido para compatibilidade - retorna lista flat
+  /**
+   * Mantido para compatibilidade - retorna lista flat de exemplares
+   */
   static async getExemplaresComLivro(): Promise<ExemplarComLivro[]> {
     const response = await fetch(`${API_URL}/exemplares/index.php`, {
       method: "GET",
-      headers: defaultHeaders,
-      cache: "no-store"
+      headers: defaultHeaders(), // AJUSTE: Adicionado ()
+      cache: "no-store",
     });
 
     if (!response.ok) return [];
-    
+
     const result = await response.json();
-    
-    if (result.status === 'sucesso' && result.data) {
-      // Achatar a estrutura agrupada para o formato antigo (compatibilidade)
+
+    // Verificando se o status é 'sucesso' e acessando 'dados'
+    if (result.status === "sucesso" && (result.dados || result.data)) {
+      const data = result.dados || result.data;
       const exemplaresList: ExemplarComLivro[] = [];
-      result.data.forEach((livro: LivroComExemplares) => {
+
+      data.forEach((livro: LivroComExemplares) => {
         livro.exemplares.forEach((exemplar) => {
           exemplaresList.push({
             ...exemplar,
             id_livro: livro.id_livro,
             titulo: livro.titulo,
-            editora: livro.editora
+            editora: livro.editora,
           });
         });
       });
       return exemplaresList;
     }
-    
+
     return [];
   }
 
-  // Novo método - retorna livros com exemplares agrupados
+  /**
+   * Retorna livros com exemplares agrupados (Ideal para visualização por obra)
+   */
   static async getLivrosComExemplares(): Promise<LivroComExemplares[]> {
     const response = await fetch(`${API_URL}/exemplares/index.php`, {
       method: "GET",
-      headers: defaultHeaders,
-      cache: "no-store"
+      headers: defaultHeaders(), // AJUSTE: Adicionado ()
+      cache: "no-store",
     });
 
     if (!response.ok) return [];
-    
+
     const result = await response.json();
-    
-    if (result.status === 'sucesso') {
-      return result.data || [];
+
+    if (result.status === "sucesso") {
+      return result.dados || result.data || [];
     }
-    
+
     return [];
   }
 
-  // Buscar exemplares de um livro específico
-  static async getExemplaresPorLivro(idLivro: number): Promise<LivroComExemplares | null> {
-    const response = await fetch(`${API_URL}/exemplares/index.php?id_livro=${idLivro}`, {
-      method: "GET",
-      headers: defaultHeaders,
-      cache: "no-store"
-    });
+  /**
+   * Buscar exemplares de um livro específico
+   */
+  static async getExemplaresPorLivro(
+    idLivro: number,
+  ): Promise<LivroComExemplares | null> {
+    const response = await fetch(
+      `${API_URL}/exemplares/index.php?id_livro=${idLivro}`,
+      {
+        method: "GET",
+        headers: defaultHeaders(), // AJUSTE: Adicionado ()
+        cache: "no-store",
+      },
+    );
 
     if (!response.ok) return null;
-    
+
     const result = await response.json();
-    
-    if (result.status === 'sucesso' && result.data && result.data.length > 0) {
-      return result.data[0];
+    const data = result.dados || result.data;
+
+    if (result.status === "sucesso" && data && data.length > 0) {
+      return data[0];
     }
-    
+
     return null;
   }
 
+  /**
+   * POST: Criar novo exemplar
+   */
   static async createExemplar(dados: Exemplar): Promise<void> {
     const response = await fetch(`${API_URL}/exemplares/create.php`, {
       method: "POST",
-      headers: defaultHeaders,
+      headers: defaultHeaders(), // AJUSTE: Adicionado ()
       body: JSON.stringify(dados),
     });
 
-    if (!response.ok) {
-      const result = await response.json();
-      throw new Error(result.message || "Erro ao cadastrar exemplar");
+    const result = await response.json();
+    if (!response.ok || result.status === "erro") {
+      throw new Error(
+        result.mensagem || result.message || "Erro ao cadastrar exemplar",
+      );
     }
   }
 
+  /**
+   * PUT: Atualizar exemplar
+   */
   static async updateExemplar(dados: Exemplar): Promise<void> {
     const response = await fetch(`${API_URL}/exemplares/update.php`, {
       method: "PUT",
-      headers: defaultHeaders,
+      headers: defaultHeaders(), // AJUSTE: Adicionado ()
       body: JSON.stringify(dados),
     });
 
-    if (!response.ok) {
-      const result = await response.json();
-      throw new Error(result.message || "Erro ao atualizar exemplar");
+    const result = await response.json();
+    if (!response.ok || result.status === "erro") {
+      throw new Error(
+        result.mensagem || result.message || "Erro ao atualizar exemplar",
+      );
     }
   }
 
+  /**
+   * DELETE: Remover exemplar
+   */
   static async deleteExemplar(id: number): Promise<void> {
     const response = await fetch(`${API_URL}/exemplares/delete.php?id=${id}`, {
       method: "DELETE",
-      headers: defaultHeaders,
+      headers: defaultHeaders(), // AJUSTE: Adicionado ()
     });
 
-    if (!response.ok) {
-      const result = await response.json();
-      throw new Error(result.message || "Erro ao excluir exemplar");
+    const result = await response.json();
+    if (!response.ok || result.status === "erro") {
+      throw new Error(
+        result.mensagem || result.message || "Erro ao excluir exemplar",
+      );
     }
   }
 }

@@ -1,30 +1,25 @@
-import {
-  CadastroPessoaDTO,
-  Pessoa,
-  PessoaResponse,
-  // TipoPessoa,
-} from "../types/pessoas";
-
-const API_URL = "http://localhost:8000/api/pessoas";
+import { CadastroPessoaDTO, Pessoa, PessoaResponse } from "../types/pessoas";
+// Importamos as configurações globais que já estamos usando nos outros services
+import { API_URL, defaultHeaders } from "./api";
 
 export const pessoaService = {
-  // Agora usamos o DTO para garantir os campos do banco
+  /**
+   * POST: Cria uma nova pessoa (Leitor ou Funcionário)
+   */
   async criar(dados: CadastroPessoaDTO): Promise<PessoaResponse> {
     try {
-      const response = await fetch(`${API_URL}/create.php`, {
+      const response = await fetch(`${API_URL}/pessoas/create.php`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        // AJUSTE: Agora usa a função para pegar o token logado
+        headers: defaultHeaders(),
         body: JSON.stringify(dados),
       });
 
       const data = await response.json();
 
-      if (!response.ok) {
-        // O PHP retorna a mensagem no campo "mensagem" ou "message"
+      if (!response.ok || data.status === "erro") {
         throw new Error(
-          data.mensagem || data.message || "Erro ao criar pessoa"
+          data.mensagem || data.message || "Erro ao criar pessoa",
         );
       }
 
@@ -35,41 +30,48 @@ export const pessoaService = {
     }
   },
 
-  // Retorna uma lista de pessoas tipadas
+  /**
+   * GET: Lista todas as pessoas cadastradas
+   */
   async listar(): Promise<Pessoa[]> {
     try {
-      const response = await fetch(`${API_URL}/read.php`);
+      const response = await fetch(`${API_URL}/pessoas/read.php`, {
+        method: "GET",
+        headers: defaultHeaders(), // AJUSTE: Proteção JWT
+        cache: "no-store",
+      });
+
       const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.mensagem || "Erro ao listar pessoas");
       }
 
-      // Ajuste aqui dependendo se seu PHP retorna a lista direto ou dentro de data.dados
+      // Padronizado para seu PHP que retorna em data.dados
       return data.dados || data;
     } catch (error) {
       console.error("Erro ao listar:", error);
-      throw error;
+      return [];
     }
   },
 
-  // Partial permite enviar apenas os campos que mudaram
+  /**
+   * PUT: Atualiza dados de uma pessoa
+   */
   async atualizar(
     id: number | string,
-    dados: Partial<CadastroPessoaDTO>
+    dados: Partial<CadastroPessoaDTO>,
   ): Promise<PessoaResponse> {
     try {
-      const response = await fetch(`${API_URL}/update.php`, {
+      const response = await fetch(`${API_URL}/pessoas/update.php`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: defaultHeaders(), // AJUSTE: Proteção JWT
         body: JSON.stringify({ id_pessoa: id, ...dados }),
       });
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || data.status === "erro") {
         throw new Error(data.mensagem || "Erro ao atualizar pessoa");
       }
 
@@ -80,19 +82,20 @@ export const pessoaService = {
     }
   },
 
+  /**
+   * DELETE: Remove uma pessoa do sistema
+   */
   async deletar(id: number | string): Promise<PessoaResponse> {
     try {
-      const response = await fetch(`${API_URL}/delete.php`, {
+      const response = await fetch(`${API_URL}/pessoas/delete.php`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: defaultHeaders(), // AJUSTE: Proteção JWT
         body: JSON.stringify({ id_pessoa: id }),
       });
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || data.status === "erro") {
         throw new Error(data.mensagem || "Erro ao deletar pessoa");
       }
 

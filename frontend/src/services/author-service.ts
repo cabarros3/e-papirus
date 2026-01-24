@@ -8,12 +8,13 @@ export class AuthorService {
   async createAuthor(dados: CadastroAutorDTO): Promise<void> {
     const response = await fetch(`${API_URL}/autores/create.php`, {
       method: "POST",
-      headers: defaultHeaders,
+      // AJUSTE: Adicionado () para pegar o token do usuário logado
+      headers: defaultHeaders(),
       body: JSON.stringify(dados),
     });
 
     const result = await response.json();
-    if (!response.ok) {
+    if (!response.ok || result.status === "erro") {
       throw new Error(result.mensagem || "Erro ao cadastrar autor");
     }
   }
@@ -25,7 +26,8 @@ export class AuthorService {
     try {
       const response = await fetch(`${API_URL}/autores/index.php`, {
         method: "GET",
-        headers: defaultHeaders,
+        // AJUSTE: Adicionado () para autorizar a listagem
+        headers: defaultHeaders(),
         cache: "no-store",
       });
 
@@ -33,7 +35,8 @@ export class AuthorService {
 
       const json = await response.json();
 
-      // Tratando se a API retorna { data: [...] } ou direto o array [...]
+      // Ajustado para o padrão do seu PHP que usa a chave 'dados'
+      if (json.dados && Array.isArray(json.dados)) return json.dados;
       if (json.data && Array.isArray(json.data)) return json.data;
       if (Array.isArray(json)) return json;
 
@@ -53,13 +56,13 @@ export class AuthorService {
   }): Promise<void> {
     const response = await fetch(`${API_URL}/autores/update.php`, {
       method: "PUT",
-      headers: defaultHeaders,
+      headers: defaultHeaders(), // AJUSTE: Adicionado ()
       body: JSON.stringify(dados),
     });
 
     const result = await response.json();
 
-    if (!response.ok) {
+    if (!response.ok || result.status === "erro") {
       throw new Error(result.mensagem || "Erro ao atualizar autor");
     }
   }
@@ -70,11 +73,12 @@ export class AuthorService {
   async deleteAuthor(id: number): Promise<void> {
     const response = await fetch(`${API_URL}/autores/delete.php?id=${id}`, {
       method: "DELETE",
-      headers: defaultHeaders,
+      headers: defaultHeaders(), // AJUSTE: Adicionado ()
     });
 
-    if (!response.ok) {
-      const result = await response.json();
+    const result = await response.json();
+
+    if (!response.ok || result.status === "erro") {
       throw new Error(result.mensagem || "Erro ao eliminar autor");
     }
   }

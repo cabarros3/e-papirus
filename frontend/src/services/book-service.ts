@@ -16,13 +16,15 @@ export class BookService {
     try {
       const response = await fetch(url, {
         method: "GET",
-        headers: defaultHeaders,
+        headers: defaultHeaders(), // AJUSTE: Adicionado ()
         cache: "no-store",
       });
 
       if (!response.ok) return [];
       const json = await response.json();
-      return json.data || (Array.isArray(json) ? json : []);
+
+      // AJUSTE: Tenta pegar de 'dados' (seu padrão PHP) ou 'data'
+      return json.dados || json.data || (Array.isArray(json) ? json : []);
     } catch (error) {
       console.error("Erro no fetch:", error);
       return [];
@@ -35,12 +37,12 @@ export class BookService {
     try {
       const response = await fetch(url, {
         method: "GET",
-        headers: defaultHeaders,
+        headers: defaultHeaders(), // AJUSTE: Adicionado ()
         cache: "no-store",
       });
       if (!response.ok) return [];
       const json = await response.json();
-      return json.data || [];
+      return json.dados || json.data || [];
     } catch (error) {
       return [];
     }
@@ -50,26 +52,26 @@ export class BookService {
   async createBook(dados: CadastroLivroDTO): Promise<void> {
     const response = await fetch(`${API_URL}/livros/create.php`, {
       method: "POST",
-      headers: defaultHeaders,
+      headers: defaultHeaders(), // AJUSTE: Adicionado ()
       body: JSON.stringify(dados),
     });
 
     const result = await response.json();
-    if (!response.ok) throw new Error(result.mensagem || "Erro ao cadastrar");
+    if (!response.ok || result.status === "erro") {
+      throw new Error(result.mensagem || "Erro ao cadastrar");
+    }
   }
 
-  // --- NOVOS MÉTODOS ---
-
-  // PUT/POST: Atualizar livro
+  // PUT: Atualizar livro
   async updateBook(dados: UpdateLivroDTO): Promise<void> {
     const response = await fetch(`${API_URL}/livros/update.php`, {
-      method: "PUT", // Geralmente APIs em PHP usam POST/PUT para update
-      headers: defaultHeaders,
+      method: "PUT",
+      headers: defaultHeaders(), // AJUSTE: Adicionado ()
       body: JSON.stringify(dados),
     });
 
     const result = await response.json();
-    if (!response.ok) {
+    if (!response.ok || result.status === "erro") {
       throw new Error(result.mensagem || "Erro ao atualizar livro");
     }
   }
@@ -78,10 +80,9 @@ export class BookService {
   async deleteBook(id: number): Promise<void> {
     const response = await fetch(`${API_URL}/livros/delete.php?id=${id}`, {
       method: "DELETE",
-      headers: defaultHeaders,
+      headers: defaultHeaders(), // AJUSTE: Adicionado ()
     });
 
-    // Alguns backends em PHP retornam erro se houver FK (livro emprestado)
     if (!response.ok) {
       const result = await response.json();
       throw new Error(result.mensagem || "Erro ao excluir livro");
