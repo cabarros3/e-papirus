@@ -40,7 +40,8 @@ CREATE TABLE exemplar (
     id_livro INT,
     localizacao VARCHAR(100),
     FOREIGN KEY (id_livro) REFERENCES livro(id_livro),
-    disponibilidade ENUM('disponivel','emprestado','reservado') DEFAULT 'disponivel'
+    disponibilidade ENUM('disponivel','emprestado','reservado') DEFAULT 'disponivel',
+    numero_exemplar INT AFTER id_livro
 );
 
 CREATE TABLE pessoa (
