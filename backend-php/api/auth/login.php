@@ -1,25 +1,30 @@
 <?php
-require_once '../../config/cors.php';
-require_once '../../config/utils.php';
-require_once '../../db/db.php';
-require_once '../../vendor/autoload.php';
+// backend-php/api/auth/login.php
+
+// Usando caminhos absolutos baseados no diretório atual (__DIR__)
+require_once __DIR__ . '/../../config/cors.php';
+require_once __DIR__ . '/../../config/utils.php';
+require_once __DIR__ . '/../../db/db.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../config/auth_config.php';
 
 use Firebase\JWT\JWT;
 
-// Defina uma chave secreta forte. Em produção, use variáveis de ambiente (.env)
-define('SECRET_KEY', 'sua_chave_secreta_super_segura_123');
-
+// Garante que a requisição seja POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     enviarResposta("erro", "Método inválido. Use POST.", null, 405);
 }
 
+// Captura os dados enviados no corpo da requisição (JSON)
 $data = json_decode(file_get_contents("php://input"));
 
-if(!isset($data->email) || !isset($data->senha)) {
+// Validação de entrada
+if (!isset($data->email) || !isset($data->senha)) {
     enviarResposta("erro", "Informe email e senha.", null, 400);
 }
 
 try {
+    // Busca o usuário e os dados da pessoa vinculada
     $sql = "SELECT u.id_usuario, u.senha, p.id_pessoa, p.nome, p.tipo 
             FROM usuario_sistema u 
             JOIN pessoa p ON u.id_pessoa = p.id_pessoa 
@@ -29,27 +34,28 @@ try {
     $stmt->execute([$data->email]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    // Verifica senha
     if ($usuario && password_verify($data->senha, $usuario['senha'])) {
-        // Remove a senha por segurança
+        
+        // Remove o hash da senha antes de gerar o token
         unset($usuario['senha']);
 
         // --- GERAÇÃO DO TOKEN JWT ---
         $payload = [
-            "iss" => "e-papirus",    // Emissor (Issuer)
-            "iat" => time(),                  // Gerado em (Issued At)
-            "exp" => time() + (60 * 60 * 24), // Expira em 24 horas
-            "data" => [                       // Dados úteis para o Front
-                "id_usuario" => $usuario['id_usuario'],
-                "id_pessoa"  => $usuario['id_pessoa'],
+            "iss" => "e-papirus",
+            "iat" => time(),
+            "exp" => time() + JWT_EXPIRATION, // Usando a expiração do config
+            "data" => [
+                "id_usuario" => (int)$usuario['id_usuario'],
+                "id_pessoa"  => (int)$usuario['id_pessoa'],
                 "tipo"       => $usuario['tipo'],
                 "nome"       => $usuario['nome']
             ]
         ];
 
-        // Gera o token assinado
+        // IMPORTANTE: Aqui usamos SECRET_KEY que vem do auth_config.php
         $jwt = JWT::encode($payload, SECRET_KEY, 'HS256');
 
-        // Retornamos o token E os dados do usuário para facilitar o Front-end
         enviarResposta("sucesso", "Login realizado!", [
             "token" => $jwt,
             "usuario" => $usuario
@@ -59,6 +65,6 @@ try {
         enviarResposta("erro", "Email ou senha incorretos.", null, 401);
     }
 
-} catch (Exception $e) { // Use Exception genérica para pegar erros do JWT também
-    enviarResposta("erro", "Erro no processamento: " . $e->getMessage(), null, 500);
+} catch (Exception $e) {
+    enviarResposta("erro", "Erro no processamento interno: " . $e->getMessage(), null, 500);
 }
