@@ -35,7 +35,7 @@ export const pessoaService = {
    */
   async listar(): Promise<Pessoa[]> {
     try {
-      const response = await fetch(`${API_URL}/pessoas/read.php`, {
+      const response = await fetch(`${API_URL}/pessoas/index.php`, {
         method: "GET",
         headers: defaultHeaders(), // AJUSTE: Proteção JWT
         cache: "no-store",

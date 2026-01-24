@@ -1,4 +1,4 @@
-// services/emprestimo-service.ts
+// src/services/emprestimo-service.ts
 import { API_URL, defaultHeaders } from "./api";
 
 export interface Emprestimo {
@@ -8,103 +8,133 @@ export interface Emprestimo {
   data_emprestimo: string;
   data_prevista: string;
   data_devolucao?: string | null;
-  // Campos extras que seu PHP costuma retornar no JOIN
+  // Campos úteis para exibição em tabelas (JOINs do SQL)
   nome_pessoa?: string;
   titulo_livro?: string;
+  numero_exemplar?: number;
 }
 
 class EmprestimoService {
   /**
-   * Buscar todos os empréstimos
+   * GET: Lista todos os empréstimos registrados
+   * Ideal para a tabela de gestão da biblioteca.
    */
   async getAll(): Promise<Emprestimo[]> {
     try {
-      // Ajustado para o caminho do seu backend PHP
       const response = await fetch(`${API_URL}/emprestimos/index.php`, {
         method: "GET",
-        headers: defaultHeaders(), // AJUSTE: Envia o Token JWT
+        headers: defaultHeaders(),
         cache: "no-store",
       });
 
-      if (!response.ok) {
-        throw new Error("Erro ao buscar empréstimos");
-      }
+      if (!response.ok)
+        throw new Error("Erro ao buscar histórico de empréstimos");
 
       const result = await response.json();
-
-      // O seu PHP usa 'dados', mas deixamos 'data' como fallback
+      // Retorna os dados do padrão enviarResposta do PHP
       return (
         result.dados || result.data || (Array.isArray(result) ? result : [])
       );
     } catch (error) {
-      console.error("Erro ao buscar empréstimos:", error);
+      console.error("Erro no Service (getAll):", error);
       return [];
     }
   }
 
   /**
-   * Buscar empréstimo por ID
+   * POST: Realiza um novo empréstimo
    */
-  async getById(id: number): Promise<Emprestimo | null> {
+  async create(dados: Omit<Emprestimo, "id_emprestimo">): Promise<any> {
     try {
-      const response = await fetch(`${API_URL}/emprestimos/show.php?id=${id}`, {
-        method: "GET",
-        headers: defaultHeaders(), // AJUSTE: Envia o Token JWT
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao buscar empréstimo");
-      }
-
-      const result = await response.json();
-      return result.dados || result.data || null;
-    } catch (error) {
-      console.error("Erro ao buscar empréstimo:", error);
-      return null;
-    }
-  }
-
-  /**
-   * Criar novo empréstimo
-   */
-  async create(emprestimo: Omit<Emprestimo, "id_emprestimo">): Promise<any> {
-    try {
-      console.log("Enviando dados para empréstimo:", emprestimo);
-
       const response = await fetch(`${API_URL}/emprestimos/emprestar.php`, {
         method: "POST",
-        headers: defaultHeaders(), // AJUSTE: Envia o Token JWT
-        body: JSON.stringify(emprestimo),
+        headers: defaultHeaders(),
+        body: JSON.stringify(dados),
       });
 
       const result = await response.json();
-      console.log("Resposta do servidor:", result);
 
-      // Verificamos o status 'erro' retornado pela sua função enviarResposta()
       if (!response.ok || result.status === "erro") {
-        throw new Error(result.mensagem || "Erro ao criar empréstimo");
+        throw new Error(
+          result.mensagem || "Erro ao processar empréstimo no servidor",
+        );
       }
 
       return result.dados || result;
     } catch (error) {
-      console.error("Erro ao criar empréstimo:", error);
+      console.error("Erro no Service (create):", error);
       throw error;
     }
   }
 
   /**
-   * Registrar devolução
+   * POST: Regista a devolução de um livro
+   * @param id_emprestimo ID do registo de empréstimo
+   * @param data_devolucao Opcional, assume hoje se não enviado pelo PHP
    */
   async devolver(id_emprestimo: number): Promise<void> {
-    const response = await fetch(`${API_URL}/emprestimos/devolver.php`, {
-      method: "POST",
-      headers: defaultHeaders(),
-      body: JSON.stringify({ id_emprestimo }),
-    });
+    try {
+      const response = await fetch(`${API_URL}/emprestimos/devolver.php`, {
+        method: "POST",
+        headers: defaultHeaders(),
+        body: JSON.stringify({ id_emprestimo }),
+      });
 
-    const result = await response.json();
-    if (!response.ok || result.status === "erro") {
-      throw new Error(result.mensagem || "Erro ao processar devolução");
+      const result = await response.json();
+
+      if (!response.ok || result.status === "erro") {
+        throw new Error(result.mensagem || "Erro ao registar devolução");
+      }
+    } catch (error) {
+      console.error("Erro no Service (devolver):", error);
+      throw error;
+    }
+  }
+
+  /**
+   * POST: Renova um empréstimo (estende a data prevista)
+   */
+  async renovar(id_emprestimo: number, nova_data: string): Promise<void> {
+    try {
+      const response = await fetch(`${API_URL}/emprestimos/renovar.php`, {
+        method: "POST",
+        headers: defaultHeaders(),
+        body: JSON.stringify({
+          id_emprestimo,
+          nova_data_prevista: nova_data,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result.status === "erro") {
+        throw new Error(result.mensagem || "Erro ao renovar empréstimo");
+      }
+    } catch (error) {
+      console.error("Erro no Service (renovar):", error);
+      throw error;
+    }
+  }
+
+  /**
+   * GET: Lista empréstimos de um usuário específico (Para o perfil do Milo/Elsa)
+   */
+  async getPorUsuario(idPessoa: number): Promise<Emprestimo[]> {
+    try {
+      const response = await fetch(
+        `${API_URL}/emprestimos/usuario.php?id_pessoa=${idPessoa}`,
+        {
+          method: "GET",
+          headers: defaultHeaders(),
+          cache: "no-store",
+        },
+      );
+
+      if (!response.ok) return [];
+      const result = await response.json();
+      return result.dados || [];
+    } catch (error) {
+      return [];
     }
   }
 }
