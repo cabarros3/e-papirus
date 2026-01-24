@@ -35,27 +35,21 @@ export default function DashboardLayout({
   const [openItens, setOpenItens] = useState(true);
   const [openCirculacao, setOpenCirculacao] = useState(false);
 
-  // 1. Inicialização preguiçosa (Lazy Initialization)
-  // Isso carrega o usuário apenas no cliente, sem disparar renderizações em cascata.
-  const [user, setUser] = useState<Pessoa | null>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("bib_user");
-      try {
-        return saved ? JSON.parse(saved) : null;
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  });
+  // CORREÇÃO DE HIDRATAÇÃO
+  const [isMounted, setIsMounted] = useState(false);
+  const [user, setUser] = useState<Pessoa | null>(null);
 
-  // 2. Usamos o useEffect apenas para o efeito colateral de redirecionamento.
-  // Sem atualizar estados aqui, o erro desaparece.
   useEffect(() => {
-    if (typeof window !== "undefined" && !user) {
+    // Marcamos que o componente montou no cliente
+    setIsMounted(true);
+
+    const saved = localStorage.getItem("bib_user");
+    if (saved) {
+      setUser(JSON.parse(saved));
+    } else {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem("bib_token");
@@ -63,9 +57,12 @@ export default function DashboardLayout({
     router.push("/login");
   };
 
-  // 3. Renderização Condicional Crítica:
-  // Se não houver usuário, retornamos nulo. Como o redirecionamento está no useEffect,
-  // o usuário não verá nada antes de ser mandado para o login.
+  // 1. Enquanto o componente não monta no cliente, renderizamos o mesmo que o servidor (vazio)
+  if (!isMounted) {
+    return null;
+  }
+
+  // 2. Se montou mas não tem usuário (redirecionando), não renderiza o layout
   if (!user) {
     return null;
   }
