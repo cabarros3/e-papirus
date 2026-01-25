@@ -34,21 +34,36 @@ export default function DashboardLayout({
   const [openAcervo, setOpenAcervo] = useState(true);
   const [openItens, setOpenItens] = useState(true);
   const [openCirculacao, setOpenCirculacao] = useState(false);
+  const [openReservaMenu, setOpenReservaMenu] = useState(false);
 
-  // CORREÇÃO DE HIDRATAÇÃO
-  const [isMounted, setIsMounted] = useState(false);
-  const [user, setUser] = useState<Pessoa | null>(null);
+  // Estado unificado para controle de montagem e usuário
+  const [status, setStatus] = useState<{
+    isMounted: boolean;
+    user: Pessoa | null;
+  }>({
+    isMounted: false,
+    user: null,
+  });
 
   useEffect(() => {
-    // Marcamos que o componente montou no cliente
-    setIsMounted(true);
+    const checkAuth = () => {
+      const saved = localStorage.getItem("bib_user");
 
-    const saved = localStorage.getItem("bib_user");
-    if (saved) {
-      setUser(JSON.parse(saved));
-    } else {
-      router.push("/login");
-    }
+      if (!saved) {
+        router.push("/login");
+        return;
+      }
+
+      // setTimeout evita o erro de cascading renders ao tirar a atualização do fluxo síncrono
+      setTimeout(() => {
+        setStatus({
+          isMounted: true,
+          user: JSON.parse(saved),
+        });
+      }, 0);
+    };
+
+    checkAuth();
   }, [router]);
 
   const handleLogout = () => {
@@ -57,15 +72,12 @@ export default function DashboardLayout({
     router.push("/login");
   };
 
-  // 1. Enquanto o componente não monta no cliente, renderizamos o mesmo que o servidor (vazio)
-  if (!isMounted) {
+  // Prevenção de erro de Hidratação e Cascade
+  if (!status.isMounted || !status.user) {
     return null;
   }
 
-  // 2. Se montou mas não tem usuário (redirecionando), não renderiza o layout
-  if (!user) {
-    return null;
-  }
+  const { user } = status;
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -83,6 +95,7 @@ export default function DashboardLayout({
             <span className="text-sm font-medium">Dashboard</span>
           </Link>
 
+          {/* Menu Gerenciar Acervo */}
           <div>
             <button
               onClick={() => setOpenAcervo(!openAcervo)}
@@ -155,6 +168,7 @@ export default function DashboardLayout({
             )}
           </div>
 
+          {/* Menu Circulação */}
           <div>
             <button
               onClick={() => setOpenCirculacao(!openCirculacao)}
@@ -190,12 +204,40 @@ export default function DashboardLayout({
                 >
                   <Repeat size={14} /> Renovação
                 </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
-                >
-                  <CalendarDays size={14} /> Reservas
-                </Link>
+
+                {/* Submenu de Reservas */}
+                <div>
+                  <button
+                    onClick={() => setOpenReservaMenu(!openReservaMenu)}
+                    className="w-full flex items-center justify-between p-2 rounded-lg text-gray-500 hover:text-denin transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <CalendarDays size={14} />
+                      <span className="text-xs font-semibold">Reservas</span>
+                    </div>
+                    <ChevronDown
+                      size={12}
+                      className={`transition-transform ${openReservaMenu ? "rotate-180" : ""}`}
+                    />
+                  </button>
+
+                  {openReservaMenu && (
+                    <div className="ml-4 mt-1 space-y-1 border-l border-gray-100">
+                      <Link
+                        href="/dashboard/staff/listar-reservas"
+                        className="flex items-center gap-2 p-2 ml-2 text-[11px] text-gray-400 hover:text-denin transition-colors"
+                      >
+                        <Search size={13} /> Listar Reservas
+                      </Link>
+                      <Link
+                        href="/dashboard/staff/cadastrar-reservas"
+                        className="flex items-center gap-2 p-2 ml-2 text-[11px] text-gray-400 hover:text-denin transition-colors"
+                      >
+                        <BookPlus size={13} /> Nova Reserva
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
