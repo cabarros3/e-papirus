@@ -55,7 +55,6 @@ npm install
 ```
 
 3. Configure seu arquivo .env.local
-   Exemplo de .env:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000/api
