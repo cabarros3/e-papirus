@@ -84,3 +84,15 @@ CREATE TABLE renovacao (
   nova_data_devolucao DATE,
   FOREIGN KEY (id_emprestimo) REFERENCES emprestimo(id_emprestimo)
 );
+
+-- tabela nova --
+CREATE TABLE reserva (
+    id_reserva INT PRIMARY KEY AUTO_INCREMENT,
+    id_livro INT NOT NULL,
+    id_pessoa INT NOT NULL,
+    data_reserva TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_expiracao DATE NOT NULL, -- Prazo para a pessoa buscar o livro
+    status ENUM('ativa', 'concluida', 'cancelada') DEFAULT 'ativa',
+    FOREIGN KEY (id_livro) REFERENCES livro(id_livro),
+    FOREIGN KEY (id_pessoa) REFERENCES pessoa(id_pessoa)
+);

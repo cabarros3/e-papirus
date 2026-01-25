@@ -124,6 +124,7 @@ A API é estruturada de forma modular, onde cada recurso possui seu próprio con
 | Dashboards   | `/api/dashboards`  | Métricas específicas para Admin e visão do Usuário      |
 | Autores      | `/api/autores`     | Cadastro e listagem de autores das obras                |
 | Assuntos     | `/api/assuntos`    | Categorização por temas e assuntos do acervo            |
+| Reservas     | `/api/reservas`    | Solicitação e controle de reservas de livros            |
 
 ### 🔒 Segurança e Acesso
 
