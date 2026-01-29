@@ -193,7 +193,7 @@ export default function DashboardLayout({
                   <HandHelping size={14} /> Novo Empréstimo
                 </Link>
                 <Link
-                  href="#"
+                  href="/dashboard/staff/devolucao"
                   className="flex items-center gap-2 p-2 text-xs text-gray-500 hover:text-denin transition-colors"
                 >
                   <RotateCcw size={14} /> Devolução
