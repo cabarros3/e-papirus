@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import emprestimoService from "@/services/emprestimo-service";
-import { Emprestimo } from "@/types/emprestimos"; // Certifique-se que o path está correto
+import { Emprestimo } from "@/types/emprestimos";
 
 export default function ListaEmprestimos() {
   const [emprestimos, setEmprestimos] = useState<Emprestimo[]>([]);
@@ -25,7 +25,6 @@ export default function ListaEmprestimos() {
   const carregarDados = async () => {
     setLoading(true);
     try {
-      // Passamos undefined para id_pessoa e o filtro de status selecionado
       const dados = await emprestimoService.getFiltrado(
         undefined,
         filtroStatus,
@@ -43,11 +42,9 @@ export default function ListaEmprestimos() {
     carregarDados();
   }, [filtroStatus]);
 
-  // Função para formatar data de forma segura (evita erro de data inválida)
   const formatarData = (dataStr: string) => {
     if (!dataStr) return "--/--/----";
     try {
-      // Adicionamos o T00:00:00 para evitar que o JS mude o fuso horário ao parsear a data
       const data = new Date(dataStr + "T00:00:00");
       return data.toLocaleDateString("pt-BR");
     } catch {
@@ -73,7 +70,8 @@ export default function ListaEmprestimos() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 p-4 animate-in fade-in duration-500">
+    /* AJUSTE: Aplicado w-full px-8 para 32px de respiro lateral */
+    <div className="w-full px-8 space-y-8 animate-in fade-in duration-500 pb-10">
       {/* Cabeçalho */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -98,21 +96,19 @@ export default function ListaEmprestimos() {
       <div className="bg-white p-4 rounded-[2rem] border border-gray-200 shadow-sm space-y-4">
         <div className="flex flex-col lg:flex-row gap-4 justify-between">
           <div className="flex bg-gray-100 p-1 rounded-2xl overflow-x-auto no-scrollbar">
-            {["todos", "pendente", "atrasado", "em_dia", "devolvido"].map(
-              (status) => (
-                <button
-                  key={status}
-                  onClick={() => setFiltroStatus(status)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                    filtroStatus === status
-                      ? "bg-white text-denin shadow-sm"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  {status.replace("_", " ").toUpperCase()}
-                </button>
-              ),
-            )}
+            {["todos", "em_dia", "devolvido", "atrasado"].map((status) => (
+              <button
+                key={status}
+                onClick={() => setFiltroStatus(status)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                  filtroStatus === status
+                    ? "bg-white text-denin shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {status.replace("_", " ").toUpperCase()}
+              </button>
+            ))}
           </div>
 
           <div className="relative flex-1 max-w-md">

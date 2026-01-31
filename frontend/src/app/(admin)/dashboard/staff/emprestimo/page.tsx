@@ -12,20 +12,15 @@ import {
   LivroComExemplares,
 } from "@/services/exemplar-service";
 import { pessoaService } from "@/services/pessoa-service";
-import { BookService } from "@/services/book-service";
 import { Pessoa } from "@/types/pessoas";
 import { Livro } from "@/types/livros";
 
-// Componentes refatorados - Certifique-se que os caminhos estão corretos
+// Componentes refatorados
 import { ResumoEmprestimoModal } from "@/components/modals/resumo-emprestimo-modal";
 import { BasketItem, BookBasket } from "@/components/cards/BookBasket";
 import { UserSearchInput } from "@/components/inputs/UserSearchInput";
 import { BookSelectionForm } from "@/components/forms/BookSelectionForm";
-// import { UserSearchInput } from "./components/UserSearchInput";
-// import { BookBasket, BasketItem } from "./components/BookBasket";
-// import { BookSelectionForm } from "./components/BookSelectionForm";
 
-// O EXPORT DEFAULT PRECISA ESTAR EXATAMENTE ASSIM:
 export default function EmprestimoPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -118,7 +113,8 @@ export default function EmprestimoPage() {
     );
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 p-4">
+    /* AJUSTE: Aplicado w-full px-8 para consistência de 32px lateral */
+    <div className="w-full px-8 space-y-8 animate-in fade-in duration-500 pb-10">
       <ResumoEmprestimoModal
         isOpen={isModalOpen}
         dados={dadosResumo}
@@ -138,11 +134,6 @@ export default function EmprestimoPage() {
       </div>
 
       <div className="bg-white p-8 rounded-[2.5rem] border border-gray-200 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8">
-        <BookBasket
-          itens={cesta}
-          onRemove={(id) => setCesta(cesta.filter((i) => i.id_exemplar !== id))}
-          livroDetalhes={livroVisualizado}
-        />
         <form
           onSubmit={handleFinalizar}
           className="flex flex-col justify-center space-y-6"
@@ -166,7 +157,7 @@ export default function EmprestimoPage() {
           <button
             type="submit"
             disabled={isSubmitting || cesta.length === 0 || !usuario.id}
-            className="w-full bg-denin text-white py-5 rounded-3xl font-bold shadow-xl disabled:opacity-50"
+            className="w-full bg-denin text-white py-5 rounded-3xl font-bold shadow-xl disabled:opacity-50 transition-all active:scale-[0.98]"
           >
             {isSubmitting ? (
               <Loader2 className="animate-spin mx-auto" />
@@ -175,6 +166,12 @@ export default function EmprestimoPage() {
             )}
           </button>
         </form>
+
+        <BookBasket
+          itens={cesta}
+          onRemove={(id) => setCesta(cesta.filter((i) => i.id_exemplar !== id))}
+          livroDetalhes={livroVisualizado}
+        />
       </div>
     </div>
   );

@@ -32,13 +32,33 @@ export default function Header() {
 
   const handleAccessAction = () => {
     setIsMenuOpen(false);
+
     if (isLogged) {
-      router.push("/dashboard/user");
+      // 1. Recupera os dados do usuário salvos no login
+      const savedUser = localStorage.getItem("bib_user");
+
+      if (savedUser) {
+        try {
+          const user = JSON.parse(savedUser);
+
+          // 2. Verifica o tipo/cargo e redireciona
+          // Ajuste 'staff' ou 'admin' conforme os valores reais do seu banco
+          if (user.tipo === "staff" || user.tipo === "admin" || user.cargo) {
+            router.push("/dashboard/staff");
+          } else {
+            router.push("/dashboard/user");
+          }
+        } catch (error) {
+          console.error("Erro ao identificar usuário:", error);
+          router.push("/dashboard/user"); // Fallback seguro
+        }
+      } else {
+        router.push("/dashboard/user"); // Fallback caso não ache o objeto
+      }
     } else {
       router.push("/login");
     }
   };
-
   return (
     <header className="w-full bg-white/90 backdrop-blur-md border-b border-gray-100 sticky top-0 z-[100]">
       <div className="max-w-[1600px] mx-auto flex items-center h-20 px-8 relative">
@@ -81,7 +101,7 @@ export default function Header() {
         </nav>
 
         {/* DIREITA: AÇÕES */}
-        {/* DIREITA: AÇÕES */}
+
         <div className="flex items-center gap-4 ml-auto z-10">
           <div className="hidden md:block min-w-[190px]">
             {isLogged === null ? (

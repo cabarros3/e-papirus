@@ -330,7 +330,7 @@ export default function DashboardLayout({
                 Acesso
               </p>
               <p className="text-sm font-extrabold text-gray-700 truncate">
-                {user.cargo || "Bibliotecário(a)"}
+                {user.tipo || "Bibliotecário(a)"}
               </p>
             </div>
           )}
@@ -352,7 +352,7 @@ export default function DashboardLayout({
                 {user.nome}
               </span>
               <span className="text-xs text-denin font-bold uppercase tracking-widest">
-                {user.tipo || "STAFF"}
+                {user.cargo || "STAFF"}
               </span>
             </div>
 

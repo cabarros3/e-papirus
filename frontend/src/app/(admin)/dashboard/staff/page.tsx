@@ -43,7 +43,8 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto flex flex-col gap-12 animate-in fade-in duration-500 pb-10">
+    /* AJUSTE: Removido max-w-7xl e adicionado px-8 (32px) para alinhamento */
+    <div className="w-full px-8 flex flex-col gap-12 animate-in fade-in duration-500 pb-10">
       {/* HEADER */}
       <header>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
@@ -155,14 +156,14 @@ export default function AdminDashboard() {
       {/* SEÇÃO 4: TABELAS E RANKING */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Atividade Recente */}
-        <div className="lg:col-span-2 bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-gray-50 flex items-center justify-between">
+        <div className="lg:col-span-2 bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-50 flex items-center justify-between">
             <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2">
               <History size={16} className="text-[#00569C]" /> Empréstimos
               Recentes
             </h3>
             <Link
-              href="#"
+              href="/dashboard/staff/listar-emprestimos"
               className="text-[10px] font-bold text-[#00569C] hover:underline uppercase tracking-tighter"
             >
               Ver Todos
@@ -171,9 +172,9 @@ export default function AdminDashboard() {
           <table className="w-full text-left">
             <thead>
               <tr className="bg-gray-50/50 text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                <th className="px-6 py-3">Leitor</th>
-                <th className="px-6 py-3">Livro</th>
-                <th className="px-6 py-3 text-right">Data</th>
+                <th className="px-6 py-4">Leitor</th>
+                <th className="px-6 py-4">Livro</th>
+                <th className="px-6 py-4 text-right">Data</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -204,44 +205,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Ranking */}
-        {/* <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 flex flex-col">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-sm font-bold text-gray-800 uppercase tracking-tighter">
-              Mais Procurados
-            </h3>
-            <div className="p-1.5 bg-[#00569C]/10 text-[#00569C] rounded-lg">
-              <TrendingUp size={14} />
-            </div>
-          </div>
-          <div className="space-y-6 flex-grow">
-            {data?.top_livros.map((livro, i) => (
-              <div key={i} className="group">
-                <div className="flex justify-between mb-1.5">
-                  <span className="text-[11px] font-bold text-gray-700 truncate max-w-[180px]">
-                    {livro.titulo}
-                  </span>
-                  <span className="text-[10px] font-black text-[#00569C]">
-                    {livro.total_saidas} saídas
-                  </span>
-                </div>
-                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                  <div
-                    className="bg-[#00569C] h-full rounded-full transition-all duration-700 group-hover:bg-[#1579E2]"
-                    style={{
-                      width: `${(livro.total_saidas / (data.top_livros[0].total_saidas || 1)) * 100}%`,
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-          <button className="w-full mt-8 py-3 bg-gray-50 text-[10px] font-black text-gray-500 rounded-xl hover:bg-gray-100 uppercase tracking-widest transition-colors">
-            Ver Ranking Completo
-          </button>
-        </div> */}
-
-        <div className="bg-white border border-gray-100 rounded-3xl shadow-sm p-6 flex flex-col max-w-md">
-          {/* Header */}
+        <div className="bg-white border border-gray-100 rounded-3xl shadow-sm p-6 flex flex-col">
           <div className="flex items-center justify-between mb-8">
             <div>
               <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">
@@ -256,8 +220,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* TOP 5 - Destaque com Imagem */}
-          <div className="space-y-5 mb-8">
+          <div className="space-y-5 mb-8 flex-grow">
             {data?.top_livros.slice(0, 5).map((livro, i) => (
               <div
                 key={i}
@@ -285,38 +248,15 @@ export default function AdminDashboard() {
                       {livro.total_saidas} saídas
                     </span>
                   </div>
-                  {/* Barra de Progresso simplificada */}
                   <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
                     <div
                       className="bg-[#00569C] h-full rounded-full transition-all duration-1000"
                       style={{
-                        width: `${(livro.total_saidas / data.top_livros[0].total_saidas) * 100}%`,
+                        width: `${(livro.total_saidas / (data?.top_livros[0]?.total_saidas || 1)) * 100}%`,
                       }}
                     />
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Demais Livros - Lista Compacta */}
-          <div className="border-t border-gray-50 pt-6 space-y-4">
-            {data?.top_livros.slice(5).map((livro, i) => (
-              <div
-                key={i + 5}
-                className="flex justify-between items-center group"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-bold text-gray-400 w-4">
-                    {i + 6}
-                  </span>
-                  <span className="text-xs font-medium text-gray-600 group-hover:text-[#00569C] transition-colors truncate max-w-[180px]">
-                    {livro.titulo}
-                  </span>
-                </div>
-                <span className="text-[10px] font-bold text-gray-400">
-                  {livro.total_saidas}
-                </span>
               </div>
             ))}
           </div>
@@ -379,7 +319,7 @@ function AcervoLink({ href, label, icon, bgColor, textColor }: any) {
 
 function CompactStat({ label, value, color }: any) {
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-center min-h-[120px] transition-all hover:shadow-md group relative overflow-hidden">
+    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-center min-h-[120px] transition-all hover:shadow-md group relative overflow-hidden">
       <p className="text-4xl font-black text-gray-900 tracking-tighter mb-2 leading-none">
         {value || 0}
       </p>
