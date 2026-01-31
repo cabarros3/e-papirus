@@ -10,26 +10,19 @@ import { LayoutDashboard, LogIn, Menu, X } from "lucide-react";
 export default function Header() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // 1. O estado começa como null. Isso evita que o React tente
-  // comparar um "false" (server) com um "true" (client) imediatamente.
   const [isLogged, setIsLogged] = useState<boolean | null>(null);
 
   const checkAuth = useCallback(() => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("bib_token");
       const user = localStorage.getItem("bib_user");
-      // Só atualizamos o estado se o valor for diferente do atual
       const loggedStatus = !!token && !!user;
       setIsLogged(loggedStatus);
     }
   }, []);
 
   useEffect(() => {
-    // Usamos um timeout de 0 ou queueMicrotask para tirar a execução
-    // do fluxo síncrono do efeito, resolvendo o aviso do React.
     const timeoutId = setTimeout(checkAuth, 0);
-
     window.addEventListener("storage", checkAuth);
     return () => {
       clearTimeout(timeoutId);
@@ -48,7 +41,6 @@ export default function Header() {
 
   return (
     <header className="w-full bg-white/90 backdrop-blur-md border-b border-gray-100 sticky top-0 z-[100]">
-      {/* Container: Max-width 1600px | Padding-X: 32px (px-8) */}
       <div className="max-w-[1600px] mx-auto flex items-center h-20 px-8 relative">
         {/* ESQUERDA: LOGO */}
         <div className="flex-shrink-0 z-10">
@@ -66,7 +58,7 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* CENTRO: NAVEGAÇÃO CENTRALIZADA (LG+) */}
+        {/* CENTRO: NAVEGAÇÃO */}
         <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-12">
           <Link
             href="/"
@@ -89,29 +81,34 @@ export default function Header() {
         </nav>
 
         {/* DIREITA: AÇÕES */}
+        {/* DIREITA: AÇÕES */}
         <div className="flex items-center gap-4 ml-auto z-10">
-          <div className="hidden md:block min-w-[180px]">
-            {/* Enquanto isLogged for null, mostramos um estado neutro (Skeleton) */}
+          <div className="hidden md:block min-w-[190px]">
             {isLogged === null ? (
-              <div className="w-full h-11 bg-gray-50 rounded-xl border border-gray-100 animate-pulse" />
+              <div className="w-full h-10 bg-gray-50 rounded-xl border border-gray-100 animate-pulse" />
             ) : (
               <Button
                 onClick={handleAccessAction}
-                variant={isLogged ? "outline" : "default"}
-                className={`w-full px-6 h-11 font-black text-xs uppercase tracking-widest transition-all rounded-xl shadow-sm ${
+                className={`w-full h-10 px-5 rounded-xl font-bold transition-all shadow-md flex items-center justify-center gap-2 border-none active:scale-95 ${
                   isLogged
-                    ? "border-2 border-denin text-denin hover:bg-denin hover:text-white"
-                    : "bg-denin hover:bg-denin/90 text-white border-2 border-transparent"
+                    ? "bg-denin text-white hover:bg-denin/90 shadow-denin/10"
+                    : "bg-gray-800 text-white hover:bg-gray-900 shadow-gray-200"
                 }`}
               >
                 {isLogged ? (
-                  <div className="flex items-center gap-2">
-                    <LayoutDashboard size={16} /> Painel do Usuário
-                  </div>
+                  <>
+                    <LayoutDashboard size={16} />
+                    <span className="text-xs uppercase tracking-wider">
+                      Painel
+                    </span>
+                  </>
                 ) : (
-                  <div className="flex items-center gap-2">
-                    <LogIn size={16} /> Acessar Sistema
-                  </div>
+                  <>
+                    {/* <LogIn size={16} /> */}
+                    <span className="text-xs uppercase tracking-wider">
+                      Acessar o e-Papirus
+                    </span>
+                  </>
                 )}
               </Button>
             )}
@@ -121,11 +118,11 @@ export default function Header() {
             className="p-2 text-gray-600 lg:hidden hover:bg-gray-100 rounded-lg transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
         </div>
-      </div>
-
+      </div>{" "}
+      {/* <--- ESSA DIV ESTAVA FALTANDO FECHAR AQUI */}
       {/* MOBILE OVERLAY */}
       {isMenuOpen && (
         <div className="lg:hidden absolute top-20 left-0 w-full bg-white border-b border-gray-100 shadow-xl z-50 animate-in slide-in-from-top duration-300">
@@ -157,11 +154,8 @@ export default function Header() {
             <div className="px-4 pb-4">
               <Button
                 onClick={handleAccessAction}
-                variant={isLogged ? "outline" : "default"}
-                className={`w-full h-14 font-black text-sm uppercase tracking-widest rounded-2xl ${
-                  isLogged
-                    ? "border-2 border-denin text-denin"
-                    : "bg-denin text-white"
+                className={`w-full h-12 font-bold uppercase tracking-widest rounded-2xl ${
+                  isLogged ? "bg-denin text-white" : "bg-gray-800 text-white"
                 }`}
               >
                 {isLogged ? "Ir para o Painel" : "Acessar Sistema"}
