@@ -31,7 +31,8 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body
-        className={`${poppins.variable} ${inter.variable} font-sans antialiased`}
+        // className={`${poppins.variable} ${inter.variable} font-sans antialiased`}
+        className={`${poppins.className} antialiased`}
       >
         {children}
       </body>

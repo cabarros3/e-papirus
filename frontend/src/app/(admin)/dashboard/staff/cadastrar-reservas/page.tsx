@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Loader2, CalendarCheck } from "lucide-react";
+import { ArrowLeft, Loader2, CalendarCheck, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -55,7 +55,6 @@ export default function ReservaPage() {
     carregarDados();
   }, []);
 
-  // FUNÇÃO QUE LIMPA TUDO E FECHA O MODAL
   const handleConcluirReserva = () => {
     setIsModalOpen(false);
     setCesta([]);
@@ -66,7 +65,6 @@ export default function ReservaPage() {
     });
     setLivroVisualizado(null);
     setDadosResumo(null);
-    // Opcional: router.push("/dashboard/staff/reservas"); se quiser sair da página
   };
 
   const handleAdicionarReserva = () => {
@@ -130,18 +128,20 @@ export default function ReservaPage() {
   if (loading)
     return (
       <div className="h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-denin" size={40} />
+        <Loader2 className="animate-spin text-blue-600" size={40} />
       </div>
     );
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 p-4">
+    /* Alinhamento global de 32px (px-8) */
+    <div className="w-full px-8 space-y-8 animate-in fade-in duration-500 pb-10">
       <ResumoReservaModal
         isOpen={isModalOpen}
         dados={dadosResumo}
-        onConfirm={handleConcluirReserva} // Vinculado à função de limpeza
+        onConfirm={handleConcluirReserva}
       />
 
+      {/* CABEÇALHO PADRONIZADO */}
       <div className="flex items-center gap-4">
         <Link
           href="/dashboard/staff/"
@@ -149,68 +149,76 @@ export default function ReservaPage() {
         >
           <ArrowLeft size={20} className="text-gray-500" />
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Reserva de Títulos</h1>
+        <div>
+          <h1 className="text-2xl font-poppins font-bold text-gray-900 uppercase tracking-tight">
+            Reserva de Títulos
+          </h1>
+          <p className="text-sm text-gray-500 font-medium font-sans">
+            Reserve obras que estão indisponíveis no momento.
+          </p>
+        </div>
       </div>
 
-      <div className="bg-white p-8 rounded-[2.5rem] border border-gray-200 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-4">
-          <h3 className="font-semibold text-gray-700 flex items-center gap-2">
-            <CalendarCheck size={18} /> Livros para Reservar
-          </h3>
-          <BookBasket
-            itens={cesta}
-            onRemove={(id) =>
-              setCesta(cesta.filter((i) => i.id_exemplar !== id))
-            }
-            livroDetalhes={livroVisualizado}
-          />
-        </div>
-
+      {/* CARD PRINCIPAL EM GRID */}
+      <div className="bg-white p-8 rounded-[2.5rem] border border-gray-200 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* COLUNA ESQUERDA: FORMULÁRIO */}
         <form
           onSubmit={handleFinalizarReservas}
-          className="flex flex-col justify-center space-y-6"
+          className="flex flex-col space-y-6 md:pr-4"
         >
-          <UserSearchInput
-            usuarios={usuarios}
-            selecionadoId={selecionado.usuarioId}
-            selecionadoNome={selecionado.usuarioNome}
-            onSelect={(u) =>
-              setSelecionado({
-                ...selecionado,
-                usuarioId: String(u.id_pessoa),
-                usuarioNome: u.nome,
-              })
-            }
-          />
+          <div className="space-y-6">
+            <h2 className="text-[11px] font-poppins font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+              <CalendarCheck size={14} /> Dados da Reserva
+            </h2>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-600 ml-2">
-              Buscar Livro
-            </label>
-            <select
-              className="w-full p-4 rounded-2xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-denin outline-none"
-              onChange={(e) => {
-                const id = e.target.value;
-                setSelecionado({ ...selecionado, livroId: id });
-                const detalhe = livros.find((l) => String(l.id_livro) === id);
-                setLivroVisualizado(detalhe || null);
-              }}
-              value={selecionado.livroId}
-            >
-              <option value="">Selecione uma obra...</option>
-              {livros.map((livro) => (
-                <option key={livro.id_livro} value={livro.id_livro}>
-                  {livro.titulo}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              onClick={handleAdicionarReserva}
-              className="w-full py-3 text-denin font-semibold hover:bg-denin/5 rounded-xl transition-colors"
-            >
-              + Adicionar à lista
-            </button>
+            <UserSearchInput
+              usuarios={usuarios}
+              selecionadoId={selecionado.usuarioId}
+              selecionadoNome={selecionado.usuarioNome}
+              onSelect={(u) =>
+                setSelecionado({
+                  ...selecionado,
+                  usuarioId: String(u.id_pessoa),
+                  usuarioNome: u.nome,
+                })
+              }
+            />
+
+            <div className="space-y-2">
+              <label className="text-xs font-poppins font-bold text-gray-500 ml-1 uppercase tracking-tighter">
+                Buscar Obra
+              </label>
+              <div className="relative">
+                <select
+                  className="w-full h-14 px-4 rounded-2xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-600 outline-none transition-all appearance-none text-sm font-medium"
+                  onChange={(e) => {
+                    const id = e.target.value;
+                    setSelecionado({ ...selecionado, livroId: id });
+                    const detalhe = livros.find(
+                      (l) => String(l.id_livro) === id,
+                    );
+                    setLivroVisualizado(detalhe || null);
+                  }}
+                  value={selecionado.livroId}
+                >
+                  <option value="">Selecione uma obra...</option>
+                  {livros.map((livro) => (
+                    <option key={livro.id_livro} value={livro.id_livro}>
+                      {livro.titulo}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-5 w-4 h-4 text-gray-400 pointer-events-none" />
+              </div>
+
+              <button
+                type="button"
+                onClick={handleAdicionarReserva}
+                className="w-full py-3 text-blue-600 font-poppins font-bold text-xs uppercase tracking-widest hover:bg-blue-50 rounded-xl transition-colors mt-2"
+              >
+                + Adicionar à cesta
+              </button>
+            </div>
           </div>
 
           <button
@@ -218,7 +226,7 @@ export default function ReservaPage() {
             disabled={
               isSubmitting || cesta.length === 0 || !selecionado.usuarioId
             }
-            className="w-full bg-denin text-white py-5 rounded-3xl font-bold shadow-xl disabled:opacity-50 hover:brightness-110 transition-all"
+            className="w-full mt-auto bg-blue-600 text-white h-14 rounded-[2rem] font-bold shadow-xl shadow-blue-100 disabled:opacity-40 transition-all active:scale-[0.98]"
           >
             {isSubmitting ? (
               <Loader2 className="animate-spin mx-auto" />
@@ -227,6 +235,22 @@ export default function ReservaPage() {
             )}
           </button>
         </form>
+
+        {/* COLUNA DIREITA: CESTA (BookBasket) */}
+        <div className="bg-gray-50/50 rounded-[2rem] p-6 border border-gray-100 flex flex-col">
+          <h2 className="text-[11px] font-poppins font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+            Resumo da Cesta
+          </h2>
+          <div className="flex-1">
+            <BookBasket
+              itens={cesta}
+              onRemove={(id) =>
+                setCesta(cesta.filter((i) => i.id_exemplar !== id))
+              }
+              livroDetalhes={livroVisualizado}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

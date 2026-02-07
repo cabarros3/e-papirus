@@ -36,8 +36,13 @@ try {
 
     // 2. Calcular datas
     $dataHoje = date('Y-m-d');
-    $diasEmprestimo = 7; // Regra fixa: 7 dias (pode vir do front ou do tipo de usuário depois)
-    $dataPrevista = date('Y-m-d', strtotime("+$diasEmprestimo days"));
+    // Se o front enviar data_prevista, usa ela. Senão, aplica regra dos 7 dias
+    if (isset($data->data_prevista) && !empty($data->data_prevista)) {
+        $dataPrevista = $data->data_prevista;
+    } else {
+        $diasEmprestimo = 7;
+        $dataPrevista = date('Y-m-d', strtotime("+$diasEmprestimo days"));
+    }
 
     // 3. Inserir na tabela EMPRESTIMO
     $sqlInsert = "INSERT INTO emprestimo (id_exemplar, id_pessoa, data_emprestimo, data_prevista) VALUES (?, ?, ?, ?)";

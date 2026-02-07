@@ -75,7 +75,7 @@ class EmprestimoService {
   async devolver(id_emprestimo: number): Promise<void> {
     try {
       const response = await fetch(`${API_URL}/emprestimos/devolver.php`, {
-        method: "POST",
+        method: "PUT",
         headers: defaultHeaders(),
         body: JSON.stringify({ id_emprestimo }),
       });
@@ -135,6 +135,45 @@ class EmprestimoService {
       return result.dados || [];
     } catch (error) {
       return [];
+    }
+  }
+
+  // No arquivo emprestimo-service.ts
+
+  /**
+   * GET: Lista empréstimos com filtros (status e id_pessoa)
+   * Integra com o seu PHP que usa conditions e params
+   */
+  async getFiltrado(
+    idPessoa?: number,
+    status: string = "todos",
+  ): Promise<Emprestimo[]> {
+    try {
+      // Monta a query string manualmente para garantir compatibilidade
+      const params = new URLSearchParams();
+      if (idPessoa) params.append("id_pessoa", idPessoa.toString());
+      params.append("status", status);
+
+      const response = await fetch(
+        `${API_URL}/emprestimos/index.php?${params.toString()}`,
+        {
+          method: "GET",
+          headers: defaultHeaders(),
+          cache: "no-store",
+        },
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || result.status === "erro") {
+        throw new Error(result.mensagem || "Erro ao buscar empréstimos");
+      }
+
+      // O seu PHP retorna os dados dentro de result.dados
+      return result.dados || [];
+    } catch (error) {
+      console.error("Erro no Service (getFiltrado):", error);
+      throw error;
     }
   }
 }

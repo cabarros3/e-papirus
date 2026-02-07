@@ -25,7 +25,7 @@ if (!isset($data->email) || !isset($data->senha)) {
 
 try {
     // Busca o usuário e os dados da pessoa vinculada
-    $sql = "SELECT u.id_usuario, u.senha, p.id_pessoa, p.nome, p.tipo 
+    $sql = "SELECT u.id_usuario, u.senha, p.id_pessoa, p.nome, p.tipo, p.cargo 
             FROM usuario_sistema u 
             JOIN pessoa p ON u.id_pessoa = p.id_pessoa 
             WHERE u.email = ?";
@@ -49,6 +49,7 @@ try {
                 "id_usuario" => (int)$usuario['id_usuario'],
                 "id_pessoa"  => (int)$usuario['id_pessoa'],
                 "tipo"       => $usuario['tipo'],
+                "cargo"       => $usuario['cargo'],
                 "nome"       => $usuario['nome']
             ]
         ];

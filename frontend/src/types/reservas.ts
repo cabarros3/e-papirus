@@ -1,17 +1,24 @@
+// @/types/reservas.ts
+
 export interface Reserva {
   id_reserva: number;
   id_livro: number;
   id_pessoa: number;
-  titulo?: string; // Retornado pelo JOIN no index.php
-  nome_pessoa?: string; // Retornado pelo JOIN no index.php
+  titulo?: string;
+  nome_pessoa?: string;
   data_reserva: string;
   data_expiracao: string;
   status: "ativa" | "concluida" | "cancelada";
 }
 
+/**
+ * DTO para criação de reserva.
+ * O id_pessoa é opcional (?) porque o backend agora identifica
+ * o usuário logado via Token JWT.
+ */
 export interface CreateReservaDTO {
   id_livro: number;
-  id_pessoa: number;
+  id_pessoa?: number; // Adicionada a interrogação aqui
 }
 
 export interface ApiResponse<T> {

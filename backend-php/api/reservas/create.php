@@ -2,6 +2,11 @@
 require_once '../../config/cors.php';
 require_once '../../config/utils.php';
 require_once '../../db/db.php';
+require_once '../../api/auth/validar_token.php'; // Arquivo que criamos no passo anterior
+
+// 1. Validação de Acesso e Identidade
+// O validarAcesso() deve retornar o objeto "data" do payload do seu JWT
+$usuarioLogado = validarAcesso(); 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     enviarResposta("erro", "Método inválido. Use POST.", null, 405);
@@ -9,19 +14,31 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $data = json_decode(file_get_contents("php://input"));
 
-// id_livro: O livro que quer reservar
-// id_pessoa: Quem está reservando
-if (empty($data->id_livro) || empty($data->id_pessoa)) {
-    enviarResposta("erro", "Dados incompletos. ID do livro e ID da pessoa são obrigatórios.", null, 400);
+if (empty($data->id_livro)) {
+    enviarResposta("erro", "O ID do livro é obrigatório.", null, 400);
+}
+
+// --- LÓGICA DE IDENTIDADE (O PONTO CHAVE) ---
+// Se for staff/adm, ele pode reservar para qualquer id_pessoa vindo do JSON.
+// Se for aluno/professor, forçamos o ID dele que veio do Token (Segurança).
+$idFinalPessoa = $data->id_pessoa ?? null;
+
+if ($usuarioLogado->tipo !== 'adm' && $usuarioLogado->tipo !== 'staff') {
+    $idFinalPessoa = $usuarioLogado->id_pessoa;
+}
+
+if (!$idFinalPessoa) {
+    enviarResposta("erro", "ID da pessoa não identificado.", null, 400);
 }
 
 try {
     $pdo->beginTransaction();
 
-    // 1. VERIFICAR SE EXISTE UM EXEMPLAR DISPONÍVEL
+    // 2. VERIFICAR SE EXISTE UM EXEMPLAR DISPONÍVEL
+    // Mantemos o 'FOR UPDATE' para evitar concorrência (Race Condition)
     $sqlExemplar = "SELECT id_exemplar FROM exemplar 
                     WHERE id_livro = ? AND disponibilidade = 'disponivel' 
-                    LIMIT 1 FOR UPDATE"; // 'FOR UPDATE' evita que dois usuários reservem o mesmo item ao mesmo tempo
+                    LIMIT 1 FOR UPDATE";
     
     $stmtExemplar = $pdo->prepare($sqlExemplar);
     $stmtExemplar->execute([$data->id_livro]);
@@ -29,42 +46,50 @@ try {
 
     if (!$exemplar) {
         $pdo->rollBack();
-        enviarResposta("erro", "Não há exemplares disponíveis para reserva deste livro no momento.", null, 404);
+        enviarResposta("erro", "Não há exemplares disponíveis para este livro.", null, 404);
         exit;
     }
 
     $idExemplar = $exemplar['id_exemplar'];
 
-    // insert na na tabela reserva
-    // expiração padrão (ex: 3 dias a partir de hoje)
-    $dataExpiracao = date('Y-m-d', strtotime('+3 days'));
+    // --- LÓGICA DE PRAZOS DIFERENCIADOS ---
+    // Alunos: 3 dias | Professores: 7 dias | Staff: 5 dias (ou o que preferir)
+    $prazo = '+3 days';
+    if ($usuarioLogado->tipo === 'professor') {
+        $prazo = '+7 days';
+    }
+    $dataExpiracao = date('Y-m-d', strtotime($prazo));
 
-    $sqlReserva = "INSERT INTO reserva (id_livro, id_pessoa, data_expiracao, status) 
-                   VALUES (?, ?, ?, 'ativa')";
+    // 3. INSERIR NA TABELA DE RESERVA
+    $sqlReserva = "INSERT INTO reserva (id_livro, id_pessoa, id_exemplar, data_expiracao, status) 
+                   VALUES (?, ?, ?, ?, 'ativa')";
     
     $stmtReserva = $pdo->prepare($sqlReserva);
     $stmtReserva->execute([
         $data->id_livro,
-        $data->id_pessoa,
+        $idFinalPessoa,
+        $idExemplar,
         $dataExpiracao
     ]);
 
     $idReserva = $pdo->lastInsertId();
 
-    // ATUALIZAR O STATUS DO EXEMPLAR PARA 'RESERVADO'
+    // 4. ATUALIZAR STATUS DO EXEMPLAR
     $sqlAtuExemplar = "UPDATE exemplar SET disponibilidade = 'reservado' WHERE id_exemplar = ?";
     $stmtAtuExemplar = $pdo->prepare($sqlAtuExemplar);
     $stmtAtuExemplar->execute([$idExemplar]);
 
     $pdo->commit();
 
-    enviarResposta("sucesso", "Reserva realizada com sucesso! O livro ficará aguardando até $dataExpiracao.", [
+    enviarResposta("sucesso", "Reserva realizada! Expira em: " . date('d/m/Y', strtotime($dataExpiracao)), [
         "id_reserva" => $idReserva,
-        "id_exemplar_reservado" => $idExemplar
+        "id_pessoa" => $idFinalPessoa,
+        "data_expiracao" => $dataExpiracao
     ], 201);
 
 } catch (PDOException $e) {
-    $pdo->rollBack();
-    enviarResposta("erro", "Erro no banco de dados: " . $e->getMessage(), null, 500);
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    enviarResposta("erro", "Erro no banco: " . $e->getMessage(), null, 500);
 }
-?>

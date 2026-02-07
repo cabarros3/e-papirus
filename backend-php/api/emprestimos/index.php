@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 // Filtros: status (todos, pendente, devolvido, atrasado, em_dia) e id_pessoa
 $status = isset($_GET['status']) ? $_GET['status'] : 'todos';
 $id_pessoa = isset($_GET['id_pessoa']) ? $_GET['id_pessoa'] : null;
+$id_exemplar = isset($_GET['id_exemplar']) ? $_GET['id_exemplar'] : null;
 
 try {
     $sql = "SELECT 
@@ -56,6 +57,13 @@ try {
     }
     // Se for 'todos', não entra em nenhum if e traz tudo.
 
+
+
+    // Filtro por Exemplar
+    if ($id_exemplar) {
+        $conditions[] = "emp.id_exemplar = ?";
+        $params[] = $id_exemplar;
+    }
 
     // Filtro por Pessoa
     if ($id_pessoa) {

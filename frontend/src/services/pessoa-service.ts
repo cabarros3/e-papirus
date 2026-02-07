@@ -105,6 +105,12 @@ export const pessoaService = {
       throw error;
     }
   },
+
+  async buscarPorNome(nome: string): Promise<any[]> {
+    const response = await fetch(`${API_URL}/pessoas/index.php?nome=${nome}`);
+    const result = await response.json();
+    return result.dados || [];
+  },
 };
 
 // const API_URL = 'http://localhost:8000/api/pessoas';
