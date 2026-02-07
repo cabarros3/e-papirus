@@ -79,8 +79,8 @@ export default function AdminDashboard() {
             textColor="text-[#B85207]"
           />
           <SimpleActionCard
-            href="#"
-            label="Renovação de Item"
+            href="/dashboard/staff/Renovacao"
+            label="Renovação"
             icon={<Repeat />}
             bgColor="bg-[#F7FEE7]"
             textColor="text-[#002934]"
@@ -281,7 +281,7 @@ function SimpleActionCard({ href, label, icon, bgColor, textColor }: any) {
       <div
         className={`w-10 h-10 rounded-xl flex items-center justify-center bg-white/50 shadow-sm ${textColor}`}
       >
-        {React.cloneElement(icon as React.ReactElement, { size: 20 })}
+        {React.cloneElement(icon as React.ReactElement<any>, { size: 20 })}
       </div>
       <div className="flex flex-col">
         <span

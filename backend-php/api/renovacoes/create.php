@@ -13,6 +13,9 @@ if (!isset($data->id_emprestimo)) {
     enviarResposta("erro", "Informe o ID do empréstimo.", null, 400);
 }
 
+// Nova data pode ser enviada ou calculada automaticamente
+$novaDataEnviada = isset($data->nova_data_prevista) ? $data->nova_data_prevista : null;
+
 try {
     $pdo->beginTransaction();
 
@@ -47,9 +50,30 @@ try {
         exit;
     }
 
-    // 3. Calcular a nova data
-    // Lógica: Adiciona 14 dias à data prevista atual
-    $novaData = date('Y-m-d', strtotime($dataPrevistaAtual . ' + 7 days'));
+    // 3. Calcular/Validar a nova data
+    if ($novaDataEnviada) {
+        // Se foi enviada uma nova data, validar se é futura e razoável
+        $novaDataObj = new DateTime($novaDataEnviada);
+        $hoje = new DateTime($dataHoje);
+        $maxData = (new DateTime($dataHoje))->modify('+30 days');
+        
+        if ($novaDataObj <= $hoje) {
+            $pdo->rollBack();
+            enviarResposta("erro", "A nova data deve ser posterior a hoje.", null, 400);
+            exit;
+        }
+        
+        if ($novaDataObj > $maxData) {
+            $pdo->rollBack();
+            enviarResposta("erro", "A nova data não pode ser superior a 30 dias.", null, 400);
+            exit;
+        }
+        
+        $novaData = $novaDataEnviada;
+    } else {
+        // Lógica padrão: Adiciona 7 dias à data prevista atual
+        $novaData = date('Y-m-d', strtotime($dataPrevistaAtual . ' + 7 days'));
+    }
 
     // 4. Inserir registro na tabela RENOVAÇÃO (Histórico)
     $sqlLog = "INSERT INTO renovacao (id_emprestimo, data_renovacao, nova_data_devolucao) VALUES (?, ?, ?)";

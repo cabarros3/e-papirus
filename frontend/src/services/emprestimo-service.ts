@@ -96,7 +96,7 @@ class EmprestimoService {
    */
   async renovar(id_emprestimo: number, nova_data: string): Promise<void> {
     try {
-      const response = await fetch(`${API_URL}/emprestimos/renovar.php`, {
+      const response = await fetch(`${API_URL}/renovacoes/create.php`, {
         method: 'POST',
         headers: defaultHeaders(),
         body: JSON.stringify({
