@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { AuthorService } from "@/services/author-service";
-import { Autor } from "@/types/autores";
-import { toast } from "sonner";
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import { AuthorService } from '@/services/author-service';
+import { Autor } from '@/types/autores';
+import { toast } from 'sonner';
 import {
   UserPlus,
   Trash2,
@@ -14,7 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   AlertTriangle,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function GerenciarAutores() {
   const [autores, setAutores] = useState<Autor[]>([]);
@@ -25,10 +25,10 @@ export default function GerenciarAutores() {
   const itemsPerPage = 10;
 
   // Estados de Formulário e Modal de Edição
-  const [novoNome, setNovoNome] = useState<string>("");
+  const [novoNome, setNovoNome] = useState<string>('');
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [autorParaEditar, setAutorParaEditar] = useState<Autor | null>(null);
-  const [nomeEditado, setNomeEditado] = useState<string>("");
+  const [nomeEditado, setNomeEditado] = useState<string>('');
 
   // Estados para Modal de Exclusão
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -44,7 +44,7 @@ export default function GerenciarAutores() {
         const dados = await service.getAllAuthors();
         setAutores(dados);
       } catch (err) {
-        toast.error("Erro ao carregar a lista de autores.");
+        toast.error('Erro ao carregar a lista de autores.');
       } finally {
         if (isInitialLoad) setLoading(false);
       }
@@ -74,12 +74,12 @@ export default function GerenciarAutores() {
     if (!novoNome.trim()) return;
     try {
       await service.createAuthor({ nome_autor: novoNome });
-      setNovoNome("");
+      setNovoNome('');
       await fetchData();
       setCurrentPage(1);
-      toast.success("Autor cadastrado com sucesso!");
+      toast.success('Autor cadastrado com sucesso!');
     } catch (err) {
-      toast.error((err as Error).message || "Erro ao cadastrar autor.");
+      toast.error((err as Error).message || 'Erro ao cadastrar autor.');
     }
   };
 
@@ -92,9 +92,9 @@ export default function GerenciarAutores() {
       });
       setIsEditModalOpen(false);
       await fetchData();
-      toast.success("Dados do autor atualizados!");
+      toast.success('Dados do autor atualizados!');
     } catch (err) {
-      toast.error((err as Error).message || "Erro ao atualizar autor.");
+      toast.error((err as Error).message || 'Erro ao atualizar autor.');
     }
   };
 
@@ -107,13 +107,13 @@ export default function GerenciarAutores() {
         prev.filter((a) => a.id_autor !== autorParaDeletar.id_autor)
       );
       setIsDeleteModalOpen(false);
-      toast.warning("Autor removido do sistema.");
+      toast.warning('Autor removido do sistema.');
 
       if (currentData.length === 1 && currentPage > 1) {
         setCurrentPage(currentPage - 1);
       }
     } catch (err) {
-      toast.error("Erro ao excluir. O autor pode possuir livros vinculados.");
+      toast.error('Erro ao excluir. O autor pode possuir livros vinculados.');
     } finally {
       setIsDeleting(false);
       setAutorParaDeletar(null);
@@ -240,8 +240,8 @@ export default function GerenciarAutores() {
                       onClick={() => goToPage(page)}
                       className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
                         currentPage === page
-                          ? "bg-denin text-white shadow-md shadow-denin/20"
-                          : "text-gray-400 hover:bg-gray-200"
+                          ? 'bg-denin text-white shadow-md shadow-denin/20'
+                          : 'text-gray-400 hover:bg-gray-200'
                       }`}
                     >
                       {page}
@@ -317,7 +317,7 @@ export default function GerenciarAutores() {
                 Confirmar Exclusão
               </h2>
               <p className="text-sm text-gray-500">
-                Tem certeza que deseja excluir{" "}
+                Tem certeza que deseja excluir{' '}
                 <strong>{autorParaDeletar?.nome_autor}</strong>? Esta ação não
                 pode ser desfeita.
               </p>
@@ -331,7 +331,7 @@ export default function GerenciarAutores() {
                 {isDeleting ? (
                   <Loader2 className="animate-spin" size={18} />
                 ) : (
-                  "Excluir Agora"
+                  'Excluir Agora'
                 )}
               </button>
               <button

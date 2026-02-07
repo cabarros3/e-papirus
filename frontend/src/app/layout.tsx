@@ -1,25 +1,25 @@
-import type { Metadata } from "next";
-import { Poppins, Inter } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Poppins, Inter } from 'next/font/google';
+import './globals.css';
 
 // Configurando a fonte Poppins
 const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // opcional, adiciona os pesos que você vai usar
+  variable: '--font-poppins',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'], // opcional, adiciona os pesos que você vai usar
 });
 
 const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400", "500"], // Pesos para leitura
+  variable: '--font-inter',
+  subsets: ['latin'],
+  weight: ['400', '500'], // Pesos para leitura
 });
 
 export const metadata: Metadata = {
-  title: "e-Papirus",
-  description: "Biblioteca",
+  title: 'e-Papirus',
+  description: 'Biblioteca',
   icons: {
-    icon: "/img/logo.png",
+    icon: '/img/logo.png',
   },
 };
 

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import Header from "@/components/header";
-import Footer from "@/components/footer";
-import BackgroundShapes from "@/components/visual/background-shapes";
+import Header from '@/components/header';
+import Footer from '@/components/footer';
+import BackgroundShapes from '@/components/visual/background-shapes';
 import {
   Github,
   GraduationCap,
@@ -10,53 +10,53 @@ import {
   Users,
   Rocket,
   ExternalLink,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function SobrePage() {
   const desenvolvedores = [
     {
-      nome: "Camilla Barros",
-      função: "Full Stack Developer",
-      github: "https://github.com/cabarros3",
-      foto: "https://avatars.githubusercontent.com/u/72764345?v=4",
+      nome: 'Camilla Barros',
+      função: 'Full Stack Developer',
+      github: 'https://github.com/cabarros3',
+      foto: 'https://avatars.githubusercontent.com/u/72764345?v=4',
     },
     {
-      nome: "Dayvson",
-      função: "Frontend Developer",
-      github: "https://github.com/Devs097518",
-      foto: "https://avatars.githubusercontent.com/u/86844423?v=4",
+      nome: 'Dayvson',
+      função: 'Frontend Developer',
+      github: 'https://github.com/Devs097518',
+      foto: 'https://avatars.githubusercontent.com/u/86844423?v=4',
     },
     {
-      nome: "Luhan Felipe",
-      função: "Frontend Developer",
-      github: "https://github.com/luhanfelipe",
-      foto: "https://avatars.githubusercontent.com/u/216249946?v=4",
+      nome: 'Luhan Felipe',
+      função: 'Frontend Developer',
+      github: 'https://github.com/luhanfelipe',
+      foto: 'https://avatars.githubusercontent.com/u/216249946?v=4',
     },
     {
-      nome: "Alan Santos",
-      função: "Full Stack Developer",
-      github: "https://github.com/alan-santosBS",
-      foto: "https://avatars.githubusercontent.com/u/218152504?v=4",
+      nome: 'Alan Santos',
+      função: 'Full Stack Developer',
+      github: 'https://github.com/alan-santosBS',
+      foto: 'https://avatars.githubusercontent.com/u/218152504?v=4',
     },
     {
-      nome: "Yuri Celeste",
-      função: "Frontend Developer",
-      github: "https://github.com/YuriCeleste",
-      foto: "https://avatars.githubusercontent.com/u/218382865?v=4",
+      nome: 'Yuri Celeste',
+      função: 'Frontend Developer',
+      github: 'https://github.com/YuriCeleste',
+      foto: 'https://avatars.githubusercontent.com/u/218382865?v=4',
     },
     {
-      nome: "Luisa",
-      função: "Frontend Developer",
-      github: "https://github.com/luisavmf0",
-      foto: "https://avatars.githubusercontent.com/u/222525409?v=4",
+      nome: 'Luisa',
+      função: 'Frontend Developer',
+      github: 'https://github.com/luisavmf0',
+      foto: 'https://avatars.githubusercontent.com/u/222525409?v=4',
     },
     {
-      nome: "João Vitor",
-      função: "Frontend Developer",
-      github: "https://github.com/vitorcorreiia",
-      foto: "https://avatars.githubusercontent.com/u/210762782?v=4",
+      nome: 'João Vitor',
+      função: 'Frontend Developer',
+      github: 'https://github.com/vitorcorreiia',
+      foto: 'https://avatars.githubusercontent.com/u/210762782?v=4',
     },
   ];
 
@@ -176,13 +176,13 @@ export default function SobrePage() {
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      "Next.js 15",
-                      "TypeScript",
-                      "Tailwind CSS",
-                      "PHP 8",
-                      "MySQL",
-                      "Lucide React",
-                      "Shadcn/UI",
+                      'Next.js 15',
+                      'TypeScript',
+                      'Tailwind CSS',
+                      'PHP 8',
+                      'MySQL',
+                      'Lucide React',
+                      'Shadcn/UI',
                     ].map((tech) => (
                       <span
                         key={tech}

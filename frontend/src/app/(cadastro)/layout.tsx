@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export default function CadastroLayout({
   children,
@@ -13,10 +13,10 @@ export default function CadastroLayout({
   const pathname = usePathname();
 
   const getPageName = () => {
-    if (pathname.includes("/aluno")) return "Aluno";
-    if (pathname.includes("/professor")) return "Professor";
-    if (pathname.includes("/funcionario")) return "Funcionário";
-    return "Cadastro";
+    if (pathname.includes('/aluno')) return 'Aluno';
+    if (pathname.includes('/professor')) return 'Professor';
+    if (pathname.includes('/funcionario')) return 'Funcionário';
+    return 'Cadastro';
   };
 
   return (

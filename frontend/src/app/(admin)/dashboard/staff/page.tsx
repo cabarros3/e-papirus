@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState, useMemo } from "react";
-import Link from "next/link";
-import { DashboardService, DashboardData } from "@/services/dashboard-service";
+import React, { useEffect, useState, useMemo } from 'react';
+import Link from 'next/link';
+import { DashboardService, DashboardData } from '@/services/dashboard-service';
 import {
   Book,
   RefreshCw,
@@ -17,7 +17,7 @@ import {
   Repeat,
   TrendingUp,
   BookPlus,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function AdminDashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -229,7 +229,7 @@ export default function AdminDashboard() {
                 <div className="relative flex-shrink-0">
                   <div className="w-14 h-20 bg-gray-200 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
                     <img
-                      src={livro.capa || "/img/img1.jpg"}
+                      src={livro.capa || '/img/img1.jpg'}
                       alt={livro.titulo}
                       className="w-full h-full object-cover"
                     />

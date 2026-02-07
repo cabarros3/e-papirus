@@ -1,35 +1,35 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay } from "swiper/modules";
+import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Autoplay } from 'swiper/modules';
 
-import "swiper/css";
-import "swiper/css/pagination";
+import 'swiper/css';
+import 'swiper/css/pagination';
 
-import { BellRing } from "lucide-react";
+import { BellRing } from 'lucide-react';
 
 const avisos = [
   {
     id: 1,
-    tag: "Atualização",
-    titulo: "Alteração no funcionamento",
+    tag: 'Atualização',
+    titulo: 'Alteração no funcionamento',
     texto:
-      "Informamos que a partir da próxima semana teremos novos horários de atendimento digital para suporte técnico.",
+      'Informamos que a partir da próxima semana teremos novos horários de atendimento digital para suporte técnico.',
   },
   {
     id: 2,
-    tag: "Novidade",
-    titulo: "Nova coleção disponível",
+    tag: 'Novidade',
+    titulo: 'Nova coleção disponível',
     texto:
-      "Confira os novos livros que acabaram de chegar na biblioteca. Temos romances, ficção científica e muito mais esperando por você.",
+      'Confira os novos livros que acabaram de chegar na biblioteca. Temos romances, ficção científica e muito mais esperando por você.',
   },
   {
     id: 3,
-    tag: "Feriado",
-    titulo: "Aviso de Feriado",
+    tag: 'Feriado',
+    titulo: 'Aviso de Feriado',
     texto:
-      "Neste próximo feriado, a biblioteca estará fechada. Retornaremos às atividades normais no dia seguinte às 08:00h.",
+      'Neste próximo feriado, a biblioteca estará fechada. Retornaremos às atividades normais no dia seguinte às 08:00h.',
   },
 ];
 

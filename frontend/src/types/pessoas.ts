@@ -1,8 +1,8 @@
-import { ApiResponse } from "./api";
+import { ApiResponse } from './api';
 
 // 1. Definição dos tipos permitidos no ENUM do banco
-export type TipoPessoa = "aluno" | "professor" | "funcionario";
-export type CargoFuncionario = "bibliotecario" | "auxiliar" | "estagiario";
+export type TipoPessoa = 'aluno' | 'professor' | 'funcionario';
+export type CargoFuncionario = 'bibliotecario' | 'auxiliar' | 'estagiario';
 
 // Interface para LISTAGEM (O que vem do GET)
 export interface Pessoa {

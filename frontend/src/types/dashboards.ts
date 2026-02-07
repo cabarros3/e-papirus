@@ -1,5 +1,5 @@
-import { ApiResponse } from "./api";
-import { Emprestimo } from "./emprestimos"; // <--- Importamos a tipagem correta
+import { ApiResponse } from './api';
+import { Emprestimo } from './emprestimos'; // <--- Importamos a tipagem correta
 
 // ... (Interfaces do Admin continuam iguais)
 

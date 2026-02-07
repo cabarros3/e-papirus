@@ -1,4 +1,4 @@
-import { ApiResponse } from "./api";
+import { ApiResponse } from './api';
 
 // O que vem do banco (GET)
 export interface Exemplar {

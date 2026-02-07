@@ -1,10 +1,10 @@
-"use client";
-import React, { useEffect, useState } from "react";
+'use client';
+import React, { useEffect, useState } from 'react';
 import {
   AlunoDashboardService,
   AlunoDashboardData,
-} from "../../../../services/aluno-dashboard-service";
-import { Book, Clock, History, AlertCircle, Loader2 } from "lucide-react";
+} from '../../../../services/aluno-dashboard-service';
+import { Book, Clock, History, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function AlunoDashboard() {
   const [dados, setDados] = useState<AlunoDashboardData | null>(null);
@@ -18,10 +18,10 @@ export default function AlunoDashboard() {
         setErro(null);
 
         // 1. Busca no LocalStorage com a chave correta bib_user
-        const userString = localStorage.getItem("bib_user");
+        const userString = localStorage.getItem('bib_user');
 
         if (!userString) {
-          setErro("Sessão não encontrada. Por favor, faça login.");
+          setErro('Sessão não encontrada. Por favor, faça login.');
           return;
         }
 
@@ -30,7 +30,7 @@ export default function AlunoDashboard() {
         const idPessoa = user?.id_pessoa;
 
         if (!idPessoa) {
-          setErro("ID do usuário não identificado.");
+          setErro('ID do usuário não identificado.');
           return;
         }
 
@@ -41,11 +41,11 @@ export default function AlunoDashboard() {
         if (data) {
           setDados(data);
         } else {
-          setErro("Não foi possível carregar os dados do servidor.");
+          setErro('Não foi possível carregar os dados do servidor.');
         }
       } catch (e) {
-        console.error("Erro no Dashboard:", e);
-        setErro("Ocorreu um erro ao processar sua solicitação.");
+        console.error('Erro no Dashboard:', e);
+        setErro('Ocorreu um erro ao processar sua solicitação.');
       } finally {
         setLoading(false);
       }
@@ -73,7 +73,7 @@ export default function AlunoDashboard() {
           <h2 className="text-lg font-bold text-red-800">
             Ops! Algo deu errado
           </h2>
-          <p className="text-red-600 mb-6">{erro || "Erro desconhecido"}</p>
+          <p className="text-red-600 mb-6">{erro || 'Erro desconhecido'}</p>
           <button
             onClick={() => window.location.reload()}
             className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
@@ -161,9 +161,9 @@ export default function AlunoDashboard() {
                     <div className="flex items-center text-xs text-gray-500 gap-1">
                       <Clock size={12} />
                       <span>
-                        Entrega:{" "}
+                        Entrega:{' '}
                         {new Date(livro.data_prevista).toLocaleDateString(
-                          "pt-BR",
+                          'pt-BR'
                         )}
                       </span>
                     </div>
@@ -172,11 +172,11 @@ export default function AlunoDashboard() {
                   <div
                     className={`mt-3 text-xs font-extrabold px-3 py-1.5 rounded-full w-fit uppercase tracking-wider
                     ${
-                      livro.cor === "red"
-                        ? "bg-red-100 text-red-600"
-                        : livro.cor === "orange"
-                          ? "bg-orange-100 text-orange-600"
-                          : "bg-blue-100 text-blue-600"
+                      livro.cor === 'red'
+                        ? 'bg-red-100 text-red-600'
+                        : livro.cor === 'orange'
+                          ? 'bg-orange-100 text-orange-600'
+                          : 'bg-blue-100 text-blue-600'
                     }`}
                   >
                     {livro.status_texto}

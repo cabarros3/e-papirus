@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { pessoaService } from "@/services/pessoa-service";
+import React, { useState } from 'react';
+import { pessoaService } from '@/services/pessoa-service';
 import {
   CadastroPessoaDTO,
   TipoPessoa,
   CargoFuncionario,
-} from "@/types/pessoas";
-import { toast } from "sonner";
+} from '@/types/pessoas';
+import { toast } from 'sonner';
 import {
   User,
   Mail,
@@ -21,23 +21,23 @@ import {
   ArrowLeft,
   UserPlus,
   CheckCircle2,
-} from "lucide-react";
-import Link from "next/link";
+} from 'lucide-react';
+import Link from 'next/link';
 
 export default function CadastrarPessoa() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Tipando o estado com o seu TipoPessoa para evitar erros de casting
-  const [tipoUsuario, setTipoUsuario] = useState<TipoPessoa>("aluno");
+  const [tipoUsuario, setTipoUsuario] = useState<TipoPessoa>('aluno');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    const senha = String(formData.get("senha"));
-    const confirmaSenha = String(formData.get("confirma_senha"));
+    const senha = String(formData.get('senha'));
+    const confirmaSenha = String(formData.get('confirma_senha'));
 
     if (senha !== confirmaSenha) {
-      toast.error("As senhas não coincidem!");
+      toast.error('As senhas não coincidem!');
       return;
     }
 
@@ -46,27 +46,27 @@ export default function CadastrarPessoa() {
     try {
       // Payload agora segue rigorosamente a interface CadastroPessoaDTO
       const payload: CadastroPessoaDTO = {
-        nome: String(formData.get("nome")),
-        email: String(formData.get("email")),
-        cpf: String(formData.get("cpf")),
-        matricula: String(formData.get("matricula")),
-        telefone: String(formData.get("telefone")),
+        nome: String(formData.get('nome')),
+        email: String(formData.get('email')),
+        cpf: String(formData.get('cpf')),
+        matricula: String(formData.get('matricula')),
+        telefone: String(formData.get('telefone')),
         tipo: tipoUsuario,
         senha: senha,
         // Só envia o cargo se for funcionário, e faz o cast para o tipo específico
         cargo:
-          tipoUsuario === "funcionario"
-            ? (formData.get("cargo") as CargoFuncionario)
+          tipoUsuario === 'funcionario'
+            ? (formData.get('cargo') as CargoFuncionario)
             : null,
       };
 
       await pessoaService.criar(payload);
-      toast.success("Usuário cadastrado com sucesso!");
+      toast.success('Usuário cadastrado com sucesso!');
 
       (e.target as HTMLFormElement).reset();
-      setTipoUsuario("aluno");
+      setTipoUsuario('aluno');
     } catch (err: any) {
-      toast.error(err.message || "Erro ao realizar o cadastro.");
+      toast.error(err.message || 'Erro ao realizar o cadastro.');
     } finally {
       setIsSubmitting(false);
     }
@@ -200,7 +200,7 @@ export default function CadastrarPessoa() {
               </select>
             </div>
 
-            {tipoUsuario === "funcionario" && (
+            {tipoUsuario === 'funcionario' && (
               <div className="space-y-1 animate-in slide-in-from-top-2 duration-300">
                 <label className="text-xs font-bold text-gray-600">
                   Cargo do Funcionário

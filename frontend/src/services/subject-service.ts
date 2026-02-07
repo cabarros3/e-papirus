@@ -1,9 +1,9 @@
-import { API_URL, defaultHeaders } from "./api";
+import { API_URL, defaultHeaders } from './api';
 import {
   Assunto,
   CadastroAssuntoDTO,
   UpdateAssuntoDTO,
-} from "@/types/assuntos";
+} from '@/types/assuntos';
 
 export class SubjectService {
   /**
@@ -12,9 +12,9 @@ export class SubjectService {
   async getAllSubjects(): Promise<Assunto[]> {
     try {
       const response = await fetch(`${API_URL}/assuntos/index.php`, {
-        method: "GET",
+        method: 'GET',
         headers: defaultHeaders(), // AJUSTE: Adicionado () para enviar Token
-        cache: "no-store",
+        cache: 'no-store',
       });
 
       if (!response.ok) return [];
@@ -23,7 +23,7 @@ export class SubjectService {
       // AJUSTE: Seguindo seu padrão PHP de usar 'dados'
       return json.dados || json.data || (Array.isArray(json) ? json : []);
     } catch (error) {
-      console.error("Erro ao buscar assuntos:", error);
+      console.error('Erro ao buscar assuntos:', error);
       return [];
     }
   }
@@ -33,15 +33,15 @@ export class SubjectService {
    */
   async createSubject(dados: CadastroAssuntoDTO): Promise<void> {
     const response = await fetch(`${API_URL}/assuntos/create.php`, {
-      method: "POST",
+      method: 'POST',
       headers: defaultHeaders(), // AJUSTE: Adicionado ()
       body: JSON.stringify(dados),
     });
 
     const result = await response.json();
 
-    if (!response.ok || result.status === "erro") {
-      throw new Error(result.mensagem || "Erro ao cadastrar assunto");
+    if (!response.ok || result.status === 'erro') {
+      throw new Error(result.mensagem || 'Erro ao cadastrar assunto');
     }
   }
 
@@ -50,15 +50,15 @@ export class SubjectService {
    */
   async updateSubject(dados: UpdateAssuntoDTO): Promise<void> {
     const response = await fetch(`${API_URL}/assuntos/update.php`, {
-      method: "PUT",
+      method: 'PUT',
       headers: defaultHeaders(), // AJUSTE: Adicionado ()
       body: JSON.stringify(dados),
     });
 
     const result = await response.json();
 
-    if (!response.ok || result.status === "erro") {
-      throw new Error(result.mensagem || "Erro ao atualizar assunto");
+    if (!response.ok || result.status === 'erro') {
+      throw new Error(result.mensagem || 'Erro ao atualizar assunto');
     }
   }
 
@@ -67,13 +67,13 @@ export class SubjectService {
    */
   async deleteSubject(id: number): Promise<void> {
     const response = await fetch(`${API_URL}/assuntos/delete.php?id=${id}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: defaultHeaders(), // AJUSTE: Adicionado ()
     });
 
     if (!response.ok) {
       const result = await response.json();
-      throw new Error(result.mensagem || "Erro ao excluir assunto");
+      throw new Error(result.mensagem || 'Erro ao excluir assunto');
     }
   }
 }

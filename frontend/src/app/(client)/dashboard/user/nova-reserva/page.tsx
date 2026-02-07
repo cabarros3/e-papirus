@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { ArrowLeft, Loader2, CalendarCheck, Book, Info } from "lucide-react";
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { ArrowLeft, Loader2, CalendarCheck, Book, Info } from 'lucide-react';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { reservaService } from "@/services/reserva-service";
-import { BookService } from "@/services/book-service";
-import { Pessoa } from "@/types/pessoas";
-import { Livro } from "@/types/livros";
+import { reservaService } from '@/services/reserva-service';
+import { BookService } from '@/services/book-service';
+import { Pessoa } from '@/types/pessoas';
+import { Livro } from '@/types/livros';
 
-import { BasketItem, BookBasket } from "@/components/cards/BookBasket";
-import { ResumoReservaModal } from "@/components/modals/resumo-reserva-modal";
-import { toast } from "sonner";
+import { BasketItem, BookBasket } from '@/components/cards/BookBasket';
+import { ResumoReservaModal } from '@/components/modals/resumo-reserva-modal';
+import { toast } from 'sonner';
 
 export default function ReservaUsuarioPage() {
   const router = useRouter();
@@ -23,13 +23,13 @@ export default function ReservaUsuarioPage() {
   const [dadosResumo, setDadosResumo] = useState<any>(null);
 
   const [livros, setLivros] = useState<Livro[]>([]);
-  const [livroSelecionadoId, setLivroSelecionadoId] = useState("");
+  const [livroSelecionadoId, setLivroSelecionadoId] = useState('');
   const [cesta, setCesta] = useState<BasketItem[]>([]);
   const [livroVisualizado, setLivroVisualizado] = useState<Livro | null>(null);
 
   useEffect(() => {
     const carregarDados = async () => {
-      const saved = localStorage.getItem("bib_user");
+      const saved = localStorage.getItem('bib_user');
       const user: Pessoa = saved ? JSON.parse(saved) : null;
       setUserLogado(user);
 
@@ -38,7 +38,7 @@ export default function ReservaUsuarioPage() {
         const listaLivros = await bookService.getAllBooks();
         setLivros(listaLivros || []);
       } catch (error) {
-        toast.error("Erro ao carregar o acervo.");
+        toast.error('Erro ao carregar o acervo.');
       } finally {
         setLoading(false);
       }
@@ -51,27 +51,27 @@ export default function ReservaUsuarioPage() {
     setIsModalOpen(false);
 
     // Feedback visual
-    toast.success("Reserva realizada com sucesso!");
+    toast.success('Reserva realizada com sucesso!');
 
     // Reset do formulário
     setCesta([]);
-    setLivroSelecionadoId("");
+    setLivroSelecionadoId('');
     setLivroVisualizado(null);
     setDadosResumo(null);
 
     // Redirecionamento
-    router.push("/dashboard/user/reservas");
+    router.push('/dashboard/user/reservas');
   };
 
   const handleAdicionar = () => {
     if (!livroSelecionadoId)
-      return toast.warning("Selecione um livro primeiro.");
-    if (cesta.length >= 2) return toast.warning("Limite de 2 livros por vez.");
+      return toast.warning('Selecione um livro primeiro.');
+    if (cesta.length >= 2) return toast.warning('Limite de 2 livros por vez.');
 
     const livro = livros.find((l) => String(l.id_livro) === livroSelecionadoId);
     if (livro) {
       if (cesta.some((item) => item.id_exemplar === livro.id_livro)) {
-        return toast.warning("Este livro já está na sua lista.");
+        return toast.warning('Este livro já está na sua lista.');
       }
       setCesta([
         ...cesta,
@@ -92,23 +92,23 @@ export default function ReservaUsuarioPage() {
     try {
       await Promise.all(
         cesta.map((item) =>
-          reservaService.criar({ id_livro: item.id_exemplar }),
-        ),
+          reservaService.criar({ id_livro: item.id_exemplar })
+        )
       );
 
-      const prazoDias = userLogado?.tipo === "professor" ? 7 : 3;
+      const prazoDias = userLogado?.tipo === 'professor' ? 7 : 3;
       const dataExp = new Date();
       dataExp.setDate(dataExp.getDate() + prazoDias);
 
       setDadosResumo({
-        livros: cesta.map((i) => i.titulo).join(", "),
+        livros: cesta.map((i) => i.titulo).join(', '),
         usuario: userLogado?.nome,
         expiracao: dataExp.toISOString(),
       });
 
       setIsModalOpen(true);
     } catch (error: any) {
-      toast.error(error.message || "Erro ao solicitar reserva.");
+      toast.error(error.message || 'Erro ao solicitar reserva.');
     } finally {
       setIsSubmitting(false);
     }
@@ -165,7 +165,7 @@ export default function ReservaUsuarioPage() {
                 setLivroSelecionadoId(e.target.value);
                 setLivroVisualizado(
                   livros.find((l) => String(l.id_livro) === e.target.value) ||
-                    null,
+                    null
                 );
               }}
             >
@@ -191,8 +191,8 @@ export default function ReservaUsuarioPage() {
               Você pode reservar até 2 livros simultaneamente. As reservas
               expiram em
               <strong>
-                {" "}
-                {userLogado?.tipo === "professor" ? "7 dias" : "3 dias"}
+                {' '}
+                {userLogado?.tipo === 'professor' ? '7 dias' : '3 dias'}
               </strong>
               . Após esse prazo, o livro volta ao acervo se não for retirado.
             </p>
@@ -224,7 +224,7 @@ export default function ReservaUsuarioPage() {
               {isSubmitting ? (
                 <Loader2 className="animate-spin" />
               ) : (
-                "Confirmar Solicitação"
+                'Confirmar Solicitação'
               )}
             </button>
           </div>

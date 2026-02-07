@@ -1,4 +1,4 @@
-import { ApiResponse } from "./api";
+import { ApiResponse } from './api';
 
 export interface Assunto {
   id_assunto: number;

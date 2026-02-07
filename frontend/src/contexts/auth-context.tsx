@@ -1,4 +1,4 @@
-"use client"; // Obrigatório porque usamos Hooks (useState, useEffect)
+'use client'; // Obrigatório porque usamos Hooks (useState, useEffect)
 
 import {
   createContext,
@@ -6,12 +6,12 @@ import {
   useState,
   useEffect,
   ReactNode,
-} from "react";
-import { useRouter } from "next/navigation";
+} from 'react';
+import { useRouter } from 'next/navigation';
 
 // Imports da nossa arquitetura
-import { AuthService } from "@/services/auth-service";
-import { Usuario, LoginDTO } from "@/types/auth";
+import { AuthService } from '@/services/auth-service';
+import { Usuario, LoginDTO } from '@/types/auth';
 
 // Define o que estará disponível para qualquer componente do site
 interface AuthContextType {
@@ -33,14 +33,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 1. EFEITO DE CARREGAMENTO (Executa 1 vez ao abrir o site)
   // Verifica se já existe um usuário salvo no navegador
   useEffect(() => {
-    const userStored = localStorage.getItem("epapirus_user");
+    const userStored = localStorage.getItem('epapirus_user');
 
     if (userStored) {
       try {
         setUser(JSON.parse(userStored));
       } catch (error) {
-        console.error("Erro ao ler dados do usuário", error);
-        localStorage.removeItem("epapirus_user"); // Limpa se estiver corrompido
+        console.error('Erro ao ler dados do usuário', error);
+        localStorage.removeItem('epapirus_user'); // Limpa se estiver corrompido
       }
     }
 
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(usuarioLogado);
 
       // Salva no Navegador (Persistência)
-      localStorage.setItem("epapirus_user", JSON.stringify(usuarioLogado));
+      localStorage.setItem('epapirus_user', JSON.stringify(usuarioLogado));
 
       // Opcional: Salvar Token se sua API retornar um JWT futuramente
       // localStorage.setItem('epapirus_token', response.token);
@@ -76,10 +76,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 3. FUNÇÃO DE LOGOUT
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("epapirus_user");
+    localStorage.removeItem('epapirus_user');
     // localStorage.removeItem('epapirus_token');
 
-    router.push("/login"); // Redireciona para login
+    router.push('/login'); // Redireciona para login
   };
 
   return (

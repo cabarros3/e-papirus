@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { AuthService } from "@/services/auth-service";
-import { AlertCircle, Loader2, CheckCircle2, House } from "lucide-react";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { AuthService } from '@/services/auth-service';
+import { AlertCircle, Loader2, CheckCircle2, House } from 'lucide-react';
 
 export default function LoginScreen() {
   const router = useRouter();
   const authService = new AuthService();
 
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -30,14 +30,14 @@ export default function LoginScreen() {
       setSuccess(true);
 
       setTimeout(() => {
-        if (usuario.tipo === "funcionario") {
-          router.push("/dashboard/staff");
+        if (usuario.tipo === 'funcionario') {
+          router.push('/dashboard/staff');
         } else {
-          router.push("/dashboard/user");
+          router.push('/dashboard/user');
         }
       }, 800);
     } catch (error: any) {
-      setError(error.message || "E-mail ou senha inválidos. Tente novamente.");
+      setError(error.message || 'E-mail ou senha inválidos. Tente novamente.');
       setLoading(false);
     }
   };
@@ -67,13 +67,13 @@ export default function LoginScreen() {
             <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center mb-1">
               Novo por aqui?
             </label>
-            {["aluno", "professor", "funcionario"].map((perfil) => (
+            {['aluno', 'professor', 'funcionario'].map((perfil) => (
               <Link
                 key={perfil}
                 href={`/${perfil}`}
                 className="w-full py-3 px-4 border border-gray-100 rounded-xl text-gray-600 font-bold hover:bg-gray-50 hover:border-denin/20 hover:text-denin transition-all text-center text-sm capitalize shadow-sm"
               >
-                Cadastrar como {perfil.replace("funcionario", "Funcionário")}
+                Cadastrar como {perfil.replace('funcionario', 'Funcionário')}
               </Link>
             ))}
           </div>
@@ -158,8 +158,8 @@ export default function LoginScreen() {
                 className={`w-full py-3.5 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 mt-2
                   ${
                     success
-                      ? "bg-green-600 text-white shadow-green-100"
-                      : "bg-gray-800 text-white hover:bg-gray-900 shadow-gray-200 active:scale-[0.98]"
+                      ? 'bg-green-600 text-white shadow-green-100'
+                      : 'bg-gray-800 text-white hover:bg-gray-900 shadow-gray-200 active:scale-[0.98]'
                   }
                   disabled:bg-gray-400 disabled:cursor-not-allowed`}
               >
@@ -174,7 +174,7 @@ export default function LoginScreen() {
                     <span>Sucesso!</span>
                   </>
                 ) : (
-                  "Entrar no e-Papirus"
+                  'Entrar no e-Papirus'
                 )}
               </button>
             </form>

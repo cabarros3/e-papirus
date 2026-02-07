@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState, useMemo } from "react";
-import { pessoaService } from "@/services/pessoa-service";
-import { Pessoa } from "@/types/pessoas";
-import { toast } from "sonner";
+import React, { useEffect, useState, useMemo } from 'react';
+import { pessoaService } from '@/services/pessoa-service';
+import { Pessoa } from '@/types/pessoas';
+import { toast } from 'sonner';
 import {
   Search,
   Plus,
@@ -16,19 +16,19 @@ import {
   ArrowLeft,
   // User,
   UserPen,
-} from "lucide-react";
-import Link from "next/link";
-import { ModalEditarUsuario } from "@/components/modals/edit-user-modal";
+} from 'lucide-react';
+import Link from 'next/link';
+import { ModalEditarUsuario } from '@/components/modals/edit-user-modal';
 
 export default function ListarUsuarios() {
   const [usuarios, setUsuarios] = useState<Pessoa[]>([]);
   const [loading, setLoading] = useState(true);
-  const [busca, setBusca] = useState("");
-  const [filtroTipo, setFiltroTipo] = useState<string>("todos");
+  const [busca, setBusca] = useState('');
+  const [filtroTipo, setFiltroTipo] = useState<string>('todos');
 
   // Estado para o Modal
   const [usuarioParaEditar, setUsuarioParaEditar] = useState<Pessoa | null>(
-    null,
+    null
   );
 
   const carregarUsuarios = async () => {
@@ -37,7 +37,7 @@ export default function ListarUsuarios() {
       const dados = await pessoaService.listar();
       setUsuarios(dados);
     } catch (error) {
-      toast.error("Erro ao carregar a lista de usuários.");
+      toast.error('Erro ao carregar a lista de usuários.');
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ export default function ListarUsuarios() {
         u.matricula.includes(busca) ||
         u.cpf.includes(busca);
 
-      const matchesTipo = filtroTipo === "todos" || u.tipo === filtroTipo;
+      const matchesTipo = filtroTipo === 'todos' || u.tipo === filtroTipo;
 
       return matchesBusca && matchesTipo;
     });
@@ -281,13 +281,13 @@ export default function ListarUsuarios() {
 
 function getBadgeColor(tipo: string) {
   switch (tipo) {
-    case "aluno":
-      return "bg-blue-50 text-blue-500 border border-blue-100";
-    case "professor":
-      return "bg-purple-50 text-purple-500 border border-purple-100";
-    case "funcionario":
-      return "bg-orange-50 text-orange-600 border border-orange-100";
+    case 'aluno':
+      return 'bg-blue-50 text-blue-500 border border-blue-100';
+    case 'professor':
+      return 'bg-purple-50 text-purple-500 border border-purple-100';
+    case 'funcionario':
+      return 'bg-orange-50 text-orange-600 border border-orange-100';
     default:
-      return "bg-gray-50 text-gray-500";
+      return 'bg-gray-50 text-gray-500';
   }
 }

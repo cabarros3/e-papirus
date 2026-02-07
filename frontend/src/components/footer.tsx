@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -18,7 +18,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-sm text-gray-500 leading-relaxed font-medium">
-              Sua porta de entrada para o conhecimento.{" "}
+              Sua porta de entrada para o conhecimento.{' '}
               <br className="hidden lg:block" />
               Explore, aprenda e evolua conosco.
             </p>

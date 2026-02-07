@@ -1,74 +1,74 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { pessoaService } from "@/services/pessoa-service";
-import { useRouter } from "next/navigation";
-import { CadastroPessoaDTO } from "@/types/pessoas";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { useState } from 'react';
+import { pessoaService } from '@/services/pessoa-service';
+import { useRouter } from 'next/navigation';
+import { CadastroPessoaDTO } from '@/types/pessoas';
+import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 
 export default function CadastroProfessor() {
   const router = useRouter();
 
-  const [nome, setNome] = useState("");
-  const [matricula, setMatricula] = useState(""); // Representa o CNBD
-  const [cpf, setCpf] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [confirmarSenha, setConfirmarSenha] = useState("");
-  const [telefone, setTelefone] = useState("");
+  const [nome, setNome] = useState('');
+  const [matricula, setMatricula] = useState(''); // Representa o CNBD
+  const [cpf, setCpf] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [telefone, setTelefone] = useState('');
 
   // Estados de controle de UI
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [mensagem, setMensagem] = useState("");
-  const [tipoMensagem, setTipoMensagem] = useState<"sucesso" | "erro" | "">("");
+  const [mensagem, setMensagem] = useState('');
+  const [tipoMensagem, setTipoMensagem] = useState<'sucesso' | 'erro' | ''>('');
 
   const criarItem = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validação
     if (!nome || !matricula || !cpf || !email || !senha || !confirmarSenha) {
-      setMensagem("Preencha todos os campos obrigatórios.");
-      setTipoMensagem("erro");
+      setMensagem('Preencha todos os campos obrigatórios.');
+      setTipoMensagem('erro');
       return;
     }
 
     // Validação de senhas
     if (senha !== confirmarSenha) {
-      setMensagem("As senhas não coincidem.");
-      setTipoMensagem("erro");
+      setMensagem('As senhas não coincidem.');
+      setTipoMensagem('erro');
       return;
     }
 
     setLoading(true);
-    setMensagem("");
+    setMensagem('');
 
     try {
       const dados: CadastroPessoaDTO = {
         nome: nome.trim(),
         matricula: matricula.trim(),
-        cpf: cpf.replace(/\D/g, ""), // Limpeza para o banco (11 dígitos)
+        cpf: cpf.replace(/\D/g, ''), // Limpeza para o banco (11 dígitos)
         email: email.trim().toLowerCase(),
         senha,
         telefone: telefone.trim() || undefined,
-        tipo: "professor",
+        tipo: 'professor',
         cargo: null,
       };
 
       const data = await pessoaService.criar(dados);
 
-      if (data && data.status === "sucesso") {
+      if (data && data.status === 'sucesso') {
         setLoading(false);
         setSuccess(true); // Ativa o overlay de animação
 
         setTimeout(() => {
-          router.push("/login");
+          router.push('/login');
         }, 2200);
       }
     } catch (error: any) {
       setLoading(false);
-      setMensagem(error.message || "Erro ao cadastrar.");
-      setTipoMensagem("erro");
+      setMensagem(error.message || 'Erro ao cadastrar.');
+      setTipoMensagem('erro');
     }
   };
 
@@ -105,11 +105,11 @@ export default function CadastroProfessor() {
         {mensagem && (
           <div
             style={{
-              backgroundColor: tipoMensagem === "erro" ? "#E97D7A" : "#22C55E",
+              backgroundColor: tipoMensagem === 'erro' ? '#E97D7A' : '#22C55E',
             }}
             className="w-full flex items-center justify-center gap-2 text-white rounded-xl p-3 text-sm font-bold animate-in fade-in slide-in-from-top-1 shadow-sm"
           >
-            {tipoMensagem === "erro" ? (
+            {tipoMensagem === 'erro' ? (
               <AlertCircle size={18} />
             ) : (
               <CheckCircle2 size={18} />
@@ -159,7 +159,7 @@ export default function CadastroProfessor() {
                 placeholder="Apenas números"
                 value={cpf}
                 maxLength={11}
-                onChange={(e) => setCpf(e.target.value.replace(/\D/g, ""))}
+                onChange={(e) => setCpf(e.target.value.replace(/\D/g, ''))}
                 disabled={loading || success}
                 className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
               />
@@ -231,7 +231,7 @@ export default function CadastroProfessor() {
           type="submit"
           disabled={loading || success}
           className={`w-full py-3.5 bg-gray-800 text-white rounded-xl font-bold shadow-lg shadow-gray-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2 
-            ${loading ? "opacity-70 cursor-not-allowed" : "hover:bg-gray-900"}`}
+            ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-900'}`}
         >
           {loading ? (
             <>
@@ -239,7 +239,7 @@ export default function CadastroProfessor() {
               <span>Processando...</span>
             </>
           ) : (
-            "Finalizar Cadastro"
+            'Finalizar Cadastro'
           )}
         </button>
       </form>

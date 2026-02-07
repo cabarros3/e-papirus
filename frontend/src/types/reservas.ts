@@ -8,7 +8,7 @@ export interface Reserva {
   nome_pessoa?: string;
   data_reserva: string;
   data_expiracao: string;
-  status: "ativa" | "concluida" | "cancelada";
+  status: 'ativa' | 'concluida' | 'cancelada';
 }
 
 /**
@@ -22,7 +22,7 @@ export interface CreateReservaDTO {
 }
 
 export interface ApiResponse<T> {
-  status: "sucesso" | "erro";
+  status: 'sucesso' | 'erro';
   mensagem: string;
   dados: T | null;
 }

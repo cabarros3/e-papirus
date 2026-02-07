@@ -1,5 +1,5 @@
 // 1. Definição estrita dos tipos de usuário para evitar erros de digitação
-export type UserRole = "aluno" | "professor" | "funcionario";
+export type UserRole = 'aluno' | 'professor' | 'funcionario';
 
 export interface Usuario {
   id_usuario: number;
@@ -32,14 +32,14 @@ export interface RegisterDTO {
 
 // Resposta genérica para rotas que retornam o perfil ou sucesso de cadastro
 export interface MeResponse {
-  status: "sucesso" | "erro";
+  status: 'sucesso' | 'erro';
   mensagem: string; // Batendo com o PHP
   dados: Usuario; // Batendo com o PHP
 }
 
 // Resposta específica de Login que inclui o Token JWT
 export interface AuthResponse {
-  status: "sucesso" | "erro";
+  status: 'sucesso' | 'erro';
   mensagem: string;
   dados: {
     token: string;

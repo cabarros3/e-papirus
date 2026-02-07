@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 // Componentes de Layout e Visuais
-import Header from "@/components/header";
-import Footer from "@/components/footer";
-import BackgroundShapes from "@/components/visual/background-shapes";
-import Features from "@/components/visual/features";
+import Header from '@/components/header';
+import Footer from '@/components/footer';
+import BackgroundShapes from '@/components/visual/background-shapes';
+import Features from '@/components/visual/features';
 
 // Componentes de Conteúdo
-import SearchBar from "@/components/search-bar";
-import NotificationSlider from "@/components/sliders/notification-slider";
-import { BookSlider } from "@/components/sliders/book-slider";
+import SearchBar from '@/components/search-bar';
+import NotificationSlider from '@/components/sliders/notification-slider';
+import { BookSlider } from '@/components/sliders/book-slider';
 
 // Serviços e Tipagens
-import { BookService } from "@/services/book-service";
+import { BookService } from '@/services/book-service';
 // Importamos os dois comandos: o de busca e o novo de populares
 import {
   SearchBookCommand,
   GetPopularBooksCommand,
-} from "@/commands/book-command";
-import { Livro } from "@/types/livros";
+} from '@/commands/book-command';
+import { Livro } from '@/types/livros';
 
 export default function Home() {
   const [recentBooks, setRecentBooks] = useState<Livro[]>([]);
@@ -35,7 +35,7 @@ export default function Home() {
       // 1. Comando para buscar Livros Recentes
       const commandRecent = new SearchBookCommand(
         service,
-        "",
+        '',
         (dados: Livro[]) => {
           setRecentBooks(dados);
         }
@@ -53,7 +53,7 @@ export default function Home() {
       try {
         await Promise.all([commandRecent.execute(), commandPopular.execute()]);
       } catch (error) {
-        console.error("Erro ao carregar dados da Home:", error);
+        console.error('Erro ao carregar dados da Home:', error);
       } finally {
         setLoading(false);
       }

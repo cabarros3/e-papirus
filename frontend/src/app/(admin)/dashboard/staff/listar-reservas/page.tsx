@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Loader2,
   Search,
@@ -8,17 +8,17 @@ import {
   User,
   Book as BookIcon,
   Trash2,
-} from "lucide-react";
-import { reservaService } from "@/services/reserva-service";
-import { Reserva } from "@/types/reservas";
-import { toast } from "sonner";
-import Link from "next/link";
-import { ConfirmarExclusaoModal } from "@/components/modals/confirm-delete-modal";
+} from 'lucide-react';
+import { reservaService } from '@/services/reserva-service';
+import { Reserva } from '@/types/reservas';
+import { toast } from 'sonner';
+import Link from 'next/link';
+import { ConfirmarExclusaoModal } from '@/components/modals/confirm-delete-modal';
 
 export default function ListarReservasPage() {
   const [reservas, setReservas] = useState<Reserva[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filtro, setFiltro] = useState("");
+  const [filtro, setFiltro] = useState('');
 
   // Estados do Modal de Exclusão
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,13 +29,13 @@ export default function ListarReservasPage() {
     setLoading(true);
     try {
       const response = await reservaService.listarTodas();
-      if (response.status === "sucesso" && response.dados) {
+      if (response.status === 'sucesso' && response.dados) {
         setReservas(response.dados);
       } else {
         setReservas([]);
       }
     } catch (error) {
-      toast.error("Erro ao carregar lista de reservas.");
+      toast.error('Erro ao carregar lista de reservas.');
     } finally {
       setLoading(false);
     }
@@ -56,11 +56,11 @@ export default function ListarReservasPage() {
     setIsDeleting(true);
     try {
       await reservaService.cancelar(idParaExcluir);
-      toast.success("Reserva cancelada com sucesso!");
+      toast.success('Reserva cancelada com sucesso!');
       await carregarReservas();
       setIsModalOpen(false);
     } catch (error: any) {
-      toast.error(error.message || "Erro ao cancelar reserva.");
+      toast.error(error.message || 'Erro ao cancelar reserva.');
     } finally {
       setIsDeleting(false);
       setIdParaExcluir(null);
@@ -70,7 +70,7 @@ export default function ListarReservasPage() {
   const reservasFiltradas = reservas.filter(
     (r) =>
       r.titulo?.toLowerCase().includes(filtro.toLowerCase()) ||
-      r.nome_pessoa?.toLowerCase().includes(filtro.toLowerCase()),
+      r.nome_pessoa?.toLowerCase().includes(filtro.toLowerCase())
   );
 
   if (loading)
@@ -169,13 +169,13 @@ export default function ListarReservasPage() {
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
                       {new Date(reserva.data_reserva).toLocaleDateString(
-                        "pt-BR",
+                        'pt-BR'
                       )}
                     </td>
                     <td className="px-6 py-4">
                       <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-xs font-bold">
                         {new Date(reserva.data_expiracao).toLocaleDateString(
-                          "pt-BR",
+                          'pt-BR'
                         )}
                       </span>
                     </td>

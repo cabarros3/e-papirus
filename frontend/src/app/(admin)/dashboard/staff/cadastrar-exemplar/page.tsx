@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from 'react';
 import {
   ExemplaresService,
   LivroComExemplares,
   ExemplarAgrupado,
-} from "@/services/exemplar-service";
-import { BookService } from "@/services/book-service";
-import { toast } from "sonner";
-import Link from "next/link";
+} from '@/services/exemplar-service';
+import { BookService } from '@/services/book-service';
+import { toast } from 'sonner';
+import Link from 'next/link';
 import {
   Edit3,
   X,
@@ -19,7 +19,7 @@ import {
   ChevronRight,
   Book,
   ArrowLeft,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function GerenciarExemplares() {
   const [livrosDisponiveis, setLivrosDisponiveis] = useState<any[]>([]);
@@ -31,20 +31,20 @@ export default function GerenciarExemplares() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const bookService = useMemo(() => new BookService(), []);
 
-  const [idLivro, setIdLivro] = useState("");
-  const [localizacao, setLocalizacao] = useState("");
+  const [idLivro, setIdLivro] = useState('');
+  const [localizacao, setLocalizacao] = useState('');
   const [tempData, setTempData] = useState<Partial<ExemplarAgrupado>>({});
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Tem certeza que deseja excluir este exemplar?")) return;
+    if (!confirm('Tem certeza que deseja excluir este exemplar?')) return;
 
     try {
       await ExemplaresService.deleteExemplar(id);
-      toast.success("Exemplar excluído com sucesso!");
+      toast.success('Exemplar excluído com sucesso!');
       await loadExemplares(); // Recarrega a lista após excluir
     } catch (error: any) {
-      toast.error(error.message || "Erro ao excluir exemplar");
-      console.error("Erro ao deletar:", error);
+      toast.error(error.message || 'Erro ao excluir exemplar');
+      console.error('Erro ao deletar:', error);
     }
   };
 
@@ -62,7 +62,7 @@ export default function GerenciarExemplares() {
       setLivrosDisponiveis(livrosData);
       setLivrosComExemplares(livrosComExemplaresData);
     } catch (error) {
-      toast.error("Erro ao carregar dados");
+      toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
     }
@@ -73,7 +73,7 @@ export default function GerenciarExemplares() {
       const livrosData = await ExemplaresService.getLivrosComExemplares();
       setLivrosComExemplares(livrosData);
     } catch (error) {
-      toast.error("Erro ao carregar exemplares");
+      toast.error('Erro ao carregar exemplares');
     }
   };
 
@@ -87,21 +87,21 @@ export default function GerenciarExemplares() {
 
   const handleAdd = async () => {
     if (!idLivro || !localizacao) {
-      toast.error("Preencha todos os campos");
+      toast.error('Preencha todos os campos');
       return;
     }
     try {
       await ExemplaresService.createExemplar({
         id_livro: parseInt(idLivro),
         localizacao: localizacao,
-        disponibilidade: "disponivel",
+        disponibilidade: 'disponivel',
       });
-      toast.success("Exemplar cadastrado!");
-      setIdLivro("");
-      setLocalizacao("");
+      toast.success('Exemplar cadastrado!');
+      setIdLivro('');
+      setLocalizacao('');
       await loadExemplares();
     } catch (error: any) {
-      toast.error(error.message || "Erro ao cadastrar");
+      toast.error(error.message || 'Erro ao cadastrar');
     }
   };
 
@@ -113,24 +113,24 @@ export default function GerenciarExemplares() {
         localizacao: tempData.localizacao!,
         disponibilidade: tempData.disponibilidade!,
       });
-      toast.success("Atualizado!");
+      toast.success('Atualizado!');
       setEditingId(null);
       await loadExemplares();
     } catch (error) {
-      toast.error("Erro ao atualizar");
+      toast.error('Erro ao atualizar');
     }
   };
 
   const getDisponibilidadeColor = (disp: string) => {
     switch (disp) {
-      case "disponivel":
-        return "text-green-600 bg-green-50";
-      case "emprestado":
-        return "text-blue-600 bg-blue-50";
-      case "reservado":
-        return "text-yellow-600 bg-yellow-50";
+      case 'disponivel':
+        return 'text-green-600 bg-green-50';
+      case 'emprestado':
+        return 'text-blue-600 bg-blue-50';
+      case 'reservado':
+        return 'text-yellow-600 bg-yellow-50';
       default:
-        return "text-gray-600 bg-gray-50";
+        return 'text-gray-600 bg-gray-50';
     }
   };
 
@@ -249,8 +249,8 @@ export default function GerenciarExemplares() {
                     </p>
                   </div>
                   <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-[11px] font-bold">
-                    {livro.exemplares.length}{" "}
-                    {livro.exemplares.length === 1 ? "Exemplar" : "Exemplares"}
+                    {livro.exemplares.length}{' '}
+                    {livro.exemplares.length === 1 ? 'Exemplar' : 'Exemplares'}
                   </span>
                 </div>
 
@@ -278,7 +278,7 @@ export default function GerenciarExemplares() {
                               {editingId === exemplar.id_exemplar ? (
                                 <input
                                   className="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
-                                  value={tempData.localizacao || ""}
+                                  value={tempData.localizacao || ''}
                                   onChange={(e) =>
                                     setTempData({
                                       ...tempData,
@@ -294,7 +294,7 @@ export default function GerenciarExemplares() {
                               {editingId === exemplar.id_exemplar ? (
                                 <select
                                   className="w-full p-2 border rounded-lg outline-none"
-                                  value={tempData.disponibilidade || ""}
+                                  value={tempData.disponibilidade || ''}
                                   onChange={(e) =>
                                     setTempData({
                                       ...tempData,
@@ -322,7 +322,7 @@ export default function GerenciarExemplares() {
                                       onClick={() =>
                                         handleSave(
                                           exemplar.id_exemplar,
-                                          livro.id_livro,
+                                          livro.id_livro
                                         )
                                       }
                                       className="text-green-600 p-1.5 hover:bg-green-50 rounded-lg"

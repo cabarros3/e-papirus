@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useEffect, useState, Suspense, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-import { BookService } from "@/services/book-service";
-import { SearchBookCommand } from "@/commands/book-command";
-import { Livro } from "@/types/livros";
-import SearchBar from "@/components/search-bar";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
-import BackgroundShapes from "@/components/visual/background-shapes";
-import BookDetailsModal from "../../components/modals/book-datails-modal";
-import FilterList from "@/components/visual/filter-list";
+import { useEffect, useState, Suspense, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
+import { BookService } from '@/services/book-service';
+import { SearchBookCommand } from '@/commands/book-command';
+import { Livro } from '@/types/livros';
+import SearchBar from '@/components/search-bar';
+import Header from '@/components/header';
+import Footer from '@/components/footer';
+import BackgroundShapes from '@/components/visual/background-shapes';
+import BookDetailsModal from '../../components/modals/book-datails-modal';
+import FilterList from '@/components/visual/filter-list';
 import {
   Filter,
   Calendar,
@@ -21,20 +21,20 @@ import {
   RotateCcw,
   ChevronRight,
   BookOpen,
-} from "lucide-react";
+} from 'lucide-react';
 
 function SearchContent() {
   const searchParams = useSearchParams();
-  const termoBusca = searchParams.get("q") || "";
+  const termoBusca = searchParams.get('q') || '';
 
   const [loading, setLoading] = useState(true);
   const [livros, setLivros] = useState<Livro[]>([]);
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [filtroAssunto, setFiltroAssunto] = useState("");
-  const [filtroAutor, setFiltroAutor] = useState("");
-  const [filtroAno, setFiltroAno] = useState("");
+  const [filtroAssunto, setFiltroAssunto] = useState('');
+  const [filtroAutor, setFiltroAutor] = useState('');
+  const [filtroAno, setFiltroAno] = useState('');
   const [showAllAssuntos, setShowAllAssuntos] = useState(false);
   const [showAllAutores, setShowAllAutores] = useState(false);
 
@@ -115,9 +115,9 @@ function SearchContent() {
               {(filtroAssunto || filtroAutor || filtroAno) && (
                 <button
                   onClick={() => {
-                    setFiltroAssunto("");
-                    setFiltroAutor("");
-                    setFiltroAno("");
+                    setFiltroAssunto('');
+                    setFiltroAutor('');
+                    setFiltroAno('');
                   }}
                   className="text-[10px] font-black text-red-500 uppercase"
                 >
@@ -165,8 +165,8 @@ function SearchContent() {
                   {opcoesFiltros.anos.slice(0, 10).map((ano) => (
                     <button
                       key={ano}
-                      onClick={() => setFiltroAno(filtroAno === ano ? "" : ano)}
-                      className={`text-xs py-2 rounded-xl border transition-all ${filtroAno === ano ? "bg-denin border-denin text-white font-bold" : "border-gray-100 text-gray-500 hover:border-denin bg-white"}`}
+                      onClick={() => setFiltroAno(filtroAno === ano ? '' : ano)}
+                      className={`text-xs py-2 rounded-xl border transition-all ${filtroAno === ano ? 'bg-denin border-denin text-white font-bold' : 'border-gray-100 text-gray-500 hover:border-denin bg-white'}`}
                     >
                       {ano}
                     </button>
@@ -183,13 +183,13 @@ function SearchContent() {
             <h2 className="text-2xl font-black text-gray-900">
               {termoBusca ? (
                 <>
-                  Resultados para:{" "}
+                  Resultados para:{' '}
                   <span className="text-denin italic">
                     &quot;{termoBusca}&quot;
                   </span>
                 </>
               ) : (
-                "Acervo Completo"
+                'Acervo Completo'
               )}
             </h2>
             <div className="h-1 w-20 bg-denin mt-4 rounded-full" />
@@ -218,7 +218,7 @@ function SearchContent() {
                   >
                     <div className="w-24 h-32 bg-gray-50 rounded-2xl overflow-hidden flex-shrink-0 border border-gray-50 shadow-sm">
                       <img
-                        src={livro.capa || "/img/placeholder.png"}
+                        src={livro.capa || '/img/placeholder.png'}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                     </div>
@@ -230,11 +230,11 @@ function SearchContent() {
                         {livro.titulo}
                       </h3>
                       <p className="text-gray-500 text-sm flex items-center gap-2 mb-2 font-medium">
-                        <User size={14} className="text-denin" />{" "}
+                        <User size={14} className="text-denin" />{' '}
                         {livro.nomes_autores}
                       </p>
                       <p className="text-[11px] text-gray-400 line-clamp-2 italic">
-                        {livro.nota_resumo || "Descrição não disponível."}
+                        {livro.nota_resumo || 'Descrição não disponível.'}
                       </p>
                     </div>
                     <div className="flex items-center justify-center sm:pl-6 sm:border-l border-gray-50">

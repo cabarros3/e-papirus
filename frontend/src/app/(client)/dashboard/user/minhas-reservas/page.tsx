@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Loader2,
   Calendar,
@@ -10,12 +10,12 @@ import {
   Trash2,
   //   CheckCircle2,
   //   XCircle,
-} from "lucide-react";
-import { reservaService } from "@/services/reserva-service";
-import { Reserva } from "@/types/reservas";
-import { toast } from "sonner";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+} from 'lucide-react';
+import { reservaService } from '@/services/reserva-service';
+import { Reserva } from '@/types/reservas';
+import { toast } from 'sonner';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 export default function MinhasReservasPage() {
   const [reservas, setReservas] = useState<Reserva[]>([]);
@@ -25,11 +25,11 @@ export default function MinhasReservasPage() {
   const carregarReservas = async () => {
     try {
       const response = await reservaService.listarTodas();
-      if (response.status === "sucesso") {
+      if (response.status === 'sucesso') {
         setReservas(response.dados || []);
       }
     } catch (error) {
-      toast.error("Não foi possível carregar suas reservas.");
+      toast.error('Não foi possível carregar suas reservas.');
     } finally {
       setLoading(false);
     }
@@ -40,35 +40,35 @@ export default function MinhasReservasPage() {
   }, []);
 
   const handleCancelar = async (id: number) => {
-    if (!confirm("Tem certeza que deseja cancelar esta reserva?")) return;
+    if (!confirm('Tem certeza que deseja cancelar esta reserva?')) return;
 
     setIsCancelling(id);
     try {
       const res = await reservaService.cancelar(id);
-      if (res.status === "sucesso") {
-        toast.success("Reserva cancelada com sucesso.");
+      if (res.status === 'sucesso') {
+        toast.success('Reserva cancelada com sucesso.');
         setReservas((prev) => prev.filter((r) => r.id_reserva !== id));
       } else {
         toast.error(res.mensagem);
       }
     } catch (error) {
-      toast.error("Erro ao cancelar reserva.");
+      toast.error('Erro ao cancelar reserva.');
     } finally {
       setIsCancelling(null);
     }
   };
 
-  const getStatusBadge = (status: Reserva["status"]) => {
+  const getStatusBadge = (status: Reserva['status']) => {
     const styles = {
-      ativa: "bg-blue-50 text-blue-600 border-blue-100",
-      concluida: "bg-green-50 text-green-600 border-green-100",
-      cancelada: "bg-red-50 text-red-600 border-red-100",
+      ativa: 'bg-blue-50 text-blue-600 border-blue-100',
+      concluida: 'bg-green-50 text-green-600 border-green-100',
+      cancelada: 'bg-red-50 text-red-600 border-red-100',
     };
 
     const labels = {
-      ativa: "Aguardando Retirada",
-      concluida: "Retirado",
-      cancelada: "Cancelada",
+      ativa: 'Aguardando Retirada',
+      concluida: 'Retirado',
+      cancelada: 'Cancelada',
     };
 
     return (
@@ -128,20 +128,20 @@ export default function MinhasReservasPage() {
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 text-lg leading-tight">
-                    {reserva.titulo || "Título não carregado"}
+                    {reserva.titulo || 'Título não carregado'}
                   </h3>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2">
                     <div className="flex items-center gap-1.5 text-xs text-gray-500">
                       <Calendar size={14} />
-                      Reservado em:{" "}
-                      {format(new Date(reserva.data_reserva), "dd/MM/yyyy", {
+                      Reservado em:{' '}
+                      {format(new Date(reserva.data_reserva), 'dd/MM/yyyy', {
                         locale: ptBR,
                       })}
                     </div>
                     <div className="flex items-center gap-1.5 text-xs text-orange-600 font-medium">
                       <Clock size={14} />
-                      Expira em:{" "}
-                      {format(new Date(reserva.data_expiracao), "dd/MM/yyyy", {
+                      Expira em:{' '}
+                      {format(new Date(reserva.data_expiracao), 'dd/MM/yyyy', {
                         locale: ptBR,
                       })}
                     </div>
@@ -152,7 +152,7 @@ export default function MinhasReservasPage() {
               <div className="flex items-center justify-between md:justify-end gap-4 border-t md:border-t-0 pt-4 md:pt-0">
                 {getStatusBadge(reserva.status)}
 
-                {reserva.status === "ativa" && (
+                {reserva.status === 'ativa' && (
                   <button
                     onClick={() => handleCancelar(reserva.id_reserva)}
                     disabled={isCancelling === reserva.id_reserva}

@@ -1,5 +1,5 @@
-import { API_URL, defaultHeaders } from "./api";
-import { Autor, CadastroAutorDTO } from "@/types/autores";
+import { API_URL, defaultHeaders } from './api';
+import { Autor, CadastroAutorDTO } from '@/types/autores';
 
 export class AuthorService {
   /**
@@ -7,15 +7,15 @@ export class AuthorService {
    */
   async createAuthor(dados: CadastroAutorDTO): Promise<void> {
     const response = await fetch(`${API_URL}/autores/create.php`, {
-      method: "POST",
+      method: 'POST',
       // AJUSTE: Adicionado () para pegar o token do usuário logado
       headers: defaultHeaders(),
       body: JSON.stringify(dados),
     });
 
     const result = await response.json();
-    if (!response.ok || result.status === "erro") {
-      throw new Error(result.mensagem || "Erro ao cadastrar autor");
+    if (!response.ok || result.status === 'erro') {
+      throw new Error(result.mensagem || 'Erro ao cadastrar autor');
     }
   }
 
@@ -25,10 +25,10 @@ export class AuthorService {
   async getAllAuthors(): Promise<Autor[]> {
     try {
       const response = await fetch(`${API_URL}/autores/index.php`, {
-        method: "GET",
+        method: 'GET',
         // AJUSTE: Adicionado () para autorizar a listagem
         headers: defaultHeaders(),
-        cache: "no-store",
+        cache: 'no-store',
       });
 
       if (!response.ok) return [];
@@ -42,7 +42,7 @@ export class AuthorService {
 
       return [];
     } catch (error) {
-      console.error("Erro ao buscar autores:", error);
+      console.error('Erro ao buscar autores:', error);
       return [];
     }
   }
@@ -55,15 +55,15 @@ export class AuthorService {
     nome_autor: string;
   }): Promise<void> {
     const response = await fetch(`${API_URL}/autores/update.php`, {
-      method: "PUT",
+      method: 'PUT',
       headers: defaultHeaders(), // AJUSTE: Adicionado ()
       body: JSON.stringify(dados),
     });
 
     const result = await response.json();
 
-    if (!response.ok || result.status === "erro") {
-      throw new Error(result.mensagem || "Erro ao atualizar autor");
+    if (!response.ok || result.status === 'erro') {
+      throw new Error(result.mensagem || 'Erro ao atualizar autor');
     }
   }
 
@@ -72,14 +72,14 @@ export class AuthorService {
    */
   async deleteAuthor(id: number): Promise<void> {
     const response = await fetch(`${API_URL}/autores/delete.php?id=${id}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: defaultHeaders(), // AJUSTE: Adicionado ()
     });
 
     const result = await response.json();
 
-    if (!response.ok || result.status === "erro") {
-      throw new Error(result.mensagem || "Erro ao eliminar autor");
+    if (!response.ok || result.status === 'erro') {
+      throw new Error(result.mensagem || 'Erro ao eliminar autor');
     }
   }
 }

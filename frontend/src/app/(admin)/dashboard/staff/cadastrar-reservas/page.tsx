@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { ArrowLeft, Loader2, CalendarCheck, ChevronDown } from "lucide-react";
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { ArrowLeft, Loader2, CalendarCheck, ChevronDown } from 'lucide-react';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { reservaService } from "@/services/reserva-service";
-import { pessoaService } from "@/services/pessoa-service";
-import { BookService } from "@/services/book-service";
-import { Pessoa } from "@/types/pessoas";
-import { Livro } from "@/types/livros";
+import { reservaService } from '@/services/reserva-service';
+import { pessoaService } from '@/services/pessoa-service';
+import { BookService } from '@/services/book-service';
+import { Pessoa } from '@/types/pessoas';
+import { Livro } from '@/types/livros';
 
-import { BasketItem, BookBasket } from "@/components/cards/BookBasket";
-import { UserSearchInput } from "@/components/inputs/UserSearchInput";
-import { ResumoReservaModal } from "@/components/modals/resumo-reserva-modal";
-import { toast } from "sonner";
+import { BasketItem, BookBasket } from '@/components/cards/BookBasket';
+import { UserSearchInput } from '@/components/inputs/UserSearchInput';
+import { ResumoReservaModal } from '@/components/modals/resumo-reserva-modal';
+import { toast } from 'sonner';
 
 export default function ReservaPage() {
   const router = useRouter();
@@ -28,9 +28,9 @@ export default function ReservaPage() {
   const [livros, setLivros] = useState<Livro[]>([]);
 
   const [selecionado, setSelecionado] = useState({
-    usuarioId: "",
-    usuarioNome: "",
-    livroId: "",
+    usuarioId: '',
+    usuarioNome: '',
+    livroId: '',
   });
 
   const [cesta, setCesta] = useState<BasketItem[]>([]);
@@ -47,7 +47,7 @@ export default function ReservaPage() {
         setUsuarios(listaPessoas || []);
         setLivros(listaLivros || []);
       } catch (error) {
-        toast.error("Falha ao carregar dados iniciais.");
+        toast.error('Falha ao carregar dados iniciais.');
       } finally {
         setLoading(false);
       }
@@ -59,25 +59,25 @@ export default function ReservaPage() {
     setIsModalOpen(false);
     setCesta([]);
     setSelecionado({
-      usuarioId: "",
-      usuarioNome: "",
-      livroId: "",
+      usuarioId: '',
+      usuarioNome: '',
+      livroId: '',
     });
     setLivroVisualizado(null);
     setDadosResumo(null);
   };
 
   const handleAdicionarReserva = () => {
-    if (!selecionado.livroId) return toast.warning("Selecione um livro.");
-    if (cesta.length >= 2) return toast.warning("Limite de 2 reservas.");
+    if (!selecionado.livroId) return toast.warning('Selecione um livro.');
+    if (cesta.length >= 2) return toast.warning('Limite de 2 reservas.');
 
     const livroInfo = livros.find(
-      (l) => String(l.id_livro) === selecionado.livroId,
+      (l) => String(l.id_livro) === selecionado.livroId
     );
 
     if (livroInfo) {
       if (cesta.some((item) => item.id_exemplar === livroInfo.id_livro)) {
-        return toast.warning("Este livro já está na cesta.");
+        return toast.warning('Este livro já está na cesta.');
       }
 
       setCesta([
@@ -94,7 +94,7 @@ export default function ReservaPage() {
   const handleFinalizarReservas = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selecionado.usuarioId || cesta.length === 0) {
-      return toast.error("Dados incompletos.");
+      return toast.error('Dados incompletos.');
     }
 
     setIsSubmitting(true);
@@ -104,22 +104,22 @@ export default function ReservaPage() {
           reservaService.criar({
             id_livro: item.id_exemplar,
             id_pessoa: parseInt(selecionado.usuarioId),
-          }),
-        ),
+          })
+        )
       );
 
       const hoje = new Date();
       hoje.setDate(hoje.getDate() + 3);
 
       setDadosResumo({
-        livros: cesta.map((i) => i.titulo).join(", "),
+        livros: cesta.map((i) => i.titulo).join(', '),
         usuario: selecionado.usuarioNome,
         expiracao: hoje.toISOString(),
       });
 
       setIsModalOpen(true);
     } catch (error: any) {
-      toast.error(error.message || "Erro na reserva.");
+      toast.error(error.message || 'Erro na reserva.');
     } finally {
       setIsSubmitting(false);
     }
@@ -195,7 +195,7 @@ export default function ReservaPage() {
                     const id = e.target.value;
                     setSelecionado({ ...selecionado, livroId: id });
                     const detalhe = livros.find(
-                      (l) => String(l.id_livro) === id,
+                      (l) => String(l.id_livro) === id
                     );
                     setLivroVisualizado(detalhe || null);
                   }}

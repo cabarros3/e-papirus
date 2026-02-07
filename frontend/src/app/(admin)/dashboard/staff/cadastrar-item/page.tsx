@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState, useMemo } from "react";
-import { BookService } from "@/services/book-service";
-import { AuthorService } from "@/services/author-service";
-import { SubjectService } from "@/services/subject-service";
-import { CadastroLivroDTO } from "@/types/livros";
-import { Autor } from "@/types/autores";
-import { Assunto } from "@/types/assuntos";
-import { toast } from "sonner";
+import React, { useEffect, useState, useMemo } from 'react';
+import { BookService } from '@/services/book-service';
+import { AuthorService } from '@/services/author-service';
+import { SubjectService } from '@/services/subject-service';
+import { CadastroLivroDTO } from '@/types/livros';
+import { Autor } from '@/types/autores';
+import { Assunto } from '@/types/assuntos';
+import { toast } from 'sonner';
 import {
   Save,
   Image as ImageIcon,
@@ -20,8 +20,8 @@ import {
   ArrowLeft,
   Search,
   BookOpen,
-} from "lucide-react";
-import Link from "next/link";
+} from 'lucide-react';
+import Link from 'next/link';
 
 export default function CadastrarItem() {
   const [autores, setAutores] = useState<Autor[]>([]);
@@ -30,11 +30,11 @@ export default function CadastrarItem() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Estados para Busca/Auto-complete
-  const [buscaAutor, setBuscaAutor] = useState("");
+  const [buscaAutor, setBuscaAutor] = useState('');
   const [autorSelecionado, setAutorSelecionado] = useState<Autor | null>(null);
-  const [buscaAssunto, setBuscaAssunto] = useState("");
+  const [buscaAssunto, setBuscaAssunto] = useState('');
   const [assuntoSelecionado, setAssuntoSelecionado] = useState<Assunto | null>(
-    null,
+    null
   );
 
   const bookService = useMemo(() => new BookService(), []);
@@ -51,7 +51,7 @@ export default function CadastrarItem() {
         setAutores(resA);
         setAssuntos(resS);
       } catch (err) {
-        toast.error("Erro ao carregar listas auxiliares.");
+        toast.error('Erro ao carregar listas auxiliares.');
       } finally {
         setLoadingData(false);
       }
@@ -63,21 +63,21 @@ export default function CadastrarItem() {
   const autoresFiltrados = autores.filter(
     (a) =>
       a.nome_autor.toLowerCase().includes(buscaAutor.toLowerCase()) &&
-      buscaAutor !== "" &&
-      !autorSelecionado,
+      buscaAutor !== '' &&
+      !autorSelecionado
   );
 
   const assuntosFiltrados = assuntos.filter(
     (s) =>
       s.nome_assunto.toLowerCase().includes(buscaAssunto.toLowerCase()) &&
-      buscaAssunto !== "" &&
-      !assuntoSelecionado,
+      buscaAssunto !== '' &&
+      !assuntoSelecionado
   );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!autorSelecionado || !assuntoSelecionado) {
-      toast.error("Por favor, selecione um autor e um assunto da lista.");
+      toast.error('Por favor, selecione um autor e um assunto da lista.');
       return;
     }
 
@@ -86,28 +86,28 @@ export default function CadastrarItem() {
 
     try {
       const payload: CadastroLivroDTO = {
-        titulo: String(formData.get("titulo")),
+        titulo: String(formData.get('titulo')),
         id_assunto: assuntoSelecionado.id_assunto,
-        editora: String(formData.get("editora")),
-        ano_publicacao: Number(formData.get("ano_publicacao")),
+        editora: String(formData.get('editora')),
+        ano_publicacao: Number(formData.get('ano_publicacao')),
         autores: [autorSelecionado.id_autor],
-        cidade_publicacao: String(formData.get("cidade_publicacao")),
-        nota_resumo: String(formData.get("nota_resumo")),
-        descricao_fisica: String(formData.get("descricao_fisica")), // Novo campo
-        capa: String(formData.get("capa")),
+        cidade_publicacao: String(formData.get('cidade_publicacao')),
+        nota_resumo: String(formData.get('nota_resumo')),
+        descricao_fisica: String(formData.get('descricao_fisica')), // Novo campo
+        capa: String(formData.get('capa')),
       };
 
       await bookService.createBook(payload);
-      toast.success("Livro cadastrado com sucesso!");
+      toast.success('Livro cadastrado com sucesso!');
 
       // Reset total
       (e.target as HTMLFormElement).reset();
       setAutorSelecionado(null);
       setAssuntoSelecionado(null);
-      setBuscaAutor("");
-      setBuscaAssunto("");
+      setBuscaAutor('');
+      setBuscaAssunto('');
     } catch (err) {
-      toast.error("Erro ao realizar o cadastro.");
+      toast.error('Erro ao realizar o cadastro.');
     } finally {
       setIsSubmitting(false);
     }

@@ -1,5 +1,5 @@
-"use client";
-import { AlertTriangle, X } from "lucide-react";
+'use client';
+import { AlertTriangle, X } from 'lucide-react';
 
 interface ConfirmarExclusaoModalProps {
   isOpen: boolean;
@@ -44,7 +44,7 @@ export function ConfirmarExclusaoModal({
               disabled={isDeleting}
               className="w-full bg-red-500 text-white py-4 rounded-2xl font-bold hover:bg-red-600 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50"
             >
-              {isDeleting ? "Excluindo..." : "Confirmar Exclusão"}
+              {isDeleting ? 'Excluindo...' : 'Confirmar Exclusão'}
             </button>
             <button
               onClick={onClose}

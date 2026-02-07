@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   BookOpen,
@@ -23,9 +23,9 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   UserPlus,
-} from "lucide-react";
-import { Toaster } from "sonner";
-import { Pessoa } from "@/types/pessoas";
+} from 'lucide-react';
+import { Toaster } from 'sonner';
+import { Pessoa } from '@/types/pessoas';
 
 export default function DashboardLayout({
   children,
@@ -50,11 +50,11 @@ export default function DashboardLayout({
 
   useEffect(() => {
     const identifier = window.requestAnimationFrame(() => {
-      const saved = localStorage.getItem("bib_user");
-      const token = localStorage.getItem("bib_token");
+      const saved = localStorage.getItem('bib_user');
+      const token = localStorage.getItem('bib_token');
 
       if (!saved || !token) {
-        router.push("/login");
+        router.push('/login');
         return;
       }
 
@@ -62,16 +62,16 @@ export default function DashboardLayout({
         setUser(JSON.parse(saved));
         setIsReady(true);
       } catch (error) {
-        router.push("/login");
+        router.push('/login');
       }
     });
     return () => window.cancelAnimationFrame(identifier);
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem("bib_token");
-    localStorage.removeItem("bib_user");
-    router.push("/login");
+    localStorage.removeItem('bib_token');
+    localStorage.removeItem('bib_user');
+    router.push('/login');
   };
 
   if (!isReady || !user) {
@@ -88,14 +88,14 @@ export default function DashboardLayout({
     <div className="flex min-h-screen bg-gray-50">
       <aside
         className={`${
-          isCollapsed ? "w-24" : "w-72"
+          isCollapsed ? 'w-24' : 'w-72'
         } bg-white border-r border-gray-200 hidden md:flex flex-col transition-all duration-300 ease-in-out relative flex-shrink-0`}
       >
         <div
-          className={`h-20 border-b border-gray-100 flex items-center px-6 ${isCollapsed ? "justify-center" : "justify-between"}`}
+          className={`h-20 border-b border-gray-100 flex items-center px-6 ${isCollapsed ? 'justify-center' : 'justify-between'}`}
         >
           <div
-            className={`overflow-hidden transition-all duration-300 ${isCollapsed ? "w-0 opacity-0" : "w-auto opacity-100"}`}
+            className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}
           >
             <div className="text-2xl font-bold text-black whitespace-nowrap">
               <span className="text-denin">e</span>-Papirus
@@ -103,7 +103,7 @@ export default function DashboardLayout({
           </div>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            title={isCollapsed ? "Expandir Menu" : "Recolher Menu"}
+            title={isCollapsed ? 'Expandir Menu' : 'Recolher Menu'}
             className="p-2 hover:bg-gray-50 rounded-lg text-gray-400 hover:text-denin transition-colors shrink-0"
           >
             {isCollapsed ? (
@@ -119,7 +119,7 @@ export default function DashboardLayout({
             href="/dashboard/staff"
             icon={<LayoutDashboard size={20} />}
             label="Dashboard"
-            active={isActive("/dashboard/staff")}
+            active={isActive('/dashboard/staff')}
             collapsed={isCollapsed}
           />
 
@@ -130,13 +130,13 @@ export default function DashboardLayout({
                 if (isCollapsed) setIsCollapsed(false);
                 setOpenAcervo(!openAcervo);
               }}
-              title={isCollapsed ? "Gerenciar Acervo" : ""}
-              className={`w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-all ${isCollapsed ? "justify-center" : "justify-between"}`}
+              title={isCollapsed ? 'Gerenciar Acervo' : ''}
+              className={`w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-all ${isCollapsed ? 'justify-center' : 'justify-between'}`}
             >
               <div className="flex items-center gap-3">
                 <BookOpen size={20} className="shrink-0" />
                 <span
-                  className={`text-base font-semibold whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0 w-0" : "opacity-100"}`}
+                  className={`text-base font-semibold whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}
                 >
                   Gerenciar Acervo
                 </span>
@@ -144,7 +144,7 @@ export default function DashboardLayout({
               {!isCollapsed && (
                 <ChevronDown
                   size={18}
-                  className={`transition-transform ${openAcervo ? "rotate-180" : ""}`}
+                  className={`transition-transform ${openAcervo ? 'rotate-180' : ''}`}
                 />
               )}
             </button>
@@ -163,7 +163,7 @@ export default function DashboardLayout({
                   </div>
                   <ChevronDown
                     size={16}
-                    className={`transition-transform ${openItens ? "rotate-180" : ""}`}
+                    className={`transition-transform ${openItens ? 'rotate-180' : ''}`}
                   />
                 </button>
                 {openItens && (
@@ -206,13 +206,13 @@ export default function DashboardLayout({
                 if (isCollapsed) setIsCollapsed(false);
                 setOpenCirculacao(!openCirculacao);
               }}
-              title={isCollapsed ? "Circulação" : ""}
-              className={`w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-all ${isCollapsed ? "justify-center" : "justify-between"}`}
+              title={isCollapsed ? 'Circulação' : ''}
+              className={`w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-all ${isCollapsed ? 'justify-center' : 'justify-between'}`}
             >
               <div className="flex items-center gap-3">
                 <HandHelping size={20} className="shrink-0" />
                 <span
-                  className={`text-base font-semibold whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0 w-0" : "opacity-100"}`}
+                  className={`text-base font-semibold whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}
                 >
                   Circulação
                 </span>
@@ -220,7 +220,7 @@ export default function DashboardLayout({
               {!isCollapsed && (
                 <ChevronDown
                   size={18}
-                  className={`transition-transform ${openCirculacao ? "rotate-180" : ""}`}
+                  className={`transition-transform ${openCirculacao ? 'rotate-180' : ''}`}
                 />
               )}
             </button>
@@ -240,7 +240,7 @@ export default function DashboardLayout({
                   </div>
                   <ChevronDown
                     size={16}
-                    className={`transition-transform ${openEmprestimoMenu ? "rotate-180" : ""}`}
+                    className={`transition-transform ${openEmprestimoMenu ? 'rotate-180' : ''}`}
                   />
                 </button>
                 {openEmprestimoMenu && (
@@ -282,7 +282,7 @@ export default function DashboardLayout({
                   </div>
                   <ChevronDown
                     size={16}
-                    className={`transition-transform ${openReservaMenu ? "rotate-180" : ""}`}
+                    className={`transition-transform ${openReservaMenu ? 'rotate-180' : ''}`}
                   />
                 </button>
                 {openReservaMenu && (
@@ -310,13 +310,13 @@ export default function DashboardLayout({
                 if (isCollapsed) setIsCollapsed(false);
                 setOpenUsuarios(!openUsuarios);
               }}
-              title={isCollapsed ? "Usuários" : ""}
-              className={`w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-all ${isCollapsed ? "justify-center" : "justify-between"}`}
+              title={isCollapsed ? 'Usuários' : ''}
+              className={`w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-all ${isCollapsed ? 'justify-center' : 'justify-between'}`}
             >
               <div className="flex items-center gap-3">
                 <Users size={20} className="shrink-0" />
                 <span
-                  className={`text-base font-semibold whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0 w-0" : "opacity-100"}`}
+                  className={`text-base font-semibold whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}
                 >
                   Usuários
                 </span>
@@ -324,7 +324,7 @@ export default function DashboardLayout({
               {!isCollapsed && (
                 <ChevronDown
                   size={18}
-                  className={`transition-transform ${openUsuarios ? "rotate-180" : ""}`}
+                  className={`transition-transform ${openUsuarios ? 'rotate-180' : ''}`}
                 />
               )}
             </button>
@@ -357,7 +357,7 @@ export default function DashboardLayout({
         <div className="p-6 border-t border-gray-100">
           {isCollapsed ? (
             <div
-              title={`Acesso: ${user.tipo || "STAFF"}`}
+              title={`Acesso: ${user.tipo || 'STAFF'}`}
               className="w-12 h-12 rounded-full bg-denin/10 text-denin flex items-center justify-center mx-auto text-xs font-black"
             >
               ADM
@@ -368,7 +368,7 @@ export default function DashboardLayout({
                 Acesso
               </p>
               <p className="text-sm font-extrabold text-gray-700 truncate">
-                {user.tipo || "Bibliotecário(a)"}
+                {user.tipo || 'Bibliotecário(a)'}
               </p>
             </div>
           )}
@@ -387,7 +387,7 @@ export default function DashboardLayout({
                 {user.nome}
               </span>
               <span className="text-xs text-denin font-bold uppercase tracking-widest">
-                {user.cargo || user.tipo || "STAFF"}
+                {user.cargo || user.tipo || 'STAFF'}
               </span>
             </div>
 
@@ -423,16 +423,16 @@ function NavItem({ href, icon, label, active, collapsed }: any) {
   return (
     <Link
       href={href}
-      title={collapsed ? label : ""}
+      title={collapsed ? label : ''}
       className={`flex items-center gap-4 p-4 rounded-xl transition-all ${
         active
-          ? "text-denin bg-denin/5 font-bold"
-          : "text-gray-700 hover:text-denin hover:bg-gray-50"
-      } ${collapsed ? "justify-center" : ""}`}
+          ? 'text-denin bg-denin/5 font-bold'
+          : 'text-gray-700 hover:text-denin hover:bg-gray-50'
+      } ${collapsed ? 'justify-center' : ''}`}
     >
       <div className="shrink-0">{icon}</div>
       <span
-        className={`text-base font-semibold whitespace-nowrap transition-all duration-200 ${collapsed ? "opacity-0 w-0 invisible" : "opacity-100 w-auto visible"}`}
+        className={`text-base font-semibold whitespace-nowrap transition-all duration-200 ${collapsed ? 'opacity-0 w-0 invisible' : 'opacity-100 w-auto visible'}`}
       >
         {label}
       </span>
@@ -449,8 +449,8 @@ function SubNavItem({ href, icon, label }: any) {
       href={href}
       className={`flex items-center gap-3 p-3 text-sm font-bold rounded-lg transition-all whitespace-nowrap ${
         active
-          ? "text-denin bg-denin/10"
-          : "text-gray-600 hover:text-denin hover:bg-denin/5"
+          ? 'text-denin bg-denin/10'
+          : 'text-gray-600 hover:text-denin hover:bg-denin/5'
       }`}
     >
       <div className="shrink-0">{icon}</div>

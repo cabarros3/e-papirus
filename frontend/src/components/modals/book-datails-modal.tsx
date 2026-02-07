@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Livro } from "@/types/livros";
+import { useEffect, useState } from 'react';
+import { Livro } from '@/types/livros';
 import {
   ExemplaresService,
   LivroComExemplares,
   ExemplarAgrupado,
-} from "../../services/exemplar-service";
+} from '../../services/exemplar-service';
 import {
   X,
   User,
@@ -16,8 +16,8 @@ import {
   Hash,
   CheckCircle2,
   Loader2,
-} from "lucide-react";
-import Link from "next/link";
+} from 'lucide-react';
+import Link from 'next/link';
 
 interface BookDetailsModalProps {
   livro: Livro | null;
@@ -40,8 +40,8 @@ export default function BookDetailsModal({
   useEffect(() => {
     if (isOpen) {
       // Verifica se existe o token e o usuário no localStorage
-      const savedUser = localStorage.getItem("bib_user");
-      const token = localStorage.getItem("bib_token");
+      const savedUser = localStorage.getItem('bib_user');
+      const token = localStorage.getItem('bib_token');
       setEstaLogado(!!savedUser && !!token);
 
       if (livro?.id_livro) {
@@ -49,11 +49,11 @@ export default function BookDetailsModal({
           setLoadingExemplares(true);
           try {
             const res = await ExemplaresService.getExemplaresPorLivro(
-              livro.id_livro,
+              livro.id_livro
             );
             setDadosExemplares(res);
           } catch (error) {
-            console.error("Erro ao buscar exemplares:", error);
+            console.error('Erro ao buscar exemplares:', error);
           } finally {
             setLoadingExemplares(false);
           }
@@ -112,11 +112,11 @@ export default function BookDetailsModal({
           <div className="grid grid-cols-2 gap-6 mb-8 text-sm">
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-gray-600">
-                <Building size={16} className="text-denin" />{" "}
+                <Building size={16} className="text-denin" />{' '}
                 <strong>Editora:</strong> {livro.editora}
               </div>
               <div className="flex items-center gap-2 text-gray-600">
-                <Calendar size={16} className="text-denin" />{" "}
+                <Calendar size={16} className="text-denin" />{' '}
                 <strong>Ano:</strong> {livro.ano_publicacao}
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function BookDetailsModal({
             </h4>
             <p className="text-gray-600 text-sm leading-relaxed">
               {livro.nota_resumo ||
-                "Este exemplar não possui resumo cadastrado."}
+                'Este exemplar não possui resumo cadastrado.'}
             </p>
           </div>
 
@@ -156,16 +156,16 @@ export default function BookDetailsModal({
                         Cópia #{ex.numero_exemplar}
                       </p>
                       <div
-                        className={`flex items-center gap-1 text-[10px] font-bold ${ex.disponibilidade === "disponivel" ? "text-green-600" : "text-red-500"}`}
+                        className={`flex items-center gap-1 text-[10px] font-bold ${ex.disponibilidade === 'disponivel' ? 'text-green-600' : 'text-red-500'}`}
                       >
-                        {ex.disponibilidade === "disponivel" && (
+                        {ex.disponibilidade === 'disponivel' && (
                           <CheckCircle2 size={10} />
                         )}
                         {ex.disponibilidade.toUpperCase()}
                       </div>
                     </div>
 
-                    {ex.disponibilidade === "disponivel" && (
+                    {ex.disponibilidade === 'disponivel' && (
                       <Link
                         href={
                           estaLogado
@@ -174,7 +174,7 @@ export default function BookDetailsModal({
                         }
                         className="bg-denin text-white text-[11px] font-bold px-4 py-2 rounded-lg hover:bg-denin/90 transition-all"
                       >
-                        {estaLogado ? "Reservar" : "Entrar"}
+                        {estaLogado ? 'Reservar' : 'Entrar'}
                       </Link>
                     )}
                   </div>

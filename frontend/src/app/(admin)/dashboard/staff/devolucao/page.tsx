@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   ArrowLeft,
@@ -7,19 +7,19 @@ import {
   User,
   BookOpen,
   AlertCircle,
-} from "lucide-react";
-import Link from "next/link";
-import { useState, useEffect } from "react";
+} from 'lucide-react';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 // Serviços e Tipos
-import emprestimoService from "@/services/emprestimo-service";
-import { pessoaService } from "@/services/pessoa-service";
-import { Pessoa } from "@/types/pessoas";
+import emprestimoService from '@/services/emprestimo-service';
+import { pessoaService } from '@/services/pessoa-service';
+import { Pessoa } from '@/types/pessoas';
 
 // Componentes Reutilizados e Modais
-import { UserSearchInput } from "@/components/inputs/UserSearchInput";
-import { ConfirmDevolucaoModal } from "@/components/modals/confirm-devolucao-modal";
-import { ResumoDevolucaoModal } from "@/components/modals/resumo-devolucao-modal";
+import { UserSearchInput } from '@/components/inputs/UserSearchInput';
+import { ConfirmDevolucaoModal } from '@/components/modals/confirm-devolucao-modal';
+import { ResumoDevolucaoModal } from '@/components/modals/resumo-devolucao-modal';
 
 export default function DevolucaoPage() {
   const [loading, setLoading] = useState(true);
@@ -28,7 +28,7 @@ export default function DevolucaoPage() {
 
   // Estados de Dados
   const [estudantes, setEstudantes] = useState<Pessoa[]>([]);
-  const [usuario, setUsuario] = useState({ id: "", nome: "" });
+  const [usuario, setUsuario] = useState({ id: '', nome: '' });
   const [emprestimosAtivos, setEmprestimosAtivos] = useState<any[]>([]);
 
   // Estados de Seleção e Modais
@@ -43,7 +43,7 @@ export default function DevolucaoPage() {
         const lista = await pessoaService.listar();
         setEstudantes(lista || []);
       } catch (e) {
-        console.error("Erro ao carregar lista de usuários");
+        console.error('Erro ao carregar lista de usuários');
       } finally {
         setLoading(false);
       }
@@ -63,11 +63,11 @@ export default function DevolucaoPage() {
       try {
         const dados = await emprestimoService.getFiltrado(
           Number(usuario.id),
-          "pendente",
+          'pendente'
         );
         setEmprestimosAtivos(dados);
       } catch (e) {
-        console.error("Erro ao buscar livros do usuário");
+        console.error('Erro ao buscar livros do usuário');
       } finally {
         setLoadingLivros(false);
       }
@@ -77,7 +77,7 @@ export default function DevolucaoPage() {
 
   const toggleSelecao = (id: number) => {
     setSelecionados((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
   };
 
@@ -91,16 +91,16 @@ export default function DevolucaoPage() {
           const item = emprestimosAtivos.find((e) => e.id_emprestimo === id);
           await emprestimoService.devolver(id);
           concluidos.push(item);
-        }),
+        })
       );
       setItensDevolvidos(concluidos);
       setIsResumoOpen(true);
       setEmprestimosAtivos((prev) =>
-        prev.filter((e) => !selecionados.includes(e.id_emprestimo)),
+        prev.filter((e) => !selecionados.includes(e.id_emprestimo))
       );
       setSelecionados([]);
     } catch (error) {
-      console.error("Erro no processamento.");
+      console.error('Erro no processamento.');
     } finally {
       setIsSubmitting(false);
     }
@@ -216,16 +216,18 @@ export default function DevolucaoPage() {
                   <div
                     key={emp.id_emprestimo}
                     onClick={() => toggleSelecao(emp.id_emprestimo)}
-                    className={`flex items-center gap-4 p-5 rounded-3xl cursor-pointer border transition-all ${selecionados.includes(emp.id_emprestimo)
-                        ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600"
-                        : "border-gray-100 bg-gray-50/50 hover:border-gray-300 hover:bg-white"
-                      }`}
+                    className={`flex items-center gap-4 p-5 rounded-3xl cursor-pointer border transition-all ${
+                      selecionados.includes(emp.id_emprestimo)
+                        ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600'
+                        : 'border-gray-100 bg-gray-50/50 hover:border-gray-300 hover:bg-white'
+                    }`}
                   >
                     <div
-                      className={`w-6 h-6 rounded-lg flex items-center justify-center border-2 transition-all ${selecionados.includes(emp.id_emprestimo)
-                          ? "bg-blue-600 border-blue-600"
-                          : "border-gray-200"
-                        }`}
+                      className={`w-6 h-6 rounded-lg flex items-center justify-center border-2 transition-all ${
+                        selecionados.includes(emp.id_emprestimo)
+                          ? 'bg-blue-600 border-blue-600'
+                          : 'border-gray-200'
+                      }`}
                     >
                       {selecionados.includes(emp.id_emprestimo) && (
                         <CheckCircle2 size={14} className="text-white" />
@@ -236,9 +238,9 @@ export default function DevolucaoPage() {
                         {emp.titulo}
                       </p>
                       <p
-                        className={`text-[10px] font-bold mt-1 uppercase ${emp.cor === "red" ? "text-red-500" : "text-blue-500"}`}
+                        className={`text-[10px] font-bold mt-1 uppercase ${emp.cor === 'red' ? 'text-red-500' : 'text-blue-500'}`}
                       >
-                        Vencimento:{" "}
+                        Vencimento:{' '}
                         {new Date(emp.data_prevista).toLocaleDateString()}
                       </p>
                     </div>
@@ -250,8 +252,8 @@ export default function DevolucaoPage() {
                 <AlertCircle size={48} className="text-gray-200 mb-4" />
                 <p className="text-gray-400 text-sm font-poppins font-semibold">
                   {usuario.id
-                    ? "Nenhum livro pendente!"
-                    : "Aguardando seleção do leitor"}
+                    ? 'Nenhum livro pendente!'
+                    : 'Aguardando seleção do leitor'}
                 </p>
               </div>
             )}

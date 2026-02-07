@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   BookMarked,
@@ -18,8 +18,8 @@ import {
   IdCard,
   PanelLeftClose,
   PanelLeftOpen,
-} from "lucide-react";
-import { Pessoa } from "@/types/pessoas";
+} from 'lucide-react';
+import { Pessoa } from '@/types/pessoas';
 
 export default function ClientDashboardLayout({
   children,
@@ -36,11 +36,11 @@ export default function ClientDashboardLayout({
 
   useEffect(() => {
     const identifier = window.requestAnimationFrame(() => {
-      const saved = localStorage.getItem("bib_user");
-      const token = localStorage.getItem("bib_token");
+      const saved = localStorage.getItem('bib_user');
+      const token = localStorage.getItem('bib_token');
 
       if (!saved || !token) {
-        router.push("/login");
+        router.push('/login');
         return;
       }
 
@@ -48,7 +48,7 @@ export default function ClientDashboardLayout({
         setUser(JSON.parse(saved));
         setIsReady(true);
       } catch (error) {
-        router.push("/login");
+        router.push('/login');
       }
     });
 
@@ -69,17 +69,17 @@ export default function ClientDashboardLayout({
     <div className="flex min-h-screen bg-gray-50">
       <aside
         className={`${
-          isCollapsed ? "w-20" : "w-64"
+          isCollapsed ? 'w-20' : 'w-64'
         } bg-white border-r border-gray-200 hidden md:flex flex-col transition-all duration-300 ease-in-out relative flex-shrink-0`}
       >
         <div
           className={`h-16 border-b border-gray-100 flex items-center px-6 ${
-            isCollapsed ? "justify-center" : "justify-between"
+            isCollapsed ? 'justify-center' : 'justify-between'
           }`}
         >
           {/* Logo com overflow-hidden para não quebrar no fechar */}
           <div
-            className={`overflow-hidden transition-all duration-300 ${isCollapsed ? "w-0 opacity-0" : "w-auto opacity-100"}`}
+            className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}
           >
             <div className="font-bold text-2xl text-black whitespace-nowrap">
               <span className="text-denin">e</span>-Papirus
@@ -103,21 +103,21 @@ export default function ClientDashboardLayout({
             href="/dashboard/user"
             icon={<LayoutDashboard size={18} />}
             label="Dashboard"
-            active={isActive("/dashboard/user")}
+            active={isActive('/dashboard/user')}
             collapsed={isCollapsed}
           />
           <NavItem
             href="/resultados"
             icon={<Search size={18} />}
             label="Acervo"
-            active={isActive("/resultados")}
+            active={isActive('/resultados')}
             collapsed={isCollapsed}
           />
           <NavItem
             href="/meus-emprestimos"
             icon={<Library size={18} />}
             label="Empréstimos"
-            active={isActive("/meus-emprestimos")}
+            active={isActive('/meus-emprestimos')}
             collapsed={isCollapsed}
           />
 
@@ -129,15 +129,15 @@ export default function ClientDashboardLayout({
                 setReservaSubmenuOpen(!reservaSubmenuOpen);
               }}
               className={`w-full flex items-center p-3 rounded-lg transition-all ${
-                pathname.includes("reserva")
-                  ? "text-denin font-medium"
-                  : "text-gray-600 hover:bg-gray-50"
-              } ${isCollapsed ? "justify-center" : "justify-between"}`}
+                pathname.includes('reserva')
+                  ? 'text-denin font-medium'
+                  : 'text-gray-600 hover:bg-gray-50'
+              } ${isCollapsed ? 'justify-center' : 'justify-between'}`}
             >
               <div className="flex items-center gap-3">
                 <BookMarked size={18} className="shrink-0" />
                 <span
-                  className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? "opacity-0 w-0" : "opacity-100"}`}
+                  className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}
                 >
                   Reservas
                 </span>
@@ -175,14 +175,14 @@ export default function ClientDashboardLayout({
             href="/historico"
             icon={<HistoryIcon size={18} />}
             label="Histórico"
-            active={isActive("/historico")}
+            active={isActive('/historico')}
             collapsed={isCollapsed}
           />
           <NavItem
             href="/perfil"
             icon={<IdCard size={18} />}
             label="Dados Pessoais"
-            active={isActive("/perfil")}
+            active={isActive('/perfil')}
             collapsed={isCollapsed}
           />
         </nav>
@@ -190,7 +190,7 @@ export default function ClientDashboardLayout({
         <div className="p-4 border-t border-gray-50">
           {isCollapsed ? (
             <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mx-auto text-[10px] font-bold text-gray-400">
-              {user.matricula?.slice(-2) || "ID"}
+              {user.matricula?.slice(-2) || 'ID'}
             </div>
           ) : (
             <div className="bg-gray-50 rounded-xl p-3 text-center whitespace-nowrap overflow-hidden">
@@ -198,7 +198,7 @@ export default function ClientDashboardLayout({
                 Matrícula
               </p>
               <p className="text-xs font-bold text-gray-600 truncate">
-                {user.matricula || "N/A"}
+                {user.matricula || 'N/A'}
               </p>
             </div>
           )}
@@ -214,7 +214,7 @@ export default function ClientDashboardLayout({
           <div className="flex items-center gap-4 shrink-0">
             <div className="flex flex-col items-end mr-2 hidden sm:flex">
               <span className="text-xs font-bold text-gray-800">
-                {user.nome.split(" ")[0]}
+                {user.nome.split(' ')[0]}
               </span>
               <span className="text-[10px] text-gray-500 capitalize">
                 {user.tipo}
@@ -228,7 +228,7 @@ export default function ClientDashboardLayout({
                 <button
                   onClick={() => {
                     localStorage.clear();
-                    router.push("/login");
+                    router.push('/login');
                   }}
                   className="w-full flex items-center gap-3 p-4 text-sm text-red-500 hover:bg-red-50 font-bold"
                 >
@@ -251,14 +251,14 @@ function NavItem({ href, icon, label, active, collapsed }: any) {
       href={href}
       className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
         active
-          ? "bg-denin/10 text-denin font-medium"
-          : "text-gray-600 hover:bg-gray-50"
-      } ${collapsed ? "justify-center" : ""}`}
-      title={collapsed ? label : ""}
+          ? 'bg-denin/10 text-denin font-medium'
+          : 'text-gray-600 hover:bg-gray-50'
+      } ${collapsed ? 'justify-center' : ''}`}
+      title={collapsed ? label : ''}
     >
       <div className="shrink-0">{icon}</div>
       <span
-        className={`text-sm whitespace-nowrap transition-all duration-200 ${collapsed ? "opacity-0 w-0 invisible" : "opacity-100 w-auto visible"}`}
+        className={`text-sm whitespace-nowrap transition-all duration-200 ${collapsed ? 'opacity-0 w-0 invisible' : 'opacity-100 w-auto visible'}`}
       >
         {label}
       </span>

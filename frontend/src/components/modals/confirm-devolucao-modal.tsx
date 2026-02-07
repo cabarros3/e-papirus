@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { AlertCircle, X, HelpCircle } from "lucide-react";
+import { AlertCircle, X, HelpCircle } from 'lucide-react';
 
 interface ConfirmDevolucaoModalProps {
   isOpen: boolean;
@@ -42,9 +42,9 @@ export function ConfirmDevolucaoModal({
               Confirmar Devolução
             </h2>
             <p className="text-sm text-gray-500">
-              Você deseja confirmar a devolução de{" "}
-              <span className="font-bold text-gray-900">{quantidade}</span>{" "}
-              {quantidade === 1 ? "livro" : "livros"}?
+              Você deseja confirmar a devolução de{' '}
+              <span className="font-bold text-gray-900">{quantidade}</span>{' '}
+              {quantidade === 1 ? 'livro' : 'livros'}?
             </p>
           </div>
 
@@ -64,7 +64,7 @@ export function ConfirmDevolucaoModal({
               {loading ? (
                 <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                "Confirmar"
+                'Confirmar'
               )}
             </button>
           </div>

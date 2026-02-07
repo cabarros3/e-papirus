@@ -1,6 +1,6 @@
-import { Search, Check, Mail, CreditCard, Hash } from "lucide-react";
-import { useRef, useState, useEffect } from "react";
-import { Pessoa } from "@/types/pessoas";
+import { Search, Check, Mail, CreditCard, Hash } from 'lucide-react';
+import { useRef, useState, useEffect } from 'react';
+import { Pessoa } from '@/types/pessoas';
 
 interface UserSearchInputProps {
   usuarios: Pessoa[];
@@ -15,7 +15,7 @@ export function UserSearchInput({
   selecionadoId,
   selecionadoNome,
 }: UserSearchInputProps) {
-  const [busca, setBusca] = useState("");
+  const [busca, setBusca] = useState('');
   const [aberto, setAberto] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -24,8 +24,8 @@ export function UserSearchInput({
       if (ref.current && !ref.current.contains(e.target as Node))
         setAberto(false);
     };
-    document.addEventListener("mousedown", clickFora);
-    return () => document.removeEventListener("mousedown", clickFora);
+    document.addEventListener('mousedown', clickFora);
+    return () => document.removeEventListener('mousedown', clickFora);
   }, []);
 
   const filtrados = usuarios.filter(
@@ -33,7 +33,7 @@ export function UserSearchInput({
       u.nome.toLowerCase().includes(busca.toLowerCase()) ||
       (u.cpf && u.cpf.includes(busca)) ||
       String(u.id_pessoa).includes(busca) ||
-      (u.email && u.email.toLowerCase().includes(busca.toLowerCase())),
+      (u.email && u.email.toLowerCase().includes(busca.toLowerCase()))
   );
 
   return (
@@ -54,7 +54,7 @@ export function UserSearchInput({
         <input
           type="text"
           placeholder={
-            selecionadoNome || "Buscar por nome, CPF ou Matrícula..."
+            selecionadoNome || 'Buscar por nome, CPF ou Matrícula...'
           }
           value={busca}
           onChange={(e) => {
@@ -64,8 +64,8 @@ export function UserSearchInput({
           onFocus={() => setAberto(true)}
           className={`w-full pl-11 pr-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-denin transition-all ${
             selecionadoId
-              ? "bg-green-50/30 border-green-200"
-              : "bg-white border-gray-200"
+              ? 'bg-green-50/30 border-green-200'
+              : 'bg-white border-gray-200'
           }`}
         />
       </div>
@@ -78,7 +78,7 @@ export function UserSearchInput({
                 key={u.id_pessoa}
                 onClick={() => {
                   onSelect(u);
-                  setBusca("");
+                  setBusca('');
                   setAberto(false);
                 }}
                 className="p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors"

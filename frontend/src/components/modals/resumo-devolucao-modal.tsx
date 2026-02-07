@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { CheckCircle2, X, BookOpen, User } from "lucide-react";
+import { CheckCircle2, X, BookOpen, User } from 'lucide-react';
 
 interface ResumoDevolucaoModalProps {
   isOpen: boolean;

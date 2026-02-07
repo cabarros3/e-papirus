@@ -1,9 +1,9 @@
-"use client";
-import { Plus } from "lucide-react";
-import { useState, useMemo } from "react";
-import { BookService } from "@/services/book-service";
-import { LivroComExemplares } from "@/services/exemplar-service";
-import { Livro } from "@/types/livros";
+'use client';
+import { Plus } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { BookService } from '@/services/book-service';
+import { LivroComExemplares } from '@/services/exemplar-service';
+import { Livro } from '@/types/livros';
 
 interface BookSelectionFormProps {
   livrosComExemplares: LivroComExemplares[];
@@ -22,8 +22,8 @@ export function BookSelectionForm({
   onDatasChange,
   onLivroVisualizado,
 }: BookSelectionFormProps) {
-  const [livroId, setLivroId] = useState("");
-  const [exemplarId, setExemplarId] = useState("");
+  const [livroId, setLivroId] = useState('');
+  const [exemplarId, setExemplarId] = useState('');
   const [detalhes, setDetalhes] = useState<Livro | null>(null);
 
   const bookService = new BookService();
@@ -31,16 +31,16 @@ export function BookSelectionForm({
   const exemplaresDisp = useMemo(() => {
     if (!livroId) return [];
     const livro = livrosComExemplares.find(
-      (l) => l.id_livro === parseInt(livroId),
+      (l) => l.id_livro === parseInt(livroId)
     );
     return livro
-      ? livro.exemplares.filter((ex) => ex.disponibilidade === "disponivel")
+      ? livro.exemplares.filter((ex) => ex.disponibilidade === 'disponivel')
       : [];
   }, [livroId, livrosComExemplares]);
 
   const handleLivroChange = async (id: string) => {
     setLivroId(id);
-    setExemplarId("");
+    setExemplarId('');
 
     if (id) {
       try {
@@ -49,7 +49,7 @@ export function BookSelectionForm({
         setDetalhes(d);
         onLivroVisualizado(d);
       } catch (error) {
-        console.error("Erro ao buscar detalhes:", error);
+        console.error('Erro ao buscar detalhes:', error);
       }
     } else {
       setDetalhes(null);
@@ -101,7 +101,7 @@ export function BookSelectionForm({
           type="button"
           onClick={() => {
             const ex = exemplaresDisp.find(
-              (e) => e.id_exemplar === parseInt(exemplarId),
+              (e) => e.id_exemplar === parseInt(exemplarId)
             );
             if (ex && detalhes) onAdicionar(ex, detalhes);
           }}

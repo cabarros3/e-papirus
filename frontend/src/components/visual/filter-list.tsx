@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface FilterListProps {
   items: string[];
@@ -35,11 +35,11 @@ export default function FilterList({
       {displayedItems.map((item) => (
         <li key={item}>
           <button
-            onClick={() => onSelect(selectedValue === item ? "" : item)}
+            onClick={() => onSelect(selectedValue === item ? '' : item)}
             className={`w-full text-left text-sm py-2 px-3 rounded-xl transition-all flex justify-between items-center group ${
               selectedValue === item
-                ? "bg-denin text-white font-bold shadow-md shadow-denin/20"
-                : "text-gray-600 hover:bg-gray-100 hover:text-denin"
+                ? 'bg-denin text-white font-bold shadow-md shadow-denin/20'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-denin'
             }`}
           >
             <span className="truncate pr-2">{item}</span>

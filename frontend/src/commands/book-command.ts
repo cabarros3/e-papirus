@@ -1,5 +1,5 @@
-import { BookService } from "../services/book-service";
-import { Livro } from "@/types/livros";
+import { BookService } from '../services/book-service';
+import { Livro } from '@/types/livros';
 
 export class SearchBookCommand {
   constructor(
@@ -14,7 +14,7 @@ export class SearchBookCommand {
       const data = await this.service.getAllBooks(this.query);
       this.onSuccess(data);
     } catch (error) {
-      console.error("Erro no SearchBookCommand:", error);
+      console.error('Erro no SearchBookCommand:', error);
       this.onSuccess([]);
     }
   }
@@ -31,7 +31,7 @@ export class GetPopularBooksCommand {
       const dados = await this.service.getMostBorrowed();
       this.onSuccess(dados);
     } catch (error) {
-      console.error("Erro no GetPopularBooksCommand:", error);
+      console.error('Erro no GetPopularBooksCommand:', error);
       // Retornar um array vazio evita que o componente quebre ao tentar fazer .map()
       this.onSuccess([]);
     }

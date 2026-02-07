@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "../ui/carousel";
-import BooksCard from "../cards/books-card";
-import { Livro } from "@/types/livros";
+} from '../ui/carousel';
+import BooksCard from '../cards/books-card';
+import { Livro } from '@/types/livros';
 
 interface BookSliderProps {
   livros: Livro[];
@@ -37,7 +37,7 @@ export function BookSlider({ livros, titulo, subtitulo }: BookSliderProps) {
       </div>
 
       <Carousel
-        opts={{ align: "start", loop: true }}
+        opts={{ align: 'start', loop: true }}
         className="w-full max-w-6xl mx-auto px-10"
       >
         <CarouselContent className="-ml-4 pb-4">

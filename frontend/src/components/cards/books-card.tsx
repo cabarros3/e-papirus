@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Heart, Loader2 } from "lucide-react";
-import { Card, CardContent, CardFooter } from "../ui/card";
-import { Button } from "../ui/button";
-import { Livro } from "@/types/livros";
+import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { Heart, Loader2 } from 'lucide-react';
+import { Card, CardContent, CardFooter } from '../ui/card';
+import { Button } from '../ui/button';
+import { Livro } from '@/types/livros';
 
 interface BooksCardProps {
   livro: Livro;
@@ -18,9 +18,9 @@ export default function BooksCard({ livro }: BooksCardProps) {
   const [mounted, setMounted] = useState(false);
 
   const checkAuth = useCallback(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("bib_token");
-      const user = localStorage.getItem("bib_user");
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('bib_token');
+      const user = localStorage.getItem('bib_user');
       setIsLogged(!!token && !!user);
     }
   }, []);
@@ -39,7 +39,7 @@ export default function BooksCard({ livro }: BooksCardProps) {
       router.push(`/dashboard/user/nova-reserva?id_livro=${livro.id_livro}`);
     } else {
       router.push(
-        `/login?redirect=/resultados?q=${encodeURIComponent(livro.titulo)}`,
+        `/login?redirect=/resultados?q=${encodeURIComponent(livro.titulo)}`
       );
     }
   };
@@ -55,7 +55,7 @@ export default function BooksCard({ livro }: BooksCardProps) {
         {/* Imagem Proporcionalmente Menor */}
         <div className="mb-3 shadow-md rotate-1 hover:rotate-0 transition-transform duration-300 shrink-0">
           <Image
-            src={livro.capa || "/img/img1.jpg"}
+            src={livro.capa || '/img/img1.jpg'}
             alt={`Capa do livro ${livro.titulo}`}
             width={110}
             height={160}
@@ -96,9 +96,9 @@ export default function BooksCard({ livro }: BooksCardProps) {
           {!mounted ? (
             <Loader2 size={14} className="animate-spin" />
           ) : isLogged ? (
-            "Reservar"
+            'Reservar'
           ) : (
-            "Entrar"
+            'Entrar'
           )}
         </Button>
       </CardFooter>

@@ -1,11 +1,11 @@
-import { API_URL, defaultHeaders } from "./api";
+import { API_URL, defaultHeaders } from './api';
 
 // Interface do exemplar básico
 export interface Exemplar {
   id_exemplar?: number;
   id_livro: number;
   localizacao: string;
-  disponibilidade: "disponivel" | "emprestado" | "reservado";
+  disponibilidade: 'disponivel' | 'emprestado' | 'reservado';
   numero_exemplar?: number;
 }
 
@@ -20,7 +20,7 @@ export interface ExemplarAgrupado {
   id_exemplar: number;
   numero_exemplar: number;
   localizacao: string;
-  disponibilidade: "disponivel" | "emprestado" | "reservado";
+  disponibilidade: 'disponivel' | 'emprestado' | 'reservado';
 }
 
 // Interface para livro com seus exemplares agrupados
@@ -37,9 +37,9 @@ export class ExemplaresService {
    */
   static async getAllExemplares(): Promise<Exemplar[]> {
     const response = await fetch(`${API_URL}/exemplares/index.php`, {
-      method: "GET",
+      method: 'GET',
       headers: defaultHeaders(), // AJUSTE: Adicionado ()
-      cache: "no-store",
+      cache: 'no-store',
     });
 
     if (!response.ok) return [];
@@ -55,9 +55,9 @@ export class ExemplaresService {
    */
   static async getExemplaresComLivro(): Promise<ExemplarComLivro[]> {
     const response = await fetch(`${API_URL}/exemplares/index.php`, {
-      method: "GET",
+      method: 'GET',
       headers: defaultHeaders(), // AJUSTE: Adicionado ()
-      cache: "no-store",
+      cache: 'no-store',
     });
 
     if (!response.ok) return [];
@@ -65,7 +65,7 @@ export class ExemplaresService {
     const result = await response.json();
 
     // Verificando se o status é 'sucesso' e acessando 'dados'
-    if (result.status === "sucesso" && (result.dados || result.data)) {
+    if (result.status === 'sucesso' && (result.dados || result.data)) {
       const data = result.dados || result.data;
       const exemplaresList: ExemplarComLivro[] = [];
 
@@ -90,16 +90,16 @@ export class ExemplaresService {
    */
   static async getLivrosComExemplares(): Promise<LivroComExemplares[]> {
     const response = await fetch(`${API_URL}/exemplares/index.php`, {
-      method: "GET",
+      method: 'GET',
       headers: defaultHeaders(), // AJUSTE: Adicionado ()
-      cache: "no-store",
+      cache: 'no-store',
     });
 
     if (!response.ok) return [];
 
     const result = await response.json();
 
-    if (result.status === "sucesso") {
+    if (result.status === 'sucesso') {
       return result.dados || result.data || [];
     }
 
@@ -110,15 +110,15 @@ export class ExemplaresService {
    * Buscar exemplares de um livro específico
    */
   static async getExemplaresPorLivro(
-    idLivro: number,
+    idLivro: number
   ): Promise<LivroComExemplares | null> {
     const response = await fetch(
       `${API_URL}/exemplares/index.php?id_livro=${idLivro}`,
       {
-        method: "GET",
+        method: 'GET',
         headers: defaultHeaders(), // AJUSTE: Adicionado ()
-        cache: "no-store",
-      },
+        cache: 'no-store',
+      }
     );
 
     if (!response.ok) return null;
@@ -126,7 +126,7 @@ export class ExemplaresService {
     const result = await response.json();
     const data = result.dados || result.data;
 
-    if (result.status === "sucesso" && data && data.length > 0) {
+    if (result.status === 'sucesso' && data && data.length > 0) {
       return data[0];
     }
 
@@ -138,15 +138,15 @@ export class ExemplaresService {
    */
   static async createExemplar(dados: Exemplar): Promise<void> {
     const response = await fetch(`${API_URL}/exemplares/create.php`, {
-      method: "POST",
+      method: 'POST',
       headers: defaultHeaders(), // AJUSTE: Adicionado ()
       body: JSON.stringify(dados),
     });
 
     const result = await response.json();
-    if (!response.ok || result.status === "erro") {
+    if (!response.ok || result.status === 'erro') {
       throw new Error(
-        result.mensagem || result.message || "Erro ao cadastrar exemplar",
+        result.mensagem || result.message || 'Erro ao cadastrar exemplar'
       );
     }
   }
@@ -156,15 +156,15 @@ export class ExemplaresService {
    */
   static async updateExemplar(dados: Exemplar): Promise<void> {
     const response = await fetch(`${API_URL}/exemplares/update.php`, {
-      method: "PUT",
+      method: 'PUT',
       headers: defaultHeaders(), // AJUSTE: Adicionado ()
       body: JSON.stringify(dados),
     });
 
     const result = await response.json();
-    if (!response.ok || result.status === "erro") {
+    if (!response.ok || result.status === 'erro') {
       throw new Error(
-        result.mensagem || result.message || "Erro ao atualizar exemplar",
+        result.mensagem || result.message || 'Erro ao atualizar exemplar'
       );
     }
   }
@@ -174,14 +174,14 @@ export class ExemplaresService {
    */
   static async deleteExemplar(id: number): Promise<void> {
     const response = await fetch(`${API_URL}/exemplares/delete.php?id=${id}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: defaultHeaders(), // AJUSTE: Adicionado ()
     });
 
     const result = await response.json();
-    if (!response.ok || result.status === "erro") {
+    if (!response.ok || result.status === 'erro') {
       throw new Error(
-        result.mensagem || result.message || "Erro ao excluir exemplar",
+        result.mensagem || result.message || 'Erro ao excluir exemplar'
       );
     }
   }

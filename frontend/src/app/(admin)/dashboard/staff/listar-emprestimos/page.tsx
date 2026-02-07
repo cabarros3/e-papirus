@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Search,
   Calendar,
@@ -11,27 +11,27 @@ import {
   AlertTriangle,
   Loader2,
   ArrowLeft,
-} from "lucide-react";
-import Link from "next/link";
-import emprestimoService from "@/services/emprestimo-service";
-import { Emprestimo } from "@/types/emprestimos";
+} from 'lucide-react';
+import Link from 'next/link';
+import emprestimoService from '@/services/emprestimo-service';
+import { Emprestimo } from '@/types/emprestimos';
 
 export default function ListaEmprestimos() {
   const [emprestimos, setEmprestimos] = useState<Emprestimo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filtroStatus, setFiltroStatus] = useState("todos");
-  const [busca, setBusca] = useState("");
+  const [filtroStatus, setFiltroStatus] = useState('todos');
+  const [busca, setBusca] = useState('');
 
   const carregarDados = async () => {
     setLoading(true);
     try {
       const dados = await emprestimoService.getFiltrado(
         undefined,
-        filtroStatus,
+        filtroStatus
       );
       setEmprestimos(dados || []);
     } catch (error) {
-      console.error("Erro ao carregar dados:", error);
+      console.error('Erro ao carregar dados:', error);
       setEmprestimos([]);
     } finally {
       setLoading(false);
@@ -43,10 +43,10 @@ export default function ListaEmprestimos() {
   }, [filtroStatus]);
 
   const formatarData = (dataStr: string) => {
-    if (!dataStr) return "--/--/----";
+    if (!dataStr) return '--/--/----';
     try {
-      const data = new Date(dataStr + "T00:00:00");
-      return data.toLocaleDateString("pt-BR");
+      const data = new Date(dataStr + 'T00:00:00');
+      return data.toLocaleDateString('pt-BR');
     } catch {
       return dataStr;
     }
@@ -55,14 +55,14 @@ export default function ListaEmprestimos() {
   const emprestimosFiltrados = emprestimos.filter(
     (emp) =>
       emp.nome_pessoa?.toLowerCase().includes(busca.toLowerCase()) ||
-      emp.titulo?.toLowerCase().includes(busca.toLowerCase()),
+      emp.titulo?.toLowerCase().includes(busca.toLowerCase())
   );
 
   const getStatusIcon = (situacao: string) => {
     switch (situacao) {
-      case "Finalizado":
+      case 'Finalizado':
         return <CheckCircle size={14} className="text-green-500" />;
-      case "Atrasado":
+      case 'Atrasado':
         return <AlertTriangle size={14} className="text-red-500" />;
       default:
         return <Clock size={14} className="text-blue-500" />;
@@ -96,17 +96,17 @@ export default function ListaEmprestimos() {
       <div className="bg-white p-4 rounded-[2rem] border border-gray-200 shadow-sm space-y-4">
         <div className="flex flex-col lg:flex-row gap-4 justify-between">
           <div className="flex bg-gray-100 p-1 rounded-2xl overflow-x-auto no-scrollbar">
-            {["todos", "em_dia", "devolvido", "atrasado"].map((status) => (
+            {['todos', 'em_dia', 'devolvido', 'atrasado'].map((status) => (
               <button
                 key={status}
                 onClick={() => setFiltroStatus(status)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                   filtroStatus === status
-                    ? "bg-white text-denin shadow-sm"
-                    : "text-gray-500 hover:text-gray-700"
+                    ? 'bg-white text-denin shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                {status.replace("_", " ").toUpperCase()}
+                {status.replace('_', ' ').toUpperCase()}
               </button>
             ))}
           </div>
@@ -167,7 +167,7 @@ export default function ListaEmprestimos() {
                           </div>
                           <div>
                             <p className="text-sm font-bold text-gray-800">
-                              {emp.nome_pessoa || "Sem nome"}
+                              {emp.nome_pessoa || 'Sem nome'}
                             </p>
                             <p className="text-[10px] text-gray-500">
                               {emp.email_pessoa}
@@ -207,9 +207,9 @@ export default function ListaEmprestimos() {
                       <td className="px-6 py-4 text-center">
                         <span
                           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider
-                            ${emp.cor === "green" ? "bg-green-100 text-green-700" : ""}
-                            ${emp.cor === "red" ? "bg-red-100 text-red-700" : ""}
-                            ${emp.cor === "blue" ? "bg-blue-100 text-blue-700" : ""}
+                            ${emp.cor === 'green' ? 'bg-green-100 text-green-700' : ''}
+                            ${emp.cor === 'red' ? 'bg-red-100 text-red-700' : ''}
+                            ${emp.cor === 'blue' ? 'bg-blue-100 text-blue-700' : ''}
                           `}
                         >
                           {getStatusIcon(emp.situacao)}

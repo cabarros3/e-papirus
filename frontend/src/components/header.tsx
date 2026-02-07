@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
-import { Button } from "./ui/button";
-import Image from "next/image";
-import Link from "next/link";
-import { LayoutDashboard, LogIn, Menu, X } from "lucide-react";
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useCallback } from 'react';
+import { Button } from './ui/button';
+import Image from 'next/image';
+import Link from 'next/link';
+import { LayoutDashboard, LogIn, Menu, X } from 'lucide-react';
 
 export default function Header() {
   const router = useRouter();
@@ -13,9 +13,9 @@ export default function Header() {
   const [isLogged, setIsLogged] = useState<boolean | null>(null);
 
   const checkAuth = useCallback(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("bib_token");
-      const user = localStorage.getItem("bib_user");
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('bib_token');
+      const user = localStorage.getItem('bib_user');
       const loggedStatus = !!token && !!user;
       setIsLogged(loggedStatus);
     }
@@ -23,10 +23,10 @@ export default function Header() {
 
   useEffect(() => {
     const timeoutId = setTimeout(checkAuth, 0);
-    window.addEventListener("storage", checkAuth);
+    window.addEventListener('storage', checkAuth);
     return () => {
       clearTimeout(timeoutId);
-      window.removeEventListener("storage", checkAuth);
+      window.removeEventListener('storage', checkAuth);
     };
   }, [checkAuth]);
 
@@ -35,7 +35,7 @@ export default function Header() {
 
     if (isLogged) {
       // 1. Recupera os dados do usuário salvos no login
-      const savedUser = localStorage.getItem("bib_user");
+      const savedUser = localStorage.getItem('bib_user');
 
       if (savedUser) {
         try {
@@ -43,20 +43,20 @@ export default function Header() {
 
           // 2. Verifica o tipo/cargo e redireciona
           // Ajuste 'staff' ou 'admin' conforme os valores reais do seu banco
-          if (user.tipo === "staff" || user.tipo === "admin" || user.cargo) {
-            router.push("/dashboard/staff");
+          if (user.tipo === 'staff' || user.tipo === 'admin' || user.cargo) {
+            router.push('/dashboard/staff');
           } else {
-            router.push("/dashboard/user");
+            router.push('/dashboard/user');
           }
         } catch (error) {
-          console.error("Erro ao identificar usuário:", error);
-          router.push("/dashboard/user"); // Fallback seguro
+          console.error('Erro ao identificar usuário:', error);
+          router.push('/dashboard/user'); // Fallback seguro
         }
       } else {
-        router.push("/dashboard/user"); // Fallback caso não ache o objeto
+        router.push('/dashboard/user'); // Fallback caso não ache o objeto
       }
     } else {
-      router.push("/login");
+      router.push('/login');
     }
   };
   return (
@@ -111,8 +111,8 @@ export default function Header() {
                 onClick={handleAccessAction}
                 className={`w-full h-10 px-5 rounded-xl font-bold transition-all shadow-md flex items-center justify-center gap-2 border-none active:scale-95 ${
                   isLogged
-                    ? "bg-denin text-white hover:bg-denin/90 shadow-denin/10"
-                    : "bg-gray-800 text-white hover:bg-gray-900 shadow-gray-200"
+                    ? 'bg-denin text-white hover:bg-denin/90 shadow-denin/10'
+                    : 'bg-gray-800 text-white hover:bg-gray-900 shadow-gray-200'
                 }`}
               >
                 {isLogged ? (
@@ -141,7 +141,7 @@ export default function Header() {
             {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
         </div>
-      </div>{" "}
+      </div>{' '}
       {/* <--- ESSA DIV ESTAVA FALTANDO FECHAR AQUI */}
       {/* MOBILE OVERLAY */}
       {isMenuOpen && (
@@ -175,10 +175,10 @@ export default function Header() {
               <Button
                 onClick={handleAccessAction}
                 className={`w-full h-12 font-bold uppercase tracking-widest rounded-2xl ${
-                  isLogged ? "bg-denin text-white" : "bg-gray-800 text-white"
+                  isLogged ? 'bg-denin text-white' : 'bg-gray-800 text-white'
                 }`}
               >
-                {isLogged ? "Ir para o Painel" : "Acessar Sistema"}
+                {isLogged ? 'Ir para o Painel' : 'Acessar Sistema'}
               </Button>
             </div>
           </nav>

@@ -1,4 +1,4 @@
-import { API_URL, defaultHeaders } from "./api";
+import { API_URL, defaultHeaders } from './api';
 
 export interface AlunoDashboardData {
   ativos: number;
@@ -11,16 +11,16 @@ export interface AlunoDashboardData {
     titulo: string;
     capa: string | null;
     status_texto: string;
-    cor: "red" | "orange" | "blue";
+    cor: 'red' | 'orange' | 'blue';
   }[];
 }
 
 export class AlunoDashboardService {
   async getStats(
-    idPessoa: number | string,
+    idPessoa: number | string
   ): Promise<AlunoDashboardData | null> {
     if (!idPessoa) {
-      console.error("AlunoDashboardService: idPessoa não fornecido.");
+      console.error('AlunoDashboardService: idPessoa não fornecido.');
       return null;
     }
 
@@ -28,10 +28,10 @@ export class AlunoDashboardService {
       const response = await fetch(
         `${API_URL}/dashboards/user.php?id_pessoa=${idPessoa}`,
         {
-          method: "GET",
+          method: 'GET',
           headers: defaultHeaders(),
-          cache: "no-store",
-        },
+          cache: 'no-store',
+        }
       );
 
       // Log para debug rápido no console do navegador
@@ -43,14 +43,14 @@ export class AlunoDashboardService {
 
       const json = await response.json();
 
-      if (json.status === "sucesso") {
+      if (json.status === 'sucesso') {
         return json.dados;
       }
 
-      console.warn("Backend retornou erro:", json.mensagem);
+      console.warn('Backend retornou erro:', json.mensagem);
       return null;
     } catch (error) {
-      console.error("Erro de conexão/parsing:", error);
+      console.error('Erro de conexão/parsing:', error);
       return null;
     }
   }

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   X,
   Save,
@@ -12,15 +12,15 @@ import {
   IdCard,
   Filter,
   Briefcase,
-} from "lucide-react";
+} from 'lucide-react';
 import {
   Pessoa,
   TipoPessoa,
   CargoFuncionario,
   CadastroPessoaDTO,
-} from "@/types/pessoas";
-import { pessoaService } from "@/services/pessoa-service";
-import { toast } from "sonner";
+} from '@/types/pessoas';
+import { pessoaService } from '@/services/pessoa-service';
+import { toast } from 'sonner';
 
 interface ModalEditarUsuarioProps {
   usuario: Pessoa;
@@ -35,7 +35,7 @@ export function ModalEditarUsuario({
 }: ModalEditarUsuarioProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tipoSelecionado, setTipoSelecionado] = useState<TipoPessoa>(
-    usuario.tipo,
+    usuario.tipo
   );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,25 +46,25 @@ export function ModalEditarUsuario({
 
     // Omitimos a senha na atualização, conforme seu update.php sugere
     const dadosAtualizados: Partial<CadastroPessoaDTO> = {
-      nome: String(formData.get("nome")),
-      email: String(formData.get("email")),
-      cpf: String(formData.get("cpf")),
-      matricula: String(formData.get("matricula")),
-      telefone: String(formData.get("telefone")),
+      nome: String(formData.get('nome')),
+      email: String(formData.get('email')),
+      cpf: String(formData.get('cpf')),
+      matricula: String(formData.get('matricula')),
+      telefone: String(formData.get('telefone')),
       tipo: tipoSelecionado,
       cargo:
-        tipoSelecionado === "funcionario"
-          ? (formData.get("cargo") as CargoFuncionario)
+        tipoSelecionado === 'funcionario'
+          ? (formData.get('cargo') as CargoFuncionario)
           : null,
     };
 
     try {
       await pessoaService.atualizar(usuario.id_pessoa, dadosAtualizados);
-      toast.success("Usuário atualizado com sucesso!");
+      toast.success('Usuário atualizado com sucesso!');
       onSuccess();
       onClose();
     } catch (error: any) {
-      toast.error(error.message || "Erro ao atualizar dados.");
+      toast.error(error.message || 'Erro ao atualizar dados.');
     } finally {
       setIsSubmitting(false);
     }
@@ -123,7 +123,7 @@ export function ModalEditarUsuario({
               </label>
               <input
                 name="telefone"
-                defaultValue={usuario.telefone || ""}
+                defaultValue={usuario.telefone || ''}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-denin outline-none font-bold text-gray-700"
               />
             </div>
@@ -170,14 +170,14 @@ export function ModalEditarUsuario({
               </select>
             </div>
 
-            {tipoSelecionado === "funcionario" && (
+            {tipoSelecionado === 'funcionario' && (
               <div className="space-y-1 animate-in slide-in-from-top-2">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
                   <Briefcase size={12} /> Cargo
                 </label>
                 <select
                   name="cargo"
-                  defaultValue={usuario.cargo || "bibliotecario"}
+                  defaultValue={usuario.cargo || 'bibliotecario'}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-denin outline-none font-bold text-gray-700 bg-white"
                 >
                   <option value="bibliotecario">Bibliotecário</option>

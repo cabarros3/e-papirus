@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { BookService, UpdateLivroDTO } from "@/services/book-service";
-import { AuthorService } from "@/services/author-service";
-import { SubjectService } from "@/services/subject-service";
-import { Livro } from "@/types/livros";
-import { Autor } from "@/types/autores";
-import { Assunto } from "@/types/assuntos";
-import { toast } from "sonner";
-import { Search, Edit3, X, Save, Loader2, Book, ArrowLeft } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import { BookService, UpdateLivroDTO } from '@/services/book-service';
+import { AuthorService } from '@/services/author-service';
+import { SubjectService } from '@/services/subject-service';
+import { Livro } from '@/types/livros';
+import { Autor } from '@/types/autores';
+import { Assunto } from '@/types/assuntos';
+import { toast } from 'sonner';
+import { Search, Edit3, X, Save, Loader2, Book, ArrowLeft } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function ConsultarAcervo() {
   const [livros, setLivros] = useState<Livro[]>([]);
   const [autores, setAutores] = useState<Autor[]>([]);
   const [assuntos, setAssuntos] = useState<Assunto[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [livroSelecionado, setLivroSelecionado] = useState<Livro | null>(null);
@@ -38,7 +38,7 @@ export default function ConsultarAcervo() {
       setAutores(resAutores);
       setAssuntos(resAssuntos);
     } catch (err) {
-      toast.error("Erro ao carregar acervo.");
+      toast.error('Erro ao carregar acervo.');
     } finally {
       setLoading(false);
     }
@@ -56,24 +56,24 @@ export default function ConsultarAcervo() {
     try {
       const payload: UpdateLivroDTO = {
         id_livro: livroSelecionado.id_livro,
-        titulo: String(formData.get("titulo")),
-        id_assunto: Number(formData.get("id_assunto")),
-        editora: String(formData.get("editora")),
-        ano_publicacao: Number(formData.get("ano_publicacao")),
-        cidade_publicacao: String(formData.get("cidade_publicacao")),
-        nota_resumo: String(formData.get("nota_resumo")),
-        descricao_fisica: String(formData.get("descricao_fisica")),
+        titulo: String(formData.get('titulo')),
+        id_assunto: Number(formData.get('id_assunto')),
+        editora: String(formData.get('editora')),
+        ano_publicacao: Number(formData.get('ano_publicacao')),
+        cidade_publicacao: String(formData.get('cidade_publicacao')),
+        nota_resumo: String(formData.get('nota_resumo')),
+        descricao_fisica: String(formData.get('descricao_fisica')),
         // Enviando como array de um único ID para satisfazer o payload da API
-        autores: [Number(formData.get("id_autor"))],
-        capa: String(formData.get("capa")),
+        autores: [Number(formData.get('id_autor'))],
+        capa: String(formData.get('capa')),
       };
 
       await bookService.updateBook(payload);
-      toast.success("Dados atualizados!");
+      toast.success('Dados atualizados!');
       setIsEditModalOpen(false);
       fetchData();
     } catch (err) {
-      toast.error("Erro ao atualizar.");
+      toast.error('Erro ao atualizar.');
     }
   };
 
@@ -228,7 +228,9 @@ export default function ConsultarAcervo() {
                     name="id_autor"
                     defaultValue={
                       autores.find((a) =>
-                        (livroSelecionado?.nomes_autores || "").includes(a.nome_autor)
+                        (livroSelecionado?.nomes_autores || '').includes(
+                          a.nome_autor
+                        )
                       )?.id_autor
                     }
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none bg-white font-medium"

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Search, ChevronDown } from "lucide-react";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Search, ChevronDown } from 'lucide-react';
 
 export default function SearchBar() {
-  const [query, setQuery] = useState("");
-  const [filtro, setFiltro] = useState("Todos os campos");
+  const [query, setQuery] = useState('');
+  const [filtro, setFiltro] = useState('Todos os campos');
   const router = useRouter();
 
   const handleSearch = () => {
@@ -16,7 +16,7 @@ export default function SearchBar() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleSearch();
+    if (e.key === 'Enter') handleSearch();
   };
 
   return (

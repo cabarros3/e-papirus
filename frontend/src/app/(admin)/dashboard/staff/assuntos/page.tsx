@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { SubjectService } from "@/services/subject-service";
-import { Assunto } from "@/types/assuntos";
-import { toast } from "sonner";
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import { SubjectService } from '@/services/subject-service';
+import { Assunto } from '@/types/assuntos';
+import { toast } from 'sonner';
 import {
   Tag,
   Trash2,
@@ -15,7 +15,7 @@ import {
   ChevronRight,
   Plus,
   AlertTriangle,
-} from "lucide-react";
+} from 'lucide-react';
 
 export default function GerenciarAssuntos() {
   const [assuntos, setAssuntos] = useState<Assunto[]>([]);
@@ -26,14 +26,14 @@ export default function GerenciarAssuntos() {
   const itemsPerPage = 10;
 
   // Modais e Formulários
-  const [novoNome, setNovoNome] = useState<string>("");
+  const [novoNome, setNovoNome] = useState<string>('');
 
   // Estado para Modal de Edição
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [assuntoParaEditar, setAssuntoParaEditar] = useState<Assunto | null>(
     null
   );
-  const [nomeEditado, setNomeEditado] = useState<string>("");
+  const [nomeEditado, setNomeEditado] = useState<string>('');
 
   // Estado para Modal de Exclusão
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -51,7 +51,7 @@ export default function GerenciarAssuntos() {
         const dados = await service.getAllSubjects();
         setAssuntos(dados);
       } catch (err) {
-        toast.error("Erro ao carregar assuntos.");
+        toast.error('Erro ao carregar assuntos.');
       } finally {
         if (isInitialLoad) setLoading(false);
       }
@@ -76,9 +76,9 @@ export default function GerenciarAssuntos() {
     if (!novoNome.trim()) return;
     try {
       await service.createSubject({ nome_assunto: novoNome });
-      setNovoNome("");
+      setNovoNome('');
       await fetchData();
-      toast.success("Assunto criado com sucesso!");
+      toast.success('Assunto criado com sucesso!');
     } catch (err) {
       toast.error((err as Error).message);
     }
@@ -93,7 +93,7 @@ export default function GerenciarAssuntos() {
       });
       setIsEditModalOpen(false);
       await fetchData();
-      toast.success("Assunto atualizado!");
+      toast.success('Assunto atualizado!');
     } catch (err) {
       toast.error((err as Error).message);
     }
@@ -108,11 +108,11 @@ export default function GerenciarAssuntos() {
         prev.filter((a) => a.id_assunto !== assuntoParaDeletar.id_assunto)
       );
       setIsDeleteModalOpen(false);
-      toast.warning("Assunto removido com sucesso.");
+      toast.warning('Assunto removido com sucesso.');
       if (currentData.length === 1 && currentPage > 1)
         setCurrentPage(currentPage - 1);
     } catch (err) {
-      toast.error("Erro ao excluir. O assunto pode estar em uso.");
+      toast.error('Erro ao excluir. O assunto pode estar em uso.');
     } finally {
       setIsDeleting(false);
       setAssuntoParaDeletar(null);
@@ -294,7 +294,7 @@ export default function GerenciarAssuntos() {
                 Confirmar Exclusão
               </h2>
               <p className="text-sm text-gray-500">
-                Tem certeza que deseja excluir{" "}
+                Tem certeza que deseja excluir{' '}
                 <strong>{assuntoParaDeletar?.nome_assunto}</strong>?<br />
                 Esta ação não pode ser desfeita.
               </p>
@@ -308,7 +308,7 @@ export default function GerenciarAssuntos() {
                 {isDeleting ? (
                   <Loader2 className="animate-spin" size={18} />
                 ) : (
-                  "Excluir Agora"
+                  'Excluir Agora'
                 )}
               </button>
               <button

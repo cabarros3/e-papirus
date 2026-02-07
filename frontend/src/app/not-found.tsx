@@ -1,5 +1,5 @@
 // import BooksCard from "@/components/cards/books-card";
-import { BookSlider } from "@/components/sliders/book-slider";
+import { BookSlider } from '@/components/sliders/book-slider';
 
 export default function NotFound() {
   return (

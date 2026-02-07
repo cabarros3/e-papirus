@@ -1,6 +1,6 @@
-import { BookOpen, Trash2 } from "lucide-react";
-import Image from "next/image";
-import { Livro } from "@/types/livros";
+import { BookOpen, Trash2 } from 'lucide-react';
+import Image from 'next/image';
+import { Livro } from '@/types/livros';
 
 export interface BasketItem {
   id_exemplar: number;
@@ -57,7 +57,7 @@ export function BookBasket({
         <div className="flex gap-4 items-center animate-in slide-in-from-left-2">
           <div className="relative w-20 h-28 flex-shrink-0">
             <Image
-              src={livroDetalhes.capa || "https://via.placeholder.com/80x112"}
+              src={livroDetalhes.capa || 'https://via.placeholder.com/80x112'}
               alt="capa"
               fill
               className="object-cover rounded-lg shadow-sm"

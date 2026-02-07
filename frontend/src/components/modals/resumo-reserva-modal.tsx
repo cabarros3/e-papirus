@@ -1,5 +1,5 @@
-"use client";
-import { CheckCircle2, Calendar, User, BookOpen, Clock } from "lucide-react";
+'use client';
+import { CheckCircle2, Calendar, User, BookOpen, Clock } from 'lucide-react';
 
 interface ResumoReservaModalProps {
   isOpen: boolean;
@@ -65,7 +65,7 @@ export function ResumoReservaModal({
                   Válido Até
                 </p>
                 <p className="text-sm font-bold text-denin">
-                  {new Date(dados.expiracao).toLocaleDateString("pt-BR")}
+                  {new Date(dados.expiracao).toLocaleDateString('pt-BR')}
                 </p>
               </div>
             </div>

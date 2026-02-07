@@ -1,21 +1,21 @@
-import { BookOpen, ShieldCheck, Zap } from "lucide-react";
+import { BookOpen, ShieldCheck, Zap } from 'lucide-react';
 
 export default function Features() {
   const items = [
     {
       icon: <BookOpen className="w-5 h-5" />,
-      title: "Vasto Acervo",
-      desc: "Acesso a milhares de títulos digitais.",
+      title: 'Vasto Acervo',
+      desc: 'Acesso a milhares de títulos digitais.',
     },
     {
       icon: <Zap className="w-5 h-5" />,
-      title: "Acesso Rápido",
-      desc: "Sua leitura em qualquer dispositivo.",
+      title: 'Acesso Rápido',
+      desc: 'Sua leitura em qualquer dispositivo.',
     },
     {
       icon: <ShieldCheck className="w-5 h-5" />,
-      title: "Segurança",
-      desc: "Dados protegidos e leitura segura.",
+      title: 'Segurança',
+      desc: 'Dados protegidos e leitura segura.',
     },
   ];
 

@@ -1,5 +1,5 @@
-"use client";
-import { CheckCircle2, Calendar, User, BookOpen } from "lucide-react";
+'use client';
+import { CheckCircle2, Calendar, User, BookOpen } from 'lucide-react';
 
 interface ResumoEmprestimoModalProps {
   isOpen: boolean;
@@ -67,7 +67,7 @@ export function ResumoEmprestimoModal({
                   Data de Devolução
                 </p>
                 <p className="text-sm font-bold text-denin">
-                  {new Date(dados.devolucao).toLocaleDateString("pt-BR")}
+                  {new Date(dados.devolucao).toLocaleDateString('pt-BR')}
                 </p>
               </div>
             </div>

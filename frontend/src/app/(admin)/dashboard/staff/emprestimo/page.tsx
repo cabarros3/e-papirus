@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import { ArrowLeft, Loader2 } from "lucide-react";
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { ArrowLeft, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 // Serviços e Tipos
-import emprestimoService from "@/services/emprestimo-service";
+import emprestimoService from '@/services/emprestimo-service';
 import {
   ExemplaresService,
   LivroComExemplares,
-} from "@/services/exemplar-service";
-import { pessoaService } from "@/services/pessoa-service";
-import { Pessoa } from "@/types/pessoas";
-import { Livro } from "@/types/livros";
+} from '@/services/exemplar-service';
+import { pessoaService } from '@/services/pessoa-service';
+import { Pessoa } from '@/types/pessoas';
+import { Livro } from '@/types/livros';
 
 // Componentes refatorados
-import { ResumoEmprestimoModal } from "@/components/modals/resumo-emprestimo-modal";
-import { BasketItem, BookBasket } from "@/components/cards/BookBasket";
-import { UserSearchInput } from "@/components/inputs/UserSearchInput";
-import { BookSelectionForm } from "@/components/forms/BookSelectionForm";
+import { ResumoEmprestimoModal } from '@/components/modals/resumo-emprestimo-modal';
+import { BasketItem, BookBasket } from '@/components/cards/BookBasket';
+import { UserSearchInput } from '@/components/inputs/UserSearchInput';
+import { BookSelectionForm } from '@/components/forms/BookSelectionForm';
 
 export default function EmprestimoPage() {
   const router = useRouter();
@@ -30,11 +30,11 @@ export default function EmprestimoPage() {
   const [livrosComExemplares, setLivrosComExemplares] = useState<
     LivroComExemplares[]
   >([]);
-  const [usuario, setUsuario] = useState({ id: "", nome: "" });
+  const [usuario, setUsuario] = useState({ id: '', nome: '' });
   const [cesta, setCesta] = useState<BasketItem[]>([]);
   const [datas, setDatas] = useState({
-    emprestimo: new Date().toISOString().split("T")[0],
-    prevista: "",
+    emprestimo: new Date().toISOString().split('T')[0],
+    prevista: '',
   });
   const [livroVisualizado, setLivroVisualizado] = useState<Livro | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,7 +50,7 @@ export default function EmprestimoPage() {
         setEstudantes(listaPessoas || []);
         setLivrosComExemplares(livrosData || []);
       } catch (error) {
-        console.error("Erro ao carregar dados:", error);
+        console.error('Erro ao carregar dados:', error);
       } finally {
         setLoading(false);
       }
@@ -59,9 +59,9 @@ export default function EmprestimoPage() {
   }, []);
 
   const handleAdicionarNaCesta = (exemplar: any, detalhesLivro: Livro) => {
-    if (cesta.length >= 3) return alert("Limite de 3 livros.");
+    if (cesta.length >= 3) return alert('Limite de 3 livros.');
     if (cesta.some((item) => item.id_exemplar === exemplar.id_exemplar))
-      return alert("Já está na cesta.");
+      return alert('Já está na cesta.');
 
     setCesta([
       ...cesta,
@@ -76,7 +76,7 @@ export default function EmprestimoPage() {
   const handleFinalizar = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!usuario.id || cesta.length === 0 || !datas.prevista)
-      return alert("Dados incompletos.");
+      return alert('Dados incompletos.');
 
     setIsSubmitting(true);
     try {
@@ -87,14 +87,14 @@ export default function EmprestimoPage() {
             id_pessoa: parseInt(usuario.id),
             data_emprestimo: datas.emprestimo,
             data_prevista: datas.prevista,
-          }),
-        ),
+          })
+        )
       );
 
       setDadosResumo({
-        livro: cesta.map((i) => i.titulo).join(", "),
+        livro: cesta.map((i) => i.titulo).join(', '),
         estudante: usuario.nome,
-        exemplar: cesta.map((i) => i.numero_exemplar).join(", "),
+        exemplar: cesta.map((i) => i.numero_exemplar).join(', '),
         devolucao: datas.prevista,
       });
       setIsModalOpen(true);
@@ -118,7 +118,7 @@ export default function EmprestimoPage() {
       <ResumoEmprestimoModal
         isOpen={isModalOpen}
         dados={dadosResumo}
-        onConfirm={() => router.push("/dashboard/staff/")}
+        onConfirm={() => router.push('/dashboard/staff/')}
       />
 
       <div className="flex items-center gap-4">
