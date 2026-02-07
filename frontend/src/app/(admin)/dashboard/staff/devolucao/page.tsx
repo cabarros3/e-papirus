@@ -140,7 +140,7 @@ export default function DevolucaoPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-poppins font-bold text-gray-900 uppercase tracking-tight">
-            Devolução de Livros
+            Devolução de Itens
           </h1>
           <p className="text-sm text-gray-500 font-medium font-sans">
             Selecione o leitor e os exemplares para devolver.
@@ -198,7 +198,7 @@ export default function DevolucaoPage() {
         <div className="space-y-6 md:pl-4">
           <div className="flex items-center justify-between">
             <h2 className="text-[11px] font-poppins font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-              <BookOpen size={14} /> Livros Pendentes
+              <BookOpen size={14} /> Itens emprestados
             </h2>
           </div>
 

@@ -93,15 +93,15 @@ export default function ListarReservasPage() {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Gerenciar Reservas
+          <h1 className="text-2xl font-bold uppercase text-gray-900">
+            Gestão de Reservas
           </h1>
           <p className="text-sm text-gray-500">
             Visualize e controle as reservas ativas do sistema.
           </p>
         </div>
         <Link
-          href="/dashboard/staff/reservas/cadastrar"
+          href="/dashboard/staff/cadastrar-reservas"
           className="bg-denin text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:brightness-110 transition-all flex items-center gap-2 w-fit"
         >
           <Calendar size={18} /> Nova Reserva

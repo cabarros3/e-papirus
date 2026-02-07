@@ -36,8 +36,8 @@ export default function ClientDashboardLayout({
 
   useEffect(() => {
     const identifier = window.requestAnimationFrame(() => {
-      const saved = sessionStorage.getItem("bib_user");
-      const token = sessionStorage.getItem("bib_token");
+      const saved = sessionStorage.getItem('bib_user');
+      const token = sessionStorage.getItem('bib_token');
 
       if (!saved || !token) {
         router.push('/login');
@@ -179,7 +179,7 @@ export default function ClientDashboardLayout({
             collapsed={isCollapsed}
           />
           <NavItem
-            href="/perfil"
+            href="/dashboard/user/perfil"
             icon={<IdCard size={18} />}
             label="Dados Pessoais"
             active={isActive('/perfil')}
@@ -228,7 +228,7 @@ export default function ClientDashboardLayout({
                 <button
                   onClick={() => {
                     sessionStorage.clear();
-                    router.push("/login");
+                    router.push('/login');
                   }}
                   className="w-full flex items-center gap-3 p-4 text-sm text-red-500 hover:bg-red-50 font-bold"
                 >

@@ -79,8 +79,8 @@ export function ResumoDevolucaoModal({
                         ID #{item.id_exemplar}
                       </span>
                     </div>
-                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-tighter">
-                      Retornado ao Acervo
+                    <span className="text-[10px] font-bold text-green-600 uppercase">
+                      Item disponível
                     </span>
                   </div>
                 </div>
