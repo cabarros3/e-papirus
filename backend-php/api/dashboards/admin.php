@@ -47,15 +47,16 @@ try {
     
     $dados['atividade_recente'] = $pdo->query($sqlFeed)->fetchAll(PDO::FETCH_ASSOC);
 
-    // 4. Livros Mais Emprestados (TOP 5) - Necessário para os gráficos da sua página
-    $sqlTop = "SELECT l.titulo, COUNT(e.id_emprestimo) as total_saidas
-               FROM emprestimo e
-               JOIN exemplar ex ON e.id_exemplar = ex.id_exemplar
-               JOIN livro l ON ex.id_livro = l.id_livro
-               GROUP BY l.id_livro
-               ORDER BY total_saidas DESC
-               LIMIT 5";
-    
+    // 4. Livros Mais Emprestados (TOP 5)
+    // AJUSTE: Adicionada a coluna l.capa (ou o nome real da coluna no seu banco)
+    $sqlTop = "SELECT l.titulo, l.capa, COUNT(e.id_emprestimo) as total_saidas
+            FROM emprestimo e
+            JOIN exemplar ex ON e.id_exemplar = ex.id_exemplar
+            JOIN livro l ON ex.id_livro = l.id_livro
+            GROUP BY l.id_livro, l.titulo, l.capa
+            ORDER BY total_saidas DESC
+            LIMIT 5";
+
     $dados['top_livros'] = $pdo->query($sqlTop)->fetchAll(PDO::FETCH_ASSOC);
 
     enviarResposta("sucesso", "Dados carregados com sucesso.", $dados, 200);
