@@ -40,11 +40,11 @@ export function UserSearchInput({
     <div className="space-y-1 relative" ref={ref}>
       <label className="text-xs font-bold text-gray-600 flex justify-between">
         Usuário Selecionado
-        {selecionadoId && (
+        {/* {selecionadoId && (
           <span className="text-green-600 font-black flex items-center gap-1 animate-in zoom-in">
             <Check size={12} /> ID: {selecionadoId}
           </span>
-        )}
+        )} */}
       </label>
       <div className="relative">
         <Search

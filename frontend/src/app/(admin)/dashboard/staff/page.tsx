@@ -17,7 +17,11 @@ import {
   Repeat,
   TrendingUp,
   BookPlus,
+  BookUp,
+  BookDown,
+  BookCopy,
 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function AdminDashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -46,10 +50,18 @@ export default function AdminDashboard() {
     /* AJUSTE: Removido max-w-7xl e adicionado px-8 (32px) para alinhamento */
     <div className="w-full px-8 flex flex-col gap-12 animate-in fade-in duration-500 pb-10">
       {/* HEADER */}
-      <header>
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          Bem-vindo(a)! 👋
-        </h1>
+      <header className="flex flex-col gap-5">
+        <div className="flex flex-row gap-5 content-center items-center">
+          <Image
+            src="/img/logo.png"
+            alt="Logo e-Papirus"
+            width={80}
+            height={80}
+          />
+          <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
+            Bem-vindo(a)!
+          </h1>
+        </div>
         <p className="text-sm text-gray-500">
           Visão geral do sistema de biblioteca e-Papirus.
         </p>
@@ -67,16 +79,9 @@ export default function AdminDashboard() {
           <SimpleActionCard
             href="/dashboard/staff/emprestimo"
             label="Novo Empréstimo"
-            icon={<ClipboardCheck />}
+            icon={<BookUp />}
             bgColor="bg-[#E7FAFF]"
             textColor="text-[#00569C]"
-          />
-          <SimpleActionCard
-            href="/dashboard/staff/devolucao"
-            label="Efetuar Devolução"
-            icon={<RotateCcw />}
-            bgColor="bg-[#FFF7ED]"
-            textColor="text-[#B85207]"
           />
           <SimpleActionCard
             href="#"
@@ -84,6 +89,13 @@ export default function AdminDashboard() {
             icon={<Repeat />}
             bgColor="bg-[#F7FEE7]"
             textColor="text-[#002934]"
+          />
+          <SimpleActionCard
+            href="/dashboard/staff/devolucao"
+            label="Efetuar Devolução"
+            icon={<BookDown />}
+            bgColor="bg-[#FFF7ED]"
+            textColor="text-[#B85207]"
           />
         </div>
       </section>
@@ -100,14 +112,14 @@ export default function AdminDashboard() {
           <AcervoLink
             href="/dashboard/staff/cadastrar-item"
             label="Novo Item"
-            icon={<PlusCircle size={20} />}
+            icon={<BookPlus size={20} />}
             bgColor="bg-[#E0EFFF]"
             textColor="text-[#004784]"
           />
           <AcervoLink
             href="/dashboard/staff/cadastrar-exemplar"
             label="Exemplares"
-            icon={<BookPlus size={20} />}
+            icon={<BookCopy size={20} />}
             bgColor="bg-[#E6EFF7]"
             textColor="text-[#002B34]"
           />

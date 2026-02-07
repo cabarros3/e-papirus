@@ -1,4 +1,4 @@
-import { BookOpen, Trash2 } from 'lucide-react';
+import { BookOpen, ShoppingBag, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { Livro } from '@/types/livros';
 
@@ -23,7 +23,7 @@ export function BookBasket({
     <div className="space-y-6">
       <div className="bg-gray-50 rounded-3xl p-6 min-h-[300px]">
         <h3 className="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
-          <BookOpen size={16} /> Cesta ({itens.length}/3)
+          <ShoppingBag size={16} /> Cesta ({itens.length}/3)
         </h3>
         {itens.length === 0 ? (
           <p className="text-xs text-gray-400">Nenhum livro selecionado.</p>

@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   Loader2,
   ArrowLeft,
+  Book,
 } from 'lucide-react';
 import Link from 'next/link';
 import emprestimoService from '@/services/emprestimo-service';
@@ -82,7 +83,7 @@ export default function ListaEmprestimos() {
             <ArrowLeft size={20} className="text-gray-500" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl uppercase font-bold text-gray-900">
               Gestão de Empréstimos
             </h1>
             <p className="text-sm text-gray-500 font-medium">
@@ -178,7 +179,7 @@ export default function ListaEmprestimos() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="bg-orange-50 p-2 rounded-xl text-orange-600">
-                            <BookOpen size={16} />
+                            <Book size={16} />
                           </div>
                           <div>
                             <p className="text-sm font-bold text-gray-800">

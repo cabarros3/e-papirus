@@ -20,6 +20,9 @@ import {
   ArrowLeft,
   Search,
   BookOpen,
+  NotebookPen,
+  Building2,
+  MapPin,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -243,7 +246,10 @@ export default function CadastrarItem() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-gray-600">Editora</label>
+              <label className="text-xs font-bold text-gray-600 flex flex-row gap-2">
+                <Building2 size={14} />
+                Editora
+              </label>
               <input
                 name="editora"
                 required
@@ -252,7 +258,10 @@ export default function CadastrarItem() {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-bold text-gray-600">Cidade</label>
+              <label className="text-xs font-bold text-gray-600 flex flex-row gap-2">
+                <MapPin size={14} />
+                Cidade
+              </label>
               <input
                 name="cidade_publicacao"
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none"
@@ -273,7 +282,7 @@ export default function CadastrarItem() {
             </div>
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-600 flex items-center gap-1">
-                <BookOpen size={14} /> Descrição Física
+                <NotebookPen size={14} /> Descrição Física
               </label>
               <input
                 name="descricao_fisica"

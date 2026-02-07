@@ -150,8 +150,8 @@ export default function ReservaPage() {
           <ArrowLeft size={20} className="text-gray-500" />
         </Link>
         <div>
-          <h1 className="text-2xl font-poppins font-bold text-gray-900 uppercase tracking-tight">
-            Reserva de Títulos
+          <h1 className="text-2xl font-poppins uppercase font-bold text-gray-900 uppercase tracking-tight">
+            Reserva de Itens
           </h1>
           <p className="text-sm text-gray-500 font-medium font-sans">
             Reserve obras que estão indisponíveis no momento.
@@ -237,20 +237,11 @@ export default function ReservaPage() {
         </form>
 
         {/* COLUNA DIREITA: CESTA (BookBasket) */}
-        <div className="bg-gray-50/50 rounded-[2rem] p-6 border border-gray-100 flex flex-col">
-          <h2 className="text-[11px] font-poppins font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-            Resumo da Cesta
-          </h2>
-          <div className="flex-1">
-            <BookBasket
-              itens={cesta}
-              onRemove={(id) =>
-                setCesta(cesta.filter((i) => i.id_exemplar !== id))
-              }
-              livroDetalhes={livroVisualizado}
-            />
-          </div>
-        </div>
+        <BookBasket
+          itens={cesta}
+          onRemove={(id) => setCesta(cesta.filter((i) => i.id_exemplar !== id))}
+          livroDetalhes={livroVisualizado}
+        />
       </div>
     </div>
   );
