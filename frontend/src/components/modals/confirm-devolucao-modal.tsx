@@ -23,10 +23,10 @@ export function ConfirmDevolucaoModal({
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Ícone e Botão Fechar */}
-        <div className="p-6 pb-0 flex justify-between items-start">
-          <div className="bg-orange-100 p-3 rounded-2xl text-orange-600">
+        <div className="p-6 pb-0 flex justify-end">
+          {/* <div className="bg-orange-100 p-3 rounded-2xl text-orange-600">
             <HelpCircle size={28} />
-          </div>
+          </div> */}
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400"
