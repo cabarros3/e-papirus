@@ -102,12 +102,12 @@ export default function ClientDashboardLayout({
           <NavItem
             href="/dashboard/user"
             icon={<LayoutDashboard size={18} />}
-            label="Dashboard"
+            label="Painel"
             active={isActive('/dashboard/user')}
             collapsed={isCollapsed}
           />
           <NavItem
-            href="/resultados"
+            href="/dashboard/user/consultar-acervo"
             icon={<Search size={18} />}
             label="Acervo"
             active={isActive('/resultados')}
@@ -239,7 +239,7 @@ export default function ClientDashboardLayout({
           </div>
         </header>
 
-        <div className="p-8 grow overflow-y-auto">{children}</div>
+        <div className="px-8 grow overflow-y-auto">{children}</div>
       </main>
     </div>
   );
