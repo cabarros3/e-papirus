@@ -14,6 +14,7 @@ export interface DashboardData {
   top_livros: {
     titulo: string;
     total_saidas: number;
+    capa: string;
   }[];
 }
 
