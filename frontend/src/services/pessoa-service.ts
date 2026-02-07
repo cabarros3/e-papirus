@@ -85,23 +85,21 @@ export const pessoaService = {
   /**
    * DELETE: Remove uma pessoa do sistema
    */
+  // No seu arquivo pessoa-service.ts, ajuste o deletar:
   async deletar(id: number | string): Promise<PessoaResponse> {
     try {
-      const response = await fetch(`${API_URL}/pessoas/delete.php`, {
+      // Ajustado para enviar ?id= na URL conforme seu PHP espera
+      const response = await fetch(`${API_URL}/pessoas/delete.php?id=${id}`, {
         method: "DELETE",
-        headers: defaultHeaders(), // AJUSTE: Proteção JWT
-        body: JSON.stringify({ id_pessoa: id }),
+        headers: defaultHeaders(),
       });
 
       const data = await response.json();
-
       if (!response.ok || data.status === "erro") {
         throw new Error(data.mensagem || "Erro ao deletar pessoa");
       }
-
       return data;
     } catch (error) {
-      console.error("Erro ao deletar:", error);
       throw error;
     }
   },
