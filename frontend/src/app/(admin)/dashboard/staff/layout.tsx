@@ -23,6 +23,13 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   UserPlus,
+  SquareLibrary,
+  BookCopy,
+  BookUp,
+  BookUp2,
+  BookDown,
+  CalendarPlus2,
+  ClipboardPen,
 } from 'lucide-react';
 import { Toaster } from 'sonner';
 import { Pessoa } from '@/types/pessoas';
@@ -50,8 +57,8 @@ export default function DashboardLayout({
 
   useEffect(() => {
     const identifier = window.requestAnimationFrame(() => {
-      const saved = sessionStorage.getItem("bib_user");
-      const token = sessionStorage.getItem("bib_token");
+      const saved = sessionStorage.getItem('bib_user');
+      const token = sessionStorage.getItem('bib_token');
 
       if (!saved || !token) {
         router.push('/login');
@@ -69,9 +76,9 @@ export default function DashboardLayout({
   }, [router]);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("bib_token");
-    sessionStorage.removeItem("bib_user");
-    router.push("/login");
+    sessionStorage.removeItem('bib_token');
+    sessionStorage.removeItem('bib_user');
+    router.push('/login');
   };
 
   if (!isReady || !user) {
@@ -118,7 +125,7 @@ export default function DashboardLayout({
           <NavItem
             href="/dashboard/staff"
             icon={<LayoutDashboard size={20} />}
-            label="Dashboard"
+            label="Painel"
             active={isActive('/dashboard/staff')}
             collapsed={isCollapsed}
           />
@@ -130,15 +137,15 @@ export default function DashboardLayout({
                 if (isCollapsed) setIsCollapsed(false);
                 setOpenAcervo(!openAcervo);
               }}
-              title={isCollapsed ? 'Gerenciar Acervo' : ''}
+              title={isCollapsed ? 'Acervo' : ''}
               className={`w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-all ${isCollapsed ? 'justify-center' : 'justify-between'}`}
             >
               <div className="flex items-center gap-3">
-                <BookOpen size={20} className="shrink-0" />
+                <SquareLibrary size={20} className="shrink-0" />
                 <span
                   className={`text-base font-semibold whitespace-nowrap transition-opacity duration-200 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}
                 >
-                  Gerenciar Acervo
+                  Acervo
                 </span>
               </div>
               {!isCollapsed && (
@@ -180,7 +187,7 @@ export default function DashboardLayout({
                     />
                     <SubNavItem
                       href="/dashboard/staff/cadastrar-exemplar"
-                      icon={<BookPlus size={16} />}
+                      icon={<BookCopy size={16} />}
                       label="Exemplares"
                     />
                   </div>
@@ -233,7 +240,7 @@ export default function DashboardLayout({
                   className="w-full flex items-center justify-between p-2.5 rounded-lg text-gray-600 hover:text-denin transition-colors"
                 >
                   <div className="flex items-center gap-2">
-                    <HandHelping size={18} />
+                    <BookUp size={18} />
                     <span className="text-sm font-bold tracking-wide">
                       Empréstimos
                     </span>
@@ -244,15 +251,15 @@ export default function DashboardLayout({
                   />
                 </button>
                 {openEmprestimoMenu && (
-                  <div className="ml-4 border-l-2 border-gray-100 space-y-1">
+                  <div className="ml-4 border-l-2 border-gray-100 space-y-1 flex-w">
                     <SubNavItem
                       href="/dashboard/staff/listar-emprestimos"
-                      icon={<Search size={16} />}
-                      label="Listar Empréstimos"
+                      icon={<ClipboardPen size={16} />}
+                      label="Ver Empréstimos"
                     />
                     <SubNavItem
                       href="/dashboard/staff/emprestimo"
-                      icon={<BookPlus size={16} />}
+                      icon={<BookUp2 size={16} />}
                       label="Novo Empréstimo"
                     />
                   </div>
@@ -264,9 +271,14 @@ export default function DashboardLayout({
                   label="Devolução"
                 />
                 <SubNavItem
-                  href="/dashboard/staff/Renovacao"
+                  href="#"
                   icon={<Repeat size={18} />}
                   label="Renovação"
+                />
+                <SubNavItem
+                  href="/dashboard/staff/devolucao"
+                  icon={<BookDown size={18} />}
+                  label="Devolução"
                 />
 
                 {/* SUBMENU: RESERVAS */}
@@ -289,12 +301,12 @@ export default function DashboardLayout({
                   <div className="ml-4 border-l-2 border-gray-100 space-y-1">
                     <SubNavItem
                       href="/dashboard/staff/listar-reservas"
-                      icon={<Search size={16} />}
-                      label="Listar Reservas"
+                      icon={<ClipboardPen size={16} />}
+                      label="Ver Reservas"
                     />
                     <SubNavItem
                       href="/dashboard/staff/cadastrar-reservas"
-                      icon={<BookPlus size={16} />}
+                      icon={<CalendarPlus2 size={16} />}
                       label="Nova Reserva"
                     />
                   </div>
@@ -333,8 +345,8 @@ export default function DashboardLayout({
               <div className="ml-4 pl-4 border-l-2 border-gray-100 space-y-1 mt-1 font-medium">
                 <SubNavItem
                   href="/dashboard/staff/listar-usuarios"
-                  icon={<Search size={18} />}
-                  label="Listar Usuários"
+                  icon={<ClipboardPen size={18} />}
+                  label="Ver Usuários"
                 />
                 <SubNavItem
                   href="/dashboard/staff/cadastrar-usuario"
