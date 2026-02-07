@@ -216,18 +216,16 @@ export default function DevolucaoPage() {
                   <div
                     key={emp.id_emprestimo}
                     onClick={() => toggleSelecao(emp.id_emprestimo)}
-                    className={`flex items-center gap-4 p-5 rounded-3xl cursor-pointer border transition-all ${
-                      selecionados.includes(emp.id_emprestimo)
+                    className={`flex items-center gap-4 p-5 rounded-3xl cursor-pointer border transition-all ${selecionados.includes(emp.id_emprestimo)
                         ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600"
                         : "border-gray-100 bg-gray-50/50 hover:border-gray-300 hover:bg-white"
-                    }`}
+                      }`}
                   >
                     <div
-                      className={`w-6 h-6 rounded-lg flex items-center justify-center border-2 transition-all ${
-                        selecionados.includes(emp.id_emprestimo)
+                      className={`w-6 h-6 rounded-lg flex items-center justify-center border-2 transition-all ${selecionados.includes(emp.id_emprestimo)
                           ? "bg-blue-600 border-blue-600"
                           : "border-gray-200"
-                      }`}
+                        }`}
                     >
                       {selecionados.includes(emp.id_emprestimo) && (
                         <CheckCircle2 size={14} className="text-white" />

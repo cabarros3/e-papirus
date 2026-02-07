@@ -228,7 +228,7 @@ export default function ConsultarAcervo() {
                     name="id_autor"
                     defaultValue={
                       autores.find((a) =>
-                        livroSelecionado?.nomes_autores.includes(a.nome_autor)
+                        (livroSelecionado?.nomes_autores || "").includes(a.nome_autor)
                       )?.id_autor
                     }
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none bg-white font-medium"
