@@ -93,12 +93,12 @@ function SearchContent() {
 
         <div className="hidden md:block shrink-0 text-right">
           <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">
-            Status do Acervo
+            Resultados
           </p>
           <div className="flex items-center gap-2 justify-end">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
             <p className="text-sm font-black text-denin">
-              {livrosFiltrados.length} obra(s) encontrada(s)
+              {livrosFiltrados.length} encontrados
             </p>
           </div>
         </div>
