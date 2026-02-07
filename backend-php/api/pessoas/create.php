@@ -31,9 +31,12 @@ try {
     
     $stmtPessoa = $pdo->prepare($sqlPessoa);
     
-    $telefone = $data->telefone ?? null;
+    // No seu create.php, altere estas linhas:
+    $telefone = !empty($data->telefone) ? $data->telefone : null;
     $tipo = $data->tipo; 
-    $cargo = ($tipo === 'funcionario' && isset($data->cargo)) ? $data->cargo : null;
+
+    // AJUSTE AQUI: Se não for funcionário, o cargo DEVE ser nulo de forma clara
+    $cargo = ($tipo === 'funcionario' && !empty($data->cargo)) ? $data->cargo : null;
 
     $stmtPessoa->execute([
         $data->nome, 
