@@ -13,9 +13,9 @@ export default function Header() {
   const [isLogged, setIsLogged] = useState<boolean | null>(null);
 
   const checkAuth = useCallback(() => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('bib_token');
-      const user = localStorage.getItem('bib_user');
+    if (typeof window !== "undefined") {
+      const token = sessionStorage.getItem("bib_token");
+      const user = sessionStorage.getItem("bib_user");
       const loggedStatus = !!token && !!user;
       setIsLogged(loggedStatus);
     }
@@ -35,7 +35,7 @@ export default function Header() {
 
     if (isLogged) {
       // 1. Recupera os dados do usuário salvos no login
-      const savedUser = localStorage.getItem('bib_user');
+      const savedUser = sessionStorage.getItem("bib_user");
 
       if (savedUser) {
         try {

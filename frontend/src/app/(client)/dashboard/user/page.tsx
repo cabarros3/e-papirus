@@ -17,8 +17,8 @@ export default function AlunoDashboard() {
         setLoading(true);
         setErro(null);
 
-        // 1. Busca no LocalStorage com a chave correta bib_user
-        const userString = localStorage.getItem('bib_user');
+        // 1. Busca no sessionStorage com a chave correta bib_user
+        const userString = sessionStorage.getItem("bib_user");
 
         if (!userString) {
           setErro('Sessão não encontrada. Por favor, faça login.');

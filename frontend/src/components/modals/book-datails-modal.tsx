@@ -34,14 +34,14 @@ export default function BookDetailsModal({
   const [dadosExemplares, setDadosExemplares] =
     useState<LivroComExemplares | null>(null);
 
-  // ESTADO DE LOGIN REAL: Lendo do localStorage igual ao seu Layout
+  // ESTADO DE LOGIN REAL: Lendo do sessionStorage igual ao seu Layout
   const [estaLogado, setEstaLogado] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      // Verifica se existe o token e o usuário no localStorage
-      const savedUser = localStorage.getItem('bib_user');
-      const token = localStorage.getItem('bib_token');
+      // Verifica se existe o token e o usuário no sessionStorage
+      const savedUser = sessionStorage.getItem("bib_user");
+      const token = sessionStorage.getItem("bib_token");
       setEstaLogado(!!savedUser && !!token);
 
       if (livro?.id_livro) {

@@ -36,8 +36,8 @@ export default function ClientDashboardLayout({
 
   useEffect(() => {
     const identifier = window.requestAnimationFrame(() => {
-      const saved = localStorage.getItem('bib_user');
-      const token = localStorage.getItem('bib_token');
+      const saved = sessionStorage.getItem("bib_user");
+      const token = sessionStorage.getItem("bib_token");
 
       if (!saved || !token) {
         router.push('/login');
@@ -227,8 +227,8 @@ export default function ClientDashboardLayout({
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
                 <button
                   onClick={() => {
-                    localStorage.clear();
-                    router.push('/login');
+                    sessionStorage.clear();
+                    router.push("/login");
                   }}
                   className="w-full flex items-center gap-3 p-4 text-sm text-red-500 hover:bg-red-50 font-bold"
                 >

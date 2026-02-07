@@ -24,9 +24,9 @@ export class AuthService {
     const { token, usuario } = json.dados;
 
     // Salva o token e os dados do usuário para uso no DashboardLayout e Services
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('bib_token', token);
-      localStorage.setItem('bib_user', JSON.stringify(usuario));
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("bib_token", token);
+      sessionStorage.setItem("bib_user", JSON.stringify(usuario));
     }
 
     return json.dados;
@@ -36,10 +36,10 @@ export class AuthService {
    * Remove os dados de autenticação e redireciona
    */
   logout(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('bib_token');
-      localStorage.removeItem('bib_user');
-      window.location.href = '/login';
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("bib_token");
+      sessionStorage.removeItem("bib_user");
+      window.location.href = "/login";
     }
   }
 
@@ -47,8 +47,8 @@ export class AuthService {
    * Retorna o token atual
    */
   static getToken(): string | null {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('bib_token');
+    if (typeof window === "undefined") return null;
+    return sessionStorage.getItem("bib_token");
   }
 }
 

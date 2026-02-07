@@ -50,8 +50,8 @@ export default function DashboardLayout({
 
   useEffect(() => {
     const identifier = window.requestAnimationFrame(() => {
-      const saved = localStorage.getItem('bib_user');
-      const token = localStorage.getItem('bib_token');
+      const saved = sessionStorage.getItem("bib_user");
+      const token = sessionStorage.getItem("bib_token");
 
       if (!saved || !token) {
         router.push('/login');
@@ -69,9 +69,9 @@ export default function DashboardLayout({
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('bib_token');
-    localStorage.removeItem('bib_user');
-    router.push('/login');
+    sessionStorage.removeItem("bib_token");
+    sessionStorage.removeItem("bib_user");
+    router.push("/login");
   };
 
   if (!isReady || !user) {

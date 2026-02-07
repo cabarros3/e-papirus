@@ -18,9 +18,9 @@ export default function BooksCard({ livro }: BooksCardProps) {
   const [mounted, setMounted] = useState(false);
 
   const checkAuth = useCallback(() => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('bib_token');
-      const user = localStorage.getItem('bib_user');
+    if (typeof window !== "undefined") {
+      const token = sessionStorage.getItem("bib_token");
+      const user = sessionStorage.getItem("bib_user");
       setIsLogged(!!token && !!user);
     }
   }, []);

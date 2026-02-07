@@ -7,9 +7,9 @@ export const defaultHeaders = () => {
     'Content-Type': 'application/json',
   };
 
-  // Verifica se estamos no navegador antes de acessar o localStorage
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('bib_token');
+  // Verifica se estamos no navegador antes de acessar o sessionStorage
+  if (typeof window !== "undefined") {
+    const token = sessionStorage.getItem("bib_token");
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }

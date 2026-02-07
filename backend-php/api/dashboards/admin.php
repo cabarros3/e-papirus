@@ -1,10 +1,4 @@
 <?php
-// DEBUG: Exibir erros detalhados temporariamente
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-// backend-php/api/dashboard/admin.php
-
 require_once __DIR__ . '/../../config/cors.php';
 require_once __DIR__ . '/../../config/utils.php';
 require_once __DIR__ . '/../../db/db.php';

@@ -29,7 +29,7 @@ export default function ReservaUsuarioPage() {
 
   useEffect(() => {
     const carregarDados = async () => {
-      const saved = localStorage.getItem('bib_user');
+      const saved = sessionStorage.getItem("bib_user");
       const user: Pessoa = saved ? JSON.parse(saved) : null;
       setUserLogado(user);
 
