@@ -114,9 +114,9 @@ export default function ClientDashboardLayout({
             collapsed={isCollapsed}
           />
           <NavItem
-            href="/meus-emprestimos"
+            href="/dashboard/user/meus-emprestimos"
             icon={<Library size={18} />}
-            label="Empréstimos"
+            label="Meus empréstimos"
             active={isActive('/meus-emprestimos')}
             collapsed={isCollapsed}
           />
@@ -171,13 +171,13 @@ export default function ClientDashboardLayout({
             )}
           </div>
 
-          <NavItem
+          {/* <NavItem
             href="/historico"
             icon={<HistoryIcon size={18} />}
             label="Histórico"
             active={isActive('/historico')}
             collapsed={isCollapsed}
-          />
+          /> */}
           <NavItem
             href="/dashboard/user/perfil"
             icon={<IdCard size={18} />}

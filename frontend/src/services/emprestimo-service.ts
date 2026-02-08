@@ -1,18 +1,19 @@
 // src/services/emprestimo-service.ts
+import { Emprestimo } from '@/types/emprestimos';
 import { API_URL, defaultHeaders } from './api';
 
-export interface Emprestimo {
-  id_emprestimo?: number;
-  id_exemplar: number;
-  id_pessoa: number;
-  data_emprestimo: string;
-  data_prevista: string;
-  data_devolucao?: string | null;
-  // Campos úteis para exibição em tabelas (JOINs do SQL)
-  nome_pessoa?: string;
-  titulo_livro?: string;
-  numero_exemplar?: number;
-}
+// export interface Emprestimo {
+//   id_emprestimo?: number;
+//   id_exemplar: number;
+//   id_pessoa: number;
+//   data_emprestimo: string;
+//   data_prevista: string;
+//   data_devolucao?: string | null;
+//   // Campos úteis para exibição em tabelas (JOINs do SQL)
+//   nome_pessoa?: string;
+//   titulo_livro?: string;
+//   numero_exemplar?: number;
+// }
 
 class EmprestimoService {
   /**
