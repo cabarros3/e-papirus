@@ -8,8 +8,6 @@ import {
   Book as BookIcon,
   AlertCircle,
   Trash2,
-  //   CheckCircle2,
-  //   XCircle,
 } from 'lucide-react';
 import { reservaService } from '@/services/reserva-service';
 import { Reserva } from '@/types/reservas';
@@ -24,6 +22,7 @@ export default function MinhasReservasPage() {
 
   const carregarReservas = async () => {
     try {
+      // Ajustado para listar apenas as reservas do usuário logado
       const response = await reservaService.listarTodas();
       if (response.status === 'sucesso') {
         setReservas(response.dados || []);
@@ -73,7 +72,7 @@ export default function MinhasReservasPage() {
 
     return (
       <span
-        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase border ${styles[status]}`}
+        className={`px-4 py-2 rounded-full text-[10px] font-black uppercase border tracking-widest ${styles[status]}`}
       >
         {labels[status]}
       </span>
@@ -82,87 +81,124 @@ export default function MinhasReservasPage() {
 
   if (loading) {
     return (
-      <div className="h-full flex flex-col items-center justify-center space-y-4">
+      <div className="h-screen flex flex-col items-center justify-center space-y-4">
         <Loader2 className="animate-spin text-denin" size={40} />
-        <p className="text-gray-500 text-sm font-medium">
-          Carregando suas solicitações...
+        <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest">
+          Sincronizando suas reservas...
         </p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    /* Ajustes: px-8 e py-10 para o espaçamento de topo e laterais de 32px+ */
+    <div className="w-full px-8 py-10 space-y-8 animate-in fade-in duration-500 max-w-[1600px] mx-auto pb-12">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Minhas Reservas</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight">
+          Minhas Reservas
+        </h1>
+        <p className="text-sm text-gray-500 font-medium">
           Acompanhe o status dos seus pedidos e prazos de retirada.
         </p>
       </div>
 
+      {/* BOX DE INFORMAÇÕES PADRONIZADO */}
+      <div className="bg-denin/5 p-6 rounded-[2.5rem] border border-denin/10 flex gap-6 items-start">
+        <div className="bg-denin/10 p-3 rounded-lg">
+          <AlertCircle className="text-denin shrink-0" size={24} />
+        </div>
+        <div className="space-y-3">
+          <h4 className="text-xs font-black text-denin uppercase tracking-widest">
+            Informações Importantes
+          </h4>
+          <ul className="text-xs text-denin/70 font-medium space-y-2 list-disc ml-4 leading-relaxed">
+            <li>
+              As reservas são válidas por{' '}
+              <span className="font-bold">3 dias úteis (Alunos)</span> ou{' '}
+              <span className="font-bold">7 dias úteis (Professores)</span>.
+            </li>
+            <li>
+              Caso o livro não seja retirado no balcão até a data de expiração,
+              a reserva será cancelada automaticamente.
+            </li>
+            {/* <li>
+              Você pode ter no máximo{' '}
+              <span className="font-bold">2 reservas ativas</span>{' '}
+              simultaneamente.
+            </li> */}
+          </ul>
+        </div>
+      </div>
+
       {reservas.length === 0 ? (
-        <div className="bg-white rounded-[2rem] p-12 border border-dashed border-gray-200 flex flex-col items-center text-center space-y-4">
-          <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-400">
-            <BookIcon size={32} />
+        <div className="bg-white rounded-[2.5rem] p-20 border-2 border-dashed border-gray-100 flex flex-col items-center text-center space-y-6">
+          <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center text-gray-300">
+            <BookIcon size={40} />
           </div>
           <div className="max-w-xs">
-            <h3 className="font-bold text-gray-800">
+            <h3 className="font-bold text-gray-900 text-lg">
               Nenhuma reserva encontrada
             </h3>
-            <p className="text-sm text-gray-500 mt-1">
-              Você ainda não solicitou nenhum livro. Explore o acervo para
-              começar!
+            <p className="text-sm text-gray-400 font-medium mt-2">
+              Você ainda não possui solicitações ativas. Explore o acervo para
+              reservar um livro!
             </p>
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-8">
           {reservas.map((reserva) => (
             <div
               key={reserva.id_reserva}
-              className="bg-white p-6 rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
+              className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-denin/5 transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 group"
             >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-denin/5 rounded-xl flex items-center justify-center text-denin shrink-0">
-                  <BookIcon size={24} />
+              <div className="flex items-center gap-6">
+                <div className="w-16 h-16 bg-denin/5 rounded-[1.5rem] flex items-center justify-center text-denin shrink-0 group-hover:bg-denin group-hover:text-white transition-all duration-300">
+                  <BookIcon size={28} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900 text-lg leading-tight">
+                  <h3 className="font-black text-gray-900 text-xl tracking-tight leading-tight group-hover:text-denin transition-colors">
                     {reserva.titulo || 'Título não carregado'}
                   </h3>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2">
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                      <Calendar size={14} />
-                      Reservado em:{' '}
-                      {format(new Date(reserva.data_reserva), 'dd/MM/yyyy', {
-                        locale: ptBR,
-                      })}
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3">
+                    <div className="flex items-center gap-2 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                      <Calendar size={14} className="text-denin/40" />
+                      Reservado:{' '}
+                      <span className="text-gray-600">
+                        {format(new Date(reserva.data_reserva), 'dd/MM/yyyy', {
+                          locale: ptBR,
+                        })}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs text-orange-600 font-medium">
+                    <div className="flex items-center gap-2 text-[11px] font-bold text-orange-500 uppercase tracking-wider">
                       <Clock size={14} />
-                      Expira em:{' '}
-                      {format(new Date(reserva.data_expiracao), 'dd/MM/yyyy', {
-                        locale: ptBR,
-                      })}
+                      Expira:{' '}
+                      <span>
+                        {format(
+                          new Date(reserva.data_expiracao),
+                          'dd/MM/yyyy',
+                          { locale: ptBR }
+                        )}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between md:justify-end gap-4 border-t md:border-t-0 pt-4 md:pt-0">
+              <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-6 md:pt-0">
                 {getStatusBadge(reserva.status)}
 
                 {reserva.status === 'ativa' && (
                   <button
                     onClick={() => handleCancelar(reserva.id_reserva)}
                     disabled={isCancelling === reserva.id_reserva}
-                    className="p-2.5 text-red-500 hover:bg-red-50 rounded-xl transition-colors disabled:opacity-50"
+                    className="w-12 h-12 flex items-center justify-center text-red-400 hover:bg-red-50 hover:text-red-500 rounded-2xl transition-all disabled:opacity-50"
                     title="Cancelar Reserva"
                   >
                     {isCancelling === reserva.id_reserva ? (
                       <Loader2 className="animate-spin" size={20} />
                     ) : (
-                      <Trash2 size={20} />
+                      <Trash2 size={22} />
                     )}
                   </button>
                 )}
@@ -171,26 +207,6 @@ export default function MinhasReservasPage() {
           ))}
         </div>
       )}
-
-      <div className="bg-denin/5 p-6 rounded-2xl flex gap-4 items-start">
-        <AlertCircle className="text-denin shrink-0" size={20} />
-        <div className="space-y-1">
-          <h4 className="text-sm font-bold text-denin">
-            Informações Importantes
-          </h4>
-          <ul className="text-xs text-denin/80 space-y-1 list-disc ml-4">
-            <li>
-              As reservas são válidas por 3 dias úteis (Alunos) ou 7 dias úteis
-              (Professores).
-            </li>
-            <li>
-              Caso o livro não seja retirado no balcão até a data de expiração,
-              a reserva será cancelada automaticamente.
-            </li>
-            <li>Você pode ter no máximo 2 reservas ativas simultaneamente.</li>
-          </ul>
-        </div>
-      </div>
     </div>
   );
 }

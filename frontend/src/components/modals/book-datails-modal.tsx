@@ -40,8 +40,8 @@ export default function BookDetailsModal({
   useEffect(() => {
     if (isOpen) {
       // Verifica se existe o token e o usuário no sessionStorage
-      const savedUser = sessionStorage.getItem("bib_user");
-      const token = sessionStorage.getItem("bib_token");
+      const savedUser = sessionStorage.getItem('bib_user');
+      const token = sessionStorage.getItem('bib_token');
       setEstaLogado(!!savedUser && !!token);
 
       if (livro?.id_livro) {
@@ -156,7 +156,13 @@ export default function BookDetailsModal({
                         Cópia #{ex.numero_exemplar}
                       </p>
                       <div
-                        className={`flex items-center gap-1 text-[10px] font-bold ${ex.disponibilidade === 'disponivel' ? 'text-green-600' : 'text-red-500'}`}
+                        className={`flex items-center gap-1 text-[10px] font-bold ${
+                          ex.disponibilidade === 'disponivel'
+                            ? 'text-green-600'
+                            : ex.disponibilidade === 'reservado'
+                              ? 'text-orange-500'
+                              : 'text-red-500'
+                        }`}
                       >
                         {ex.disponibilidade === 'disponivel' && (
                           <CheckCircle2 size={10} />
@@ -174,7 +180,7 @@ export default function BookDetailsModal({
                         }
                         className="bg-denin text-white text-[11px] font-bold px-4 py-2 rounded-lg hover:bg-denin/90 transition-all"
                       >
-                        {estaLogado ? 'Reservar' : 'Entrar'}
+                        {estaLogado ? 'Reservar' : 'Reservar'}
                       </Link>
                     )}
                   </div>
