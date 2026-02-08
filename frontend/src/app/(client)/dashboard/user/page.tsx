@@ -1,44 +1,50 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+
+import { MetricCard } from '@/components/charts/metric-card';
+import { BookCardFeatured } from '@/components/charts/meus-emprestimos';
+import { ReservationCardFeatured } from '@/components/charts/minhas-reservas-metrica';
+import NotificationSliderUser from '@/components/sliders/avisos-user';
+import { ErrorState } from '@/components/states/error';
+import { LoadingState } from '@/components/states/loading';
 import {
-  AlunoDashboardService,
   AlunoDashboardData,
-} from '../../../../services/aluno-dashboard-service';
-import {
-  Book,
-  Clock,
-  History,
-  AlertCircle,
-  Loader2,
-  ChevronRight,
-} from 'lucide-react';
+  AlunoDashboardService,
+} from '@/services/aluno-dashboard-service';
+import { reservaService } from '@/services/reserva-service';
+import { Bookmark } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function AlunoDashboard() {
   const [dados, setDados] = useState<AlunoDashboardData | null>(null);
+  const [reservas, setReservas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
       try {
-        setLoading(true);
-        setErro(null);
-
-        // 1. Busca no sessionStorage com a chave correta bib_user
         const userString = sessionStorage.getItem('bib_user');
+        if (!userString) return setErro('Sessão não encontrada.');
 
-        if (!userString) {
-          setErro('Sessão não encontrada. Por favor, faça login.');
-          return;
-        }
         const user = JSON.parse(userString);
-        const idPessoa = user?.id_pessoa;
-
         const service = new AlunoDashboardService();
-        const data = await service.getStats(idPessoa);
-        setDados(data);
+
+        // Chamadas paralelas para performance
+        const [statsData, reservasData] = await Promise.all([
+          service.getStats(user?.id_pessoa),
+          reservaService.listarTodas(),
+        ]);
+
+        setDados(statsData);
+
+        if (reservasData.status === 'sucesso') {
+          // Filtramos apenas as reservas que o usuário precisa agir (ativas)
+          setReservas(
+            reservasData.dados.filter((r: any) => r.status === 'ativa')
+          );
+        }
       } catch (e) {
-        setErro('Ocorreu um erro ao processar sua solicitação.');
+        setErro('Ocorreu um erro ao processar os dados do painel.');
       } finally {
         setLoading(false);
       }
@@ -46,92 +52,53 @@ export default function AlunoDashboard() {
     loadData();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] animate-pulse">
-        <div className="relative">
-          <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
-          <div className="absolute inset-0 blur-xl bg-blue-400/20 animate-pulse"></div>
-        </div>
-        <p className="text-gray-400 font-medium mt-4 tracking-widest uppercase text-xs">
-          Sincronizando biblioteca...
-        </p>
-      </div>
-    );
-  }
-
-  if (erro || !dados) {
-    return (
-      <div className="p-8 py-12 max-w-7xl mx-auto animate-in fade-in zoom-in duration-500">
-        <div className="bg-red-50 border border-red-200 rounded-[32px] p-12 text-center shadow-xl shadow-red-100/50">
-          <div className="bg-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-red-100">
-            <AlertCircle className="w-10 h-10 text-red-500" />
-          </div>
-          <h2 className="text-2xl font-black text-red-800">Ops! Algo travou</h2>
-          <p className="text-red-600/80 mb-8 max-w-md mx-auto font-medium">
-            {erro || 'Erro desconhecido'}
-          </p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-red-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-red-700 transition-all active:scale-95 shadow-lg shadow-red-200"
-          >
-            Tentar Novamente
-          </button>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState />;
+  if (erro || !dados)
+    return <ErrorState message={erro || 'Erro desconhecido'} />;
 
   return (
-    /* AJUSTE: px-8 (32px) para alinhamento lateral e gap-8 (32px) para ritmo vertical */
-    <div className="w-full px-8 py-10 flex flex-col gap-8 animate-in fade-in duration-500 pb-10 max-w-[1600px] mx-auto overflow-hidden">
-      {/* Header com 32px de respiro lateral garantido pelo container */}
+    <div className="w-full px-8 py-10 flex flex-col gap-8 animate-in fade-in duration-500 pb-20 max-w-[1600px] mx-auto overflow-hidden">
       <header className="space-y-2 animate-in slide-in-from-left-8 fade-in duration-700 ease-out">
-        {/* <div className="inline-block bg-blue-600 h-1.5 w-12 rounded-full mb-2"></div> */}
         <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
           Meu Painel de Leitor
         </h1>
         <p className="text-lg text-gray-500 font-medium">
-          Confira suas leituras e prazos de hoje.
+          Confira suas leituras, reservas e prazos.
         </p>
       </header>
 
-      {/* Grid de Métricas - Gap de 32px (gap-8) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-75">
-          <MetricCard
-            icon={<Book size={26} />}
-            label="Livros com Você"
-            value={dados.ativos}
-            color="text-blue-600"
-            bgColor="bg-blue-50/50"
-          />
-        </div>
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-150">
-          <MetricCard
-            icon={<AlertCircle size={26} />}
-            label="Em Atraso"
-            value={dados.atrasados}
-            color="text-red-600"
-            bgColor="bg-red-50/50"
-          />
-        </div>
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-300">
-          <MetricCard
-            icon={<History size={26} />}
-            label="Total Lido"
-            value={dados.historico_lidos}
-            color="text-green-600"
-            bgColor="bg-green-50/50"
-          />
-        </div>
-      </div>
+      <NotificationSliderUser />
 
-      {/* Seção de Livros */}
-      <section className="space-y-8 animate-in fade-in duration-1000 delay-500 fill-mode-both">
+      {/* MÉTRICAS RÁPIDAS */}
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <MetricCard
+          icon={<Book size={26} />}
+          label="Livros com Você"
+          value={dados.ativos}
+          color="text-blue-600"
+          bgColor="bg-blue-50/50"
+        />
+        <MetricCard
+          icon={<Bookmark size={26} />}
+          label="Reservas Ativas"
+          value={reservas.length}
+          color="text-emerald-600"
+          bgColor="bg-emerald-50/50"
+        />
+        <MetricCard
+          icon={"<History size={26} />"}
+          label="Total Lido"
+          value={dados.historico_lidos}
+          color="text-purple-600"
+          bgColor="bg-purple-50/50"
+        />
+      </div> */}
+
+      {/* SEÇÃO 1: EMPRÉSTIMOS ATUAIS */}
+      <section className="space-y-8 mt-4">
         <div className="flex items-center justify-between border-b border-gray-100 pb-6">
           <h2 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] flex items-center gap-2">
-            <div className="w-2 h-2 bg-gray-300 rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
             Meus Empréstimos Atuais
           </h2>
           <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-4 py-2 rounded-full border border-blue-100">
@@ -140,115 +107,52 @@ export default function AlunoDashboard() {
         </div>
 
         {dados.meus_livros.length > 0 ? (
-          /* Grid com gap de 32px (gap-8) */
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
             {dados.meus_livros.map((livro, index) => (
-              <div
+              <BookCardFeatured
                 key={livro.id_emprestimo}
-                style={{ animationDelay: `${600 + index * 100}ms` }}
-                className="group flex bg-white border border-gray-100 rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-gray-200/50 hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-6 fill-mode-both"
-              >
-                <div className="w-32 md:w-40 bg-gray-50 flex-shrink-0 overflow-hidden relative border-r border-gray-50">
-                  {livro.capa ? (
-                    <img
-                      src={livro.capa}
-                      alt={livro.titulo}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-300">
-                      <Book size={40} />
-                    </div>
-                  )}
-                </div>
-
-                {/* Conteúdo interno com padding de 32px (p-8) */}
-                <div className="p-8 flex flex-col justify-between flex-grow relative">
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      {livro.titulo}
-                    </h3>
-                    <div className="flex items-center text-sm text-gray-500 gap-3 font-medium">
-                      <div className="p-1.5 bg-gray-50 rounded-lg">
-                        <Clock size={16} className="text-blue-500" />
-                      </div>
-                      <span>
-                        Entrega:{' '}
-                        <span className="text-gray-900 font-bold tracking-tight">
-                          {new Date(livro.data_prevista).toLocaleDateString(
-                            'pt-BR'
-                          )}
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 flex items-center justify-between">
-                    <span
-                      className={`inline-flex items-center text-[10px] font-black px-4 py-2 rounded-xl uppercase tracking-widest border transition-colors
-                      ${
-                        livro.cor === 'red'
-                          ? 'bg-red-50 text-red-600 border-red-100 group-hover:bg-red-600 group-hover:text-white'
-                          : livro.cor === 'orange'
-                            ? 'bg-orange-50 text-orange-600 border-orange-100 group-hover:bg-orange-600 group-hover:text-white'
-                            : 'bg-blue-50 text-blue-600 border-blue-100 group-hover:bg-blue-600 group-hover:text-white'
-                      }`}
-                    >
-                      {livro.status_texto}
-                    </span>
-                    <ChevronRight
-                      className="text-gray-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all"
-                      size={20}
-                    />
-                  </div>
-                </div>
-              </div>
+                livro={livro}
+                index={index}
+              />
             ))}
           </div>
         ) : (
-          <div className="bg-gray-50 p-20 rounded-[32px] border-2 border-dashed border-gray-200 text-center animate-in zoom-in-95 duration-1000 delay-700 fill-mode-both">
-            <div className="bg-white w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-gray-200/50 text-gray-200 border border-gray-50">
-              <Book size={40} className="animate-bounce" />
-            </div>
-            <p className="text-gray-500 font-bold text-xl uppercase tracking-tight">
-              Sua estante está livre
-            </p>
-            <p className="text-gray-400 font-medium mt-2">
-              Que tal buscar uma nova aventura na biblioteca?
-            </p>
-          </div>
+          <EmptyState message="Nenhum livro emprestado no momento." />
         )}
       </section>
+
+      {/* SEÇÃO 2: RESERVAS (Só aparece se houver) */}
+      {reservas.length > 0 && (
+        <section className="space-y-8 mt-8 animate-in fade-in duration-1000">
+          <div className="flex items-center justify-between border-b border-gray-100 pb-6">
+            <h2 className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] flex items-center gap-2">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+              Aguardando Retirada
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            {reservas.map((reserva, index) => (
+              <ReservationCardFeatured
+                key={reserva.id_reserva}
+                reserva={reserva}
+                index={index}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
 
-// Componente de Card de Métrica ajustado com p-8 (32px)
-function MetricCard({ icon, label, value, color, bgColor }: any) {
-  return (
-    <div
-      className={`${bgColor} p-8 rounded-[32px] flex items-center gap-6 border border-white shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-gray-200/40 group relative overflow-hidden`}
-    >
-      <div
-        className={`absolute -right-4 -bottom-4 w-24 h-24 rounded-full opacity-10 transition-transform duration-700 group-hover:scale-[3] ${color.replace('text', 'bg')}`}
-      ></div>
-
-      <div
-        className={`p-5 bg-white rounded-[1.5rem] shadow-sm ${color} border border-gray-50 z-10 transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110`}
-      >
-        {icon}
-      </div>
-      <div className="space-y-1 z-10">
-        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
-          {label}
-        </p>
-        <p className="text-5xl font-black text-gray-900 tabular-nums leading-none tracking-tighter">
-          {value || 0}
-        </p>
-      </div>
-    </div>
-  );
-}
+const EmptyState = ({ message }: { message: string }) => (
+  <div className="bg-gray-50/50 p-12 rounded-[32px] border-2 border-dashed border-gray-100 text-center">
+    <p className="text-gray-400 font-bold text-sm uppercase tracking-widest">
+      {message}
+    </p>
+  </div>
+);
 
 // 'use client';
 // import React, { useEffect, useState } from 'react';
