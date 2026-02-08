@@ -75,13 +75,19 @@ try {
         WHERE e.id_emprestimo = ?
     ";
     $stmtDados = $pdo->prepare($sqlDados);
-    $stmtDados-> execute([$idEmprestimo]);
+    $stmtDados->execute([$idEmprestimo]);
     $dadosEmprestimo = $stmtDados->fetch(PDO::FETCH_ASSOC);
 
     //NOTIFICAÇÃO: Enviar email de confirmação de empréstimo
 
-    // Validar se email existe e não está vazio
-    if (!empty($dadosEmprestimo['aluno_email'])) {
+    // Validar dados necessários e email válido
+    $emailValido = !empty($dadosEmprestimo['aluno_email']) && 
+               filter_var($dadosEmprestimo['aluno_email'], FILTER_VALIDATE_EMAIL);
+    $dadosCompletos = !empty($dadosEmprestimo['aluno_nome']) && 
+                  !empty($dadosEmprestimo['livro_titulo']);
+
+    if ($emailValido && $dadosCompletos) {
+
         try {
             // Instancia o serviço de email
             $emailService = new EmailService();
@@ -123,7 +129,7 @@ try {
             
             // Se falhou, apenas registra no log (não afeta o empréstimo)
             if (!$emailEnviado) {
-                error_log("Aviso: Email de confirmação não foi enviado para {$dadosEmprestimo['aluno_email']}");
+                error_log("[Empréstimo #{$idEmprestimo}] Aviso: Email não enviado para {$dadosEmprestimo['aluno_email']}");
             }
             
         } catch (Exception $e) {
@@ -131,6 +137,7 @@ try {
             error_log("Erro ao enviar email de confirmação: " . $e->getMessage());
         }
     }
+
 
     enviarResposta("sucesso", "Empréstimo realizado!", [
         "id_emprestimo" => $idEmprestimo, 
