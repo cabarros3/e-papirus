@@ -21,7 +21,7 @@ export function BookSlider({ livros, titulo, subtitulo }: BookSliderProps) {
   if (!livros || livros.length === 0) {
     return (
       <section className="flex flex-col justify-center items-center py-10 gap-2 opacity-50">
-        <h3 className="text-2xl text-denin font-bold">{titulo}</h3>
+        <h3 className="text-lg text-denin font-bold">{titulo}</h3>
         <span className="text-gray-400">
           Nenhum livro encontrado nesta categoria.
         </span>
