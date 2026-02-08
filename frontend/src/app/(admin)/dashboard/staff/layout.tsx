@@ -271,7 +271,7 @@ export default function DashboardLayout({
                   label="Devolução"
                 />
                 <SubNavItem
-                  href="#"
+                  href="/dashboard/staff/Renovacao"
                   icon={<Repeat size={18} />}
                   label="Renovação"
                 />
