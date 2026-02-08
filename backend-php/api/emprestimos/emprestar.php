@@ -2,6 +2,10 @@
 require_once '../../config/cors.php';
 require_once '../../config/utils.php';
 require_once '../../db/db.php';
+require_once '../../config.php'; // Carrega constantes de email
+require_once '../../vendor/autoload.php'; // Carrega autoload do Composer
+
+use App\Services\EmailService; // Importa o serviço de email
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     enviarResposta("erro", "Método inválido. Use POST.", null, 405);
@@ -57,6 +61,77 @@ try {
     $stmtUpdate->execute([$data->id_exemplar]);
 
     $pdo->commit();
+
+    // Buscar dados do emprestimo para notificação
+    $sqlDados = "
+        SELECT
+            p.nome AS aluno_nome,
+            p.email AS aluno_email,
+            l.titulo AS livro_titulo
+        FROM pessoa p
+        INNER JOIN emprestimo e ON p.id_pessoa = e.id_pessoa
+        INNER JOIN exemplar ex ON e.id_exemplar = ex.id_exemplar
+        INNER JOIN livro l ON ex.id_livro = l.id_livro
+        WHERE e.id_emprestimo = ?
+    ";
+    $stmtDados = $pdo->prepare($sqlDados);
+    $stmtDados-> execute([$idEmprestimo]);
+    $dadosEmprestimo = $stmtDados->fetch(PDO::FETCH_ASSOC);
+
+    //NOTIFICAÇÃO: Enviar email de confirmação de empréstimo
+
+    // Validar se email existe e não está vazio
+    if (!empty($dadosEmprestimo['aluno_email'])) {
+        try {
+            // Instancia o serviço de email
+            $emailService = new EmailService();
+            
+            // Monta o assunto
+            $assunto = "Confirmação de Empréstimo — e-Papirus";
+            
+            // Monta o corpo do email em HTML
+            $corpo = "
+                <h2>Olá, {$dadosEmprestimo['aluno_nome']}!</h2>
+                <p>Seu empréstimo foi realizado com sucesso!</p>
+                
+                <hr>
+                
+                <h3>Detalhes do Empréstimo:</h3>
+                <ul>
+                    <li><strong>Livro:</strong> {$dadosEmprestimo['livro_titulo']}</li>
+                    <li><strong>Data do Empréstimo:</strong> " . date('d/m/Y') . "</li>
+                    <li><strong>Data Prevista de Devolução:</strong> " . date('d/m/Y', strtotime($dataPrevista)) . "</li>
+                    <li><strong>ID do Empréstimo:</strong> {$idEmprestimo}</li>
+                </ul>
+                
+                <hr>
+                
+                <p>⚠️<strong>Lembre-se:</strong> Devolva o livro até a data prevista para evitar possíveis multas.</p>
+                
+                <p>Dúvidas? Em caso de dúvidas, entre em contato com a biblioteca!</p>
+                
+                <br>
+                <p>Atenciosamente,<br><strong>E-Papirus Biblioteca</strong></p>
+            ";
+            
+            // Tenta enviar o email
+            $emailEnviado = $emailService->enviar(
+                $dadosEmprestimo['aluno_email'],
+                $assunto,
+                $corpo
+            );
+            
+            // Se falhou, apenas registra no log (não afeta o empréstimo)
+            if (!$emailEnviado) {
+                error_log("Aviso: Email de confirmação não foi enviado para {$dadosEmprestimo['aluno_email']}");
+            }
+            
+        } catch (Exception $e) {
+            // Se houver erro ao montar/enviar, registra mas continua
+            error_log("Erro ao enviar email de confirmação: " . $e->getMessage());
+        }
+    }
+
     enviarResposta("sucesso", "Empréstimo realizado!", [
         "id_emprestimo" => $idEmprestimo, 
         "data_prevista" => $dataPrevista
