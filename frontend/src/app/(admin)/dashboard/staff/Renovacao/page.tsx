@@ -99,7 +99,7 @@ export default function RenovacaoPage() {
     try {
       await emprestimoService.renovar(selecionado, novaData);
       toast.success('Renovação realizada com sucesso!');
-      
+
       // Redireciona para o dashboard após 1 segundo
       setTimeout(() => {
         router.push('/dashboard/staff/');
@@ -225,18 +225,16 @@ export default function RenovacaoPage() {
                   <div
                     key={emp.id_emprestimo}
                     onClick={() => setSelecionado(emp.id_emprestimo)}
-                    className={`flex items-center gap-4 p-5 rounded-3xl cursor-pointer border transition-all ${
-                      selecionado === emp.id_emprestimo
+                    className={`flex items-center gap-4 p-5 rounded-3xl cursor-pointer border transition-all ${selecionado === emp.id_emprestimo
                         ? 'border-blue-600 bg-green-50 ring-1 ring-blue-600'
                         : 'border-gray-100 bg-gray-50/50 hover:border-gray-300 hover:bg-white'
-                    }`}
+                      }`}
                   >
                     <div
-                      className={`w-6 h-6 rounded-lg flex items-center justify-center border-2 transition-all ${
-                        selecionado === emp.id_emprestimo
+                      className={`w-6 h-6 rounded-lg flex items-center justify-center border-2 transition-all ${selecionado === emp.id_emprestimo
                           ? 'bg-blue-600 border-blue-600'
                           : 'border-gray-200'
-                      }`}
+                        }`}
                     >
                       {selecionado === emp.id_emprestimo && (
                         <CheckCircle2 size={14} className="text-white" />
@@ -249,8 +247,10 @@ export default function RenovacaoPage() {
                       <p
                         className={`text-[10px] font-bold mt-1 uppercase ${emp.cor === 'red' ? 'text-red-500' : 'text-blue-600'}`}
                       >
-                        Vencimento:{' '}
-                        {new Date(emp.data_prevista).toLocaleDateString()}
+                        Vencimento: {emp.data_prevista
+                          ? emp.data_prevista.split('-').reverse().join('/')
+                          : ''
+                        }
                       </p>
                     </div>
                   </div>
