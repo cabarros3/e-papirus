@@ -265,11 +265,12 @@ export default function DashboardLayout({
                   </div>
                 )}
 
-                <SubNavItem
+                {/* <SubNavItem
                   href="/dashboard/staff/devolucao"
                   icon={<RotateCcw size={18} />}
                   label="Devolução"
-                />
+                /> */}
+                
                 <SubNavItem
                   href="/dashboard/staff/Renovacao"
                   icon={<Repeat size={18} />}
