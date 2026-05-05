@@ -99,14 +99,32 @@ export default function ReservaPage() {
 
     setIsSubmitting(true);
     try {
-      await Promise.all(
-        cesta.map((item) =>
-          reservaService.criar({
+
+      // Novo código
+      const resultados = await Promise.all(
+        cesta.map((item) => {
+          console.log('Enviando:', {
+            id_livro: item.id_exemplar,
+            id_pessoa: parseInt(selecionado.usuarioId)
+          });
+          return reservaService.criar({
             id_livro: item.id_exemplar,
             id_pessoa: parseInt(selecionado.usuarioId),
-          })
-        )
+          });
+        })
       );
+
+      console.log('Respostas da API:', resultados);
+
+      // Código antigo (funcionando)
+      // await Promise.all(
+      //   cesta.map((item) =>
+      //     reservaService.criar({
+      //       id_livro: item.id_exemplar,
+      //       id_pessoa: parseInt(selecionado.usuarioId),
+      //     })
+      //   )
+      // );
 
       const hoje = new Date();
       hoje.setDate(hoje.getDate() + 3);
