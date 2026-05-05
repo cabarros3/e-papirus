@@ -15,6 +15,13 @@ const getAuthHeaders = () => {
 };
 
 export const reservaService = {
+  async parseResponse<T>(response: Response): Promise<ApiResponse<T>> {
+    const json = (await response.json()) as ApiResponse<T>;
+    if (!response.ok || json.status === 'erro') {
+      throw new Error(json.mensagem || 'Erro na requisicao');
+    }
+    return json;
+  },
   /**
    * Lista reservas. O PHP decidirá se mostra tudo (staff)
    * ou só as do usuário (aluno/professor) baseado no Token.
@@ -25,7 +32,7 @@ export const reservaService = {
       headers: getAuthHeaders(), // Agora envia o token
       cache: 'no-store',
     });
-    return response.json();
+    return this.parseResponse<Reserva[]>(response);
   },
 
   /**
@@ -41,7 +48,7 @@ export const reservaService = {
       headers: getAuthHeaders(),
       body: JSON.stringify(dados),
     });
-    return response.json();
+    return this.parseResponse<{ id_reserva: number }>(response);
   },
 
   async atualizarStatus(
@@ -53,7 +60,7 @@ export const reservaService = {
       headers: getAuthHeaders(),
       body: JSON.stringify({ id_reserva: id, status }),
     });
-    return response.json();
+    return this.parseResponse<null>(response);
   },
 
   async cancelar(id: number): Promise<ApiResponse<null>> {
@@ -61,6 +68,6 @@ export const reservaService = {
       method: 'DELETE',
       headers: getAuthHeaders(),
     });
-    return response.json();
+    return this.parseResponse<null>(response);
   },
 };

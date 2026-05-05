@@ -2,9 +2,13 @@ import { BookOpen, ShoppingBag, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { Livro } from '@/types/livros';
 
+
+// mostra na cesta o total de exemplares disponíveis
 export interface BasketItem {
-  id_exemplar: number;
-  numero_exemplar: number;
+  id_exemplar?: number;
+  id_livro?: number;
+  numero_exemplar?: number;
+  exemplares_disponiveis?: number;
   titulo: string;
 }
 
@@ -29,26 +33,41 @@ export function BookBasket({
           <p className="text-xs text-gray-400">Nenhum livro selecionado.</p>
         ) : (
           <div className="space-y-3">
-            {itens.map((ex) => (
-              <div
-                key={ex.id_exemplar}
-                className="flex items-center justify-between bg-white p-3 rounded-xl shadow-sm border border-gray-100"
-              >
-                <div>
-                  <p className="text-xs font-bold text-gray-900">{ex.titulo}</p>
-                  <p className="text-[10px] text-denin font-medium">
-                    Exemplar #{ex.numero_exemplar}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onRemove(ex.id_exemplar)}
-                  className="text-red-400 hover:text-red-600"
+            {itens.map((ex) => {
+              const itemId = ex.id_livro ?? ex.id_exemplar;
+              if (itemId === undefined) return null;
+
+              return (
+                <div
+                  key={itemId}
+                  className="flex items-center justify-between bg-white p-3 rounded-xl shadow-sm border border-gray-100"
                 >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            ))}
+                  <div>
+                    <p className="text-xs font-bold text-gray-900">
+                      {ex.titulo}
+                    </p>
+                    <p className="text-[10px] text-denin font-medium">
+                      {typeof ex.numero_exemplar === 'number' &&
+                      ex.numero_exemplar > 0
+                        ? `Exemplar #${ex.numero_exemplar}`
+                        : 'Exemplar disponivel'}
+                    </p>
+                    {typeof ex.exemplares_disponiveis === 'number' && (
+                      <p className="text-[10px] text-gray-500 font-medium">
+                        {ex.exemplares_disponiveis} exemplar(es) disponivel(is)
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onRemove(itemId)}
+                    className="text-red-400 hover:text-red-600"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

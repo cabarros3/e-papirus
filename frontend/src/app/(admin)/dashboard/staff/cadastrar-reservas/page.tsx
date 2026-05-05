@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { reservaService } from '@/services/reserva-service';
+import { ExemplaresService } from '@/services/exemplar-service';
 import { pessoaService } from '@/services/pessoa-service';
 import { BookService } from '@/services/book-service';
 import { Pessoa } from '@/types/pessoas';
@@ -35,6 +36,26 @@ export default function ReservaPage() {
 
   const [cesta, setCesta] = useState<BasketItem[]>([]);
   const [livroVisualizado, setLivroVisualizado] = useState<Livro | null>(null);
+
+  const getExemplarDisponivel = async (idLivro: number) => {
+    const livroComExemplares =
+      await ExemplaresService.getExemplaresPorLivro(idLivro);
+    const disponivel = livroComExemplares?.exemplares.find(
+      (ex) => ex.disponibilidade === 'disponivel'
+    );
+    const totalDisponiveis =
+      livroComExemplares?.exemplares.filter(
+        (ex) => ex.disponibilidade === 'disponivel'
+      ).length || 0;
+
+    if (!disponivel) return null;
+
+    return {
+      id_exemplar: disponivel.id_exemplar,
+      numero_exemplar: disponivel.numero_exemplar,
+      exemplares_disponiveis: totalDisponiveis,
+    };
+  };
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -67,7 +88,7 @@ export default function ReservaPage() {
     setDadosResumo(null);
   };
 
-  const handleAdicionarReserva = () => {
+  const handleAdicionarReserva = async () => {
     if (!selecionado.livroId) return toast.warning('Selecione um livro.');
     if (cesta.length >= 2) return toast.warning('Limite de 2 reservas.');
 
@@ -76,15 +97,21 @@ export default function ReservaPage() {
     );
 
     if (livroInfo) {
-      if (cesta.some((item) => item.id_exemplar === livroInfo.id_livro)) {
+      if (cesta.some((item) => item.id_livro === livroInfo.id_livro)) {
         return toast.warning('Este livro já está na cesta.');
+      }
+      const exemplar = await getExemplarDisponivel(livroInfo.id_livro);
+      if (!exemplar) {
+        return toast.warning('Nao ha exemplares disponiveis para este livro.');
       }
 
       setCesta([
         ...cesta,
         {
-          id_exemplar: livroInfo.id_livro,
-          numero_exemplar: 0,
+          id_livro: livroInfo.id_livro,
+          id_exemplar: exemplar.id_exemplar,
+          numero_exemplar: exemplar.numero_exemplar,
+          exemplares_disponiveis: exemplar.exemplares_disponiveis,
           titulo: livroInfo.titulo,
         },
       ]);
@@ -104,11 +131,11 @@ export default function ReservaPage() {
       const resultados = await Promise.all(
         cesta.map((item) => {
           console.log('Enviando:', {
-            id_livro: item.id_exemplar,
+            id_livro: item.id_livro,
             id_pessoa: parseInt(selecionado.usuarioId)
           });
           return reservaService.criar({
-            id_livro: item.id_exemplar,
+            id_livro: item.id_livro as number,
             id_pessoa: parseInt(selecionado.usuarioId),
           });
         })
@@ -257,7 +284,7 @@ export default function ReservaPage() {
         {/* COLUNA DIREITA: CESTA (BookBasket) */}
         <BookBasket
           itens={cesta}
-          onRemove={(id) => setCesta(cesta.filter((i) => i.id_exemplar !== id))}
+          onRemove={(id) => setCesta(cesta.filter((i) => i.id_livro !== id))}
           livroDetalhes={livroVisualizado}
         />
       </div>

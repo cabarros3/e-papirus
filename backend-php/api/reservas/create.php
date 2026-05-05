@@ -60,13 +60,14 @@ try {
     $dataExpiracao = date('Y-m-d', strtotime($prazo));
 
     // 3. INSERIR NA TABELA DE RESERVA
-    $sqlReserva = "INSERT INTO reserva (id_livro, id_pessoa, data_expiracao, status) 
-                   VALUES (?, ?, ?, 'ativa')";
+    $sqlReserva = "INSERT INTO reserva (id_livro, id_pessoa, id_exemplar, data_expiracao, status) 
+                   VALUES (?, ?, ?, ?, 'ativa')";
     
     $stmtReserva = $pdo->prepare($sqlReserva);
     $stmtReserva->execute([
         $data->id_livro,
         $idFinalPessoa,
+        $idExemplar,
         $dataExpiracao
     ]);
 
@@ -85,6 +86,7 @@ try {
     enviarResposta("sucesso", "Reserva realizada! Expira em: " . date('d/m/Y', strtotime($dataExpiracao)), [
         "id_reserva" => $idReserva,
         "id_pessoa" => $idFinalPessoa,
+        "id_exemplar" => $idExemplar,
         "data_expiracao" => $dataExpiracao
     ], 201);
     exit;

@@ -19,6 +19,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
 } from 'lucide-react';
+import { Toaster } from 'sonner';
 import { Pessoa } from '@/types/pessoas';
 
 export default function ClientDashboardLayout({
@@ -67,6 +68,7 @@ export default function ClientDashboardLayout({
 
   return (
     <div className="flex min-h-screen bg-gray-50">
+      <Toaster richColors position="top-right" />
       <aside
         className={`${
           isCollapsed ? 'w-20' : 'w-64'

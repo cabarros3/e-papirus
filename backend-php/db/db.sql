@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS renovacao (
 -- tabela nova --
 CREATE TABLE IF NOT EXISTS reserva (
     id_reserva INT PRIMARY KEY AUTO_INCREMENT,
+    id_exemplar INT NOT NULL,
     id_livro INT NOT NULL,
     id_pessoa INT NOT NULL,
     data_reserva TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -90,4 +91,5 @@ CREATE TABLE IF NOT EXISTS reserva (
     status ENUM('ativa', 'concluida', 'cancelada') DEFAULT 'ativa',
     FOREIGN KEY (id_livro) REFERENCES livro(id_livro),
     FOREIGN KEY (id_pessoa) REFERENCES pessoa(id_pessoa)
+    FOREIGN KEY (id_exemplar) REFERENCES exemplar(id_exemplar);
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

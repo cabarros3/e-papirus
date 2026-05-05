@@ -13,6 +13,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { reservaService } from '@/services/reserva-service';
+import { ExemplaresService } from '@/services/exemplar-service';
 import { BookService } from '@/services/book-service';
 import { Pessoa } from '@/types/pessoas';
 import { Livro } from '@/types/livros';
@@ -35,6 +36,26 @@ function ReservaUsuarioContent() {
   const [livroSelecionadoId, setLivroSelecionadoId] = useState('');
   const [cesta, setCesta] = useState<BasketItem[]>([]);
   const [livroVisualizado, setLivroVisualizado] = useState<Livro | null>(null);
+
+  const getExemplarDisponivel = async (idLivro: number) => {
+    const livroComExemplares =
+      await ExemplaresService.getExemplaresPorLivro(idLivro);
+    const disponivel = livroComExemplares?.exemplares.find(
+      (ex) => ex.disponibilidade === 'disponivel'
+    );
+    const totalDisponiveis =
+      livroComExemplares?.exemplares.filter(
+        (ex) => ex.disponibilidade === 'disponivel'
+      ).length || 0;
+
+    if (!disponivel) return null;
+
+    return {
+      id_exemplar: disponivel.id_exemplar,
+      numero_exemplar: disponivel.numero_exemplar,
+      exemplares_disponiveis: totalDisponiveis,
+    };
+  };
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -60,10 +81,21 @@ function ReservaUsuarioContent() {
             setLivroVisualizado(livroEncontrado);
 
             // Importante: Guardamos o ID real do livro para o backend
+            const exemplar = await getExemplarDisponivel(
+              livroEncontrado.id_livro
+            );
+
+            if (!exemplar) {
+              toast.warning('Nao ha exemplares disponiveis para este livro.');
+              return;
+            }
+
             setCesta([
               {
-                id_exemplar: livroEncontrado.id_livro,
-                numero_exemplar: 0,
+                id_livro: livroEncontrado.id_livro,
+                id_exemplar: exemplar.id_exemplar,
+                numero_exemplar: exemplar.numero_exemplar,
+                exemplares_disponiveis: exemplar.exemplares_disponiveis,
                 titulo: livroEncontrado.titulo,
               },
             ]);
@@ -88,23 +120,34 @@ function ReservaUsuarioContent() {
     router.push('/dashboard/user/minhas-reservas');
   };
 
-  const handleAdicionar = () => {
+  const handleAdicionar = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.preventDefault();
     if (!livroSelecionadoId) return toast.warning('Selecione um livro.');
     if (cesta.length >= 2) return toast.warning('Limite de 2 livros.');
 
     const livro = livros.find((l) => String(l.id_livro) === livroSelecionadoId);
     if (livro) {
-      if (cesta.some((item) => item.id_exemplar === livro.id_livro)) {
+      if (cesta.some((item) => item.id_livro === livro.id_livro)) {
         return toast.warning('Este livro já está na lista.');
       }
-      setCesta([
-        ...cesta,
-        {
-          id_exemplar: livro.id_livro,
-          numero_exemplar: 0,
-          titulo: livro.titulo,
-        },
-      ]);
+      try {
+        const exemplar = await getExemplarDisponivel(livro.id_livro);
+        if (!exemplar) {
+          return toast.warning('Nao ha exemplares disponiveis para este livro.');
+        }
+        setCesta([
+          ...cesta,
+          {
+            id_livro: livro.id_livro,
+            id_exemplar: exemplar.id_exemplar,
+            numero_exemplar: exemplar.numero_exemplar,
+            exemplares_disponiveis: exemplar.exemplares_disponiveis,
+            titulo: livro.titulo,
+          },
+        ]);
+      } catch (error) {
+        toast.error('Erro ao verificar exemplares disponiveis.');
+      }
     }
   };
 
@@ -118,7 +161,7 @@ function ReservaUsuarioContent() {
       // Aqui garantimos que enviamos exatamente o que o script PHP espera
       await Promise.all(
         cesta.map((item) =>
-          reservaService.criar({ id_livro: item.id_exemplar })
+          reservaService.criar({ id_livro: item.id_livro as number })
         )
       );
 
@@ -221,6 +264,7 @@ function ReservaUsuarioContent() {
                 <ChevronDown className="absolute right-4 top-5 w-4 h-4 text-gray-400 pointer-events-none" />
               </div>
               <button
+                type="button"
                 onClick={handleAdicionar}
                 className="w-full py-3 text-denin font-bold text-xs uppercase tracking-widest hover:bg-blue-50 rounded-xl transition-colors mt-2"
               >
@@ -250,7 +294,7 @@ function ReservaUsuarioContent() {
             <BookBasket
               itens={cesta}
               onRemove={(id) =>
-                setCesta(cesta.filter((i) => i.id_exemplar !== id))
+                setCesta(cesta.filter((i) => i.id_livro !== id))
               }
               livroDetalhes={livroVisualizado}
             />
