@@ -90,6 +90,6 @@ CREATE TABLE IF NOT EXISTS reserva (
     data_expiracao DATE NOT NULL, -- Prazo para a pessoa buscar o livro
     status ENUM('ativa', 'concluida', 'cancelada') DEFAULT 'ativa',
     FOREIGN KEY (id_livro) REFERENCES livro(id_livro),
-    FOREIGN KEY (id_pessoa) REFERENCES pessoa(id_pessoa)
-    FOREIGN KEY (id_exemplar) REFERENCES exemplar(id_exemplar);
+    FOREIGN KEY (id_pessoa) REFERENCES pessoa(id_pessoa),
+    FOREIGN KEY (id_exemplar) REFERENCES exemplar(id_exemplar)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
