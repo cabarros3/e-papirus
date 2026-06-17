@@ -80,7 +80,7 @@ export default function Home() {
               <span className="text-denin">e</span>-Papirus
             </h1>
             {/* Descrição: de lg/xl para xl/2xl */}
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Explore milhares de livros, artigos e conteúdos acadêmicos em um
               só lugar.
             </p>
