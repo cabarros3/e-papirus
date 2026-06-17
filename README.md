@@ -97,12 +97,43 @@ DB_NAME=e_papirus
 DB_USER=seu_user
 DB_PASS=sua_senha
 
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=seu_email@gmail.com
+MAIL_PASS=sua_senha
 
 JWT_SECRET=secret_jwt_aqui
 JWT_EXPIRATION=86400
 ```
 
-5. Inicie o projeto
+5. **Importe o banco de dados:**
+
+⚠️ **Importante:** Certifique-se de estar na pasta `backend-php` e que os arquivos estão em `db/db.sql` e `db/seed.sql`
+
+No terminal MySQL ou em sua ferramenta de gerenciamento (phpMyAdmin, MySQL Workbench):
+
+```bash
+mysql -u seu_user -p < db/db.sql
+mysql -u seu_user -p < db/seed.sql
+```
+
+```bash
+# Acesse o MySQL
+mysql -u seu_user -p
+
+# Dentro do MySQL, execute os scripts:
+source db/db.sql
+source db/seed.sql
+```
+
+Ou, se preferir via linha de comando:
+
+```bash
+mysql -u seu_user -p < db/db.sql
+mysql -u seu_user -p < db/seed.sql
+```
+
+6. Inicie o projeto
 
 ```bash
 php -S localhost:8000

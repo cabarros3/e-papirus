@@ -1,4 +1,12 @@
 DB_HOST=localhost:3306
 DB_NAME=e_papirus
-DB_USER=root
-DB_PASS=root
+DB_USER=seu_user
+DB_PASS=sua_senha
+
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=seu_email@gmail.com
+MAIL_PASS=sua_senha
+
+JWT_SECRET=secret_jwt_aqui
+JWT_EXPIRATION=86400
