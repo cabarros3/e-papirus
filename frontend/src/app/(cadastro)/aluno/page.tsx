@@ -123,7 +123,7 @@ export default function CadastroAluno() {
               placeholder="Digite seu nome completo"
               onChange={(e) => setNome(e.target.value)}
               value={nome}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
             />
           </div>
 
@@ -137,7 +137,7 @@ export default function CadastroAluno() {
                 placeholder="0000000"
                 value={matricula}
                 onChange={(e) => setMatricula(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
               />
             </div>
             <div>
@@ -150,7 +150,7 @@ export default function CadastroAluno() {
                 value={cpf}
                 maxLength={11}
                 onChange={(e) => setCpf(e.target.value.replace(/\D/g, ''))}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
               />
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function CadastroAluno() {
               placeholder="exemplo@email.com"
               onChange={(e) => setEmail(e.target.value)}
               value={email}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
             />
           </div>
 
@@ -178,7 +178,7 @@ export default function CadastroAluno() {
                 placeholder="••••••••"
                 onChange={(e) => setSenha(e.target.value)}
                 value={senha}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
               />
             </div>
             <div>
@@ -190,7 +190,7 @@ export default function CadastroAluno() {
                 placeholder="••••••••"
                 onChange={(e) => setConfirmarSenha(e.target.value)}
                 value={confirmarSenha}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
               />
             </div>
           </div>
@@ -204,7 +204,7 @@ export default function CadastroAluno() {
               placeholder="(00) 00000-0000"
               onChange={(e) => setTelefone(e.target.value)}
               value={telefone}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
             />
           </div>
         </div>
