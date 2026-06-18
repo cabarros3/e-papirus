@@ -107,7 +107,7 @@ export default function PerfilUsuario() {
       {/* CABEÇALHO */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-gray-100 pb-6">
         <div>
-          <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight leading-none">
+          <h1 className="text-4xl font-black text-gray-900 tracking-tight leading-none">
             Meu Perfil
           </h1>
           <p className="text-sm text-gray-500 font-medium mt-2">

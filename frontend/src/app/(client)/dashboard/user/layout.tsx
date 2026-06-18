@@ -84,8 +84,9 @@ export default function ClientDashboardLayout({
             className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}
           >
             <div className="font-bold text-2xl text-black whitespace-nowrap">
-
-              <span className="text-denin">e</span>-Papirus
+              <Link href={'/'}>
+                <span className="text-denin">e</span>-Papirus              
+              </Link>
             </div>
           </div>
 
@@ -113,14 +114,14 @@ export default function ClientDashboardLayout({
             href="/dashboard/user/consultar-acervo"
             icon={<Search size={18} />}
             label="Acervo"
-            active={isActive('/resultados')}
+            active={isActive('/dashboard/user/consultar-acervo')}
             collapsed={isCollapsed}
           />
           <NavItem
             href="/dashboard/user/meus-emprestimos"
             icon={<Library size={18} />}
             label="Meus empréstimos"
-            active={isActive('/meus-emprestimos')}
+            active={isActive('/dashboard/user/meus-emprestimos')}
             collapsed={isCollapsed}
           />
 
@@ -185,7 +186,7 @@ export default function ClientDashboardLayout({
             href="/dashboard/user/perfil"
             icon={<IdCard size={18} />}
             label="Dados Pessoais"
-            active={isActive('/perfil')}
+            active={isActive('/dashboard/user/perfil')}
             collapsed={isCollapsed}
           />
         </nav>

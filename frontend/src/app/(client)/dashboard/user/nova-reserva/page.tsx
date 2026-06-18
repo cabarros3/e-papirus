@@ -205,14 +205,14 @@ function ReservaUsuarioContent() {
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link
+          {/* <Link
             href="/dashboard"
             className="p-2 hover:bg-gray-100 rounded-full transition-all"
           >
             <ArrowLeft size={20} className="text-gray-500" />
-          </Link>
+          </Link> */}
           <div>
-            <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight">
+            <h1 className="text-4xl font-black text-gray-900 tracking-tight">
               Nova Reserva
             </h1>
             <p className="text-sm text-gray-500 font-medium">

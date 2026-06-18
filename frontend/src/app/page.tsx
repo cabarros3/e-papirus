@@ -8,6 +8,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import BackgroundShapes from '@/components/visual/background-shapes';
 import Features from '@/components/visual/features';
+import Link from 'next/link';
 
 // Componentes de Conteúdo
 import SearchBar from '@/components/search-bar';
@@ -76,8 +77,11 @@ export default function Home() {
 
           <div className="space-y-6">
             {/* Título Principal: de 4xl/6xl para 5xl/7xl */}
+            
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900">
-              <span className="text-denin">e</span>-Papirus
+              <Link href='/'>
+                <span className="text-denin">e</span>-Papirus
+              </Link>
             </h1>
             {/* Descrição: de lg/xl para xl/2xl */}
             <p className="md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">

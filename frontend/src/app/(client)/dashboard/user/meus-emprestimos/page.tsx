@@ -123,7 +123,7 @@ export default function MeusEmprestimos() {
           <ArrowLeft size={20} className="text-gray-500" />
         </Link>
         <div>
-          <h1 className="text-2xl uppercase font-bold text-gray-900 tracking-tight">
+          <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
             Meus Empréstimos
           </h1>
           <p className="text-sm text-gray-500 font-medium">
