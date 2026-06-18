@@ -84,6 +84,7 @@ export default function ClientDashboardLayout({
             className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}
           >
             <div className="font-bold text-2xl text-black whitespace-nowrap">
+
               <span className="text-denin">e</span>-Papirus
             </div>
           </div>
