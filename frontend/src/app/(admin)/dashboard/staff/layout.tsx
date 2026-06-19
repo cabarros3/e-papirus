@@ -105,7 +105,10 @@ export default function DashboardLayout({
             className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}
           >
             <div className="text-2xl font-bold text-black whitespace-nowrap">
-              <span className="text-denin">e</span>-Papirus
+              <Link href={'/'}>
+                <span className="text-denin">e</span>-Papirus
+              </Link>
+              
             </div>
           </div>
           <button
@@ -390,7 +393,7 @@ export default function DashboardLayout({
 
       <main className="grow flex flex-col min-w-0">
         <header className="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-10 shadow-sm">
-          <div className="text-base text-gray-500 font-semibold truncate mr-4">
+          <div className="text-sm text-gray-500 font-medium italic truncate mr-4">
             Painel Administrativo
           </div>
 

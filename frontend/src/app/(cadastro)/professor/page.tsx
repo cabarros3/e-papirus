@@ -130,7 +130,7 @@ export default function CadastroProfessor() {
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               disabled={loading || success}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
             />
           </div>
 
@@ -146,7 +146,7 @@ export default function CadastroProfessor() {
                 value={matricula}
                 onChange={(e) => setMatricula(e.target.value)}
                 disabled={loading || success}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
               />
             </div>
             {/* CPF */}
@@ -161,7 +161,7 @@ export default function CadastroProfessor() {
                 maxLength={11}
                 onChange={(e) => setCpf(e.target.value.replace(/\D/g, ''))}
                 disabled={loading || success}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
               />
             </div>
           </div>
@@ -177,7 +177,7 @@ export default function CadastroProfessor() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading || success}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
             />
           </div>
 
@@ -193,7 +193,7 @@ export default function CadastroProfessor() {
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
                 disabled={loading || success}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
               />
             </div>
             <div>
@@ -206,7 +206,7 @@ export default function CadastroProfessor() {
                 value={confirmarSenha}
                 onChange={(e) => setConfirmarSenha(e.target.value)}
                 disabled={loading || success}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
               />
             </div>
           </div>
@@ -222,7 +222,7 @@ export default function CadastroProfessor() {
               value={telefone}
               onChange={(e) => setTelefone(e.target.value)}
               disabled={loading || success}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
             />
           </div>
         </div>

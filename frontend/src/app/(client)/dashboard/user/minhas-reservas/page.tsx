@@ -94,7 +94,7 @@ export default function MinhasReservasPage() {
     /* Ajustes: px-8 e py-10 para o espaçamento de topo e laterais de 32px+ */
     <div className="w-full px-8 py-10 space-y-8 animate-in fade-in duration-500 max-w-[1600px] mx-auto pb-12">
       <div>
-        <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight">
+        <h1 className="text-4xl font-black text-gray-900 tracking-tight">
           Minhas Reservas
         </h1>
         <p className="text-sm text-gray-500 font-medium">

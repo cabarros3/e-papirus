@@ -305,7 +305,7 @@ export default function CadastrarItem() {
               </label>
               <input
                 name="capa"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none font-mono text-xs"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none resize-none"
                 placeholder="https://link-da-imagem.com/capa.jpg"
               />
             </div>

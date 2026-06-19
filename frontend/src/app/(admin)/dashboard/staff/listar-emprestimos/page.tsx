@@ -83,7 +83,7 @@ export default function ListaEmprestimos() {
             <ArrowLeft size={20} className="text-gray-500" />
           </Link>
           <div>
-            <h1 className="text-2xl uppercase font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900">
               Gestão de Empréstimos
             </h1>
             <p className="text-sm text-gray-500 font-medium">

@@ -128,7 +128,7 @@ export default function EmprestimoPage() {
         >
           <ArrowLeft size={20} className="text-gray-500" />
         </Link>
-        <h1 className="text-2xl font-bold uppercase text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900">
           Empréstimo de itens
         </h1>
       </div>

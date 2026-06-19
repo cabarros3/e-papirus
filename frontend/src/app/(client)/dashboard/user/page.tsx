@@ -6,6 +6,7 @@ import { ReservationCardFeatured } from '@/components/charts/minhas-reservas-met
 import NotificationSliderUser from '@/components/sliders/avisos-user';
 import { ErrorState } from '@/components/states/error';
 import { LoadingState } from '@/components/states/loading';
+import { Link } from 'next/link';
 import {
   AlunoDashboardData,
   AlunoDashboardService,
@@ -59,7 +60,7 @@ export default function AlunoDashboard() {
   return (
     <div className="w-full px-8 py-10 flex flex-col gap-8 animate-in fade-in duration-500 pb-20 max-w-[1600px] mx-auto overflow-hidden">
       <header className="space-y-2 animate-in slide-in-from-left-8 fade-in duration-700 ease-out">
-        <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
+        <h1 className="text-4xl md:text-4xl font-black text-gray-900 tracking-tight">
           Meu Painel de Leitor
         </h1>
         <p className="text-lg text-gray-500 font-medium">

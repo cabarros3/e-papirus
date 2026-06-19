@@ -104,7 +104,7 @@ export default function CadastroFuncionario() {
 
       <form onSubmit={criarItem} className="w-full space-y-6 text-left">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">
+          <h2 className="text-2xl font-bold text-gray-700 tracking-tight">
             Cadastro de Funcionário
           </h2>
           <p className="text-gray-500 text-sm">
@@ -140,15 +140,15 @@ export default function CadastroFuncionario() {
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               disabled={loading || success}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* MATRÍCULA */}
+            {/* Registro do Funcionário */}
             <div>
               <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
-                Matrícula
+                Registro do Funcionário
               </label>
               <input
                 type="text"
@@ -156,7 +156,7 @@ export default function CadastroFuncionario() {
                 value={matricula}
                 onChange={(e) => setMatricula(e.target.value)}
                 disabled={loading || success}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
               />
             </div>
             {/* CPF */}
@@ -171,7 +171,7 @@ export default function CadastroFuncionario() {
                 maxLength={11}
                 onChange={(e) => setCpf(e.target.value.replace(/\D/g, ''))}
                 disabled={loading || success}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
               />
             </div>
           </div>
@@ -180,7 +180,7 @@ export default function CadastroFuncionario() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
-                E-mail Institucional
+                E-mail
               </label>
               <input
                 type="email"
@@ -188,7 +188,7 @@ export default function CadastroFuncionario() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading || success}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
               />
             </div>
             <div>
@@ -199,7 +199,7 @@ export default function CadastroFuncionario() {
                 value={cargo}
                 onChange={(e) => setCargo(e.target.value as CargoFuncionario)}
                 disabled={loading || success}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white text-black transition-all disabled:opacity-50"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white text-gray-700 transition-all disabled:opacity-50"
               >
                 <option value="">Selecione...</option>
                 <option value="bibliotecario">Bibliotecário</option>
@@ -221,7 +221,7 @@ export default function CadastroFuncionario() {
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
                 disabled={loading || success}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
               />
             </div>
             <div>
@@ -234,7 +234,7 @@ export default function CadastroFuncionario() {
                 value={confirmarSenha}
                 onChange={(e) => setConfirmarSenha(e.target.value)}
                 disabled={loading || success}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white transition-all disabled:opacity-50"
               />
             </div>
           </div>

@@ -195,7 +195,7 @@ export default function ReservaPage() {
           <ArrowLeft size={20} className="text-gray-500" />
         </Link>
         <div>
-          <h1 className="text-2xl font-poppins uppercase font-bold text-gray-900 uppercase tracking-tight">
+          <h1 className="text-2xl font-poppins font-bold text-gray-900 tracking-tight">
             Reserva de Itens
           </h1>
           <p className="text-sm text-gray-500 font-medium font-sans">

@@ -122,7 +122,7 @@ export default function Header() {
                 ) : (
                   <>
                     <span className="text-sm uppercase tracking-widest">
-                      Acessar e-Papirus
+                      Fazer Login
                     </span>
                   </>
                 )}
