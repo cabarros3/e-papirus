@@ -1,6 +1,7 @@
 # E-Papirus
 
-O E-Papirus é um sistema de gestão de biblioteca desenvolvido especificamente para o IFPE Campus Igarassu. O projeto nasceu da necessidade de modernizar o acesso ao acervo acadêmico, facilitando tanto o trabalho administrativo quanto a consulta de livros, documentos e mídias pela comunidade escolar.
+O E-Papirus é um sistema de gestão de biblioteca desenvolvido durante nossa graduação em Tecnologia para Sistemas em Internet (TSI) no IFPE - Campus Igarassu. 
+O projeto nasceu da necessidade de modernizar o acesso ao acervo acadêmico, facilitando tanto o trabalho administrativo quanto a consulta de livros, documentos e mídias pela comunidade escolar.
 
 ## Funcionalidades
 
