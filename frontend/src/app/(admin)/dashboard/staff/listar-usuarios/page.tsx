@@ -84,7 +84,7 @@ export default function ListarUsuarios() {
             <ArrowLeft size={20} className="text-gray-500" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold uppercase text-gray-900 tracking-tight leading-none">
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight leading-none">
               Gerenciar Usuários
             </h1>
             <p className="text-sm text-gray-500 font-medium mt-1">

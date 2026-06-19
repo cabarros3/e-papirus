@@ -82,7 +82,7 @@ export default function CadastrarPessoa() {
           <ArrowLeft size={20} className="text-gray-500" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold uppercase text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900">
             Cadastrar Novo Usuário
           </h1>
           <p className="text-sm text-gray-500 font-medium">
