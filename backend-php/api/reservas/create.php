@@ -21,9 +21,24 @@ if (empty($data->id_livro)) {
 }
 
 // --- LÓGICA DE IDENTIDADE ---
-$idFinalPessoa = $data->id_pessoa ?? null;
+// $idFinalPessoa = $data->id_pessoa ?? null;
 
-if ($usuarioLogado->tipo !== 'adm' && $usuarioLogado->tipo !== 'staff') {
+// if ($usuarioLogado->tipo !== 'adm' && $usuarioLogado->tipo !== 'staff') {
+//     $idFinalPessoa = $usuarioLogado->id_pessoa;
+// }
+
+
+
+// Se o usuário é um funcionário com cargo de bibliotecário/auxiliar, 
+// ele pode fazer reservas para outras pessoas
+$isStaff = ($usuarioLogado->tipo === 'funcionario' && 
+            in_array($usuarioLogado->cargo, ['bibliotecario', 'auxiliar']));
+
+if ($isStaff) {
+    // Se é staff, usa o id_pessoa que veio do frontend
+    $idFinalPessoa = $data->id_pessoa ?? null;
+} else {
+    // Se não é staff, usa sempre seu próprio id_pessoa
     $idFinalPessoa = $usuarioLogado->id_pessoa;
 }
 
