@@ -24,7 +24,7 @@ export default function ReservaPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [dadosResumo, setDadosResumo] = useState<any>(null);
-
+  
   const [usuarios, setUsuarios] = useState<Pessoa[]>([]);
   const [livros, setLivros] = useState<Livro[]>([]);
 
@@ -86,6 +86,10 @@ export default function ReservaPage() {
     });
     setLivroVisualizado(null);
     setDadosResumo(null);
+    // seta o tempo que direciona para página de listar-reservas
+    setTimeout(() => {
+      router.push('/dashboard/staff/listar-reservas');
+    }, 500);
   };
 
   const handleAdicionarReserva = async () => {

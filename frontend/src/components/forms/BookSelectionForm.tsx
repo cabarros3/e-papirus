@@ -1,5 +1,5 @@
 'use client';
-import { Plus } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { BookService } from '@/services/book-service';
 import { LivroComExemplares } from '@/services/exemplar-service';
@@ -97,6 +97,8 @@ export function BookSelectionForm({
           </select>
         </div>
 
+        {/* <ShoppingBag size={16} /> Cesta ({itens.length}/3) */}
+
         <button
           type="button"
           onClick={() => {
@@ -109,7 +111,8 @@ export function BookSelectionForm({
           className="w-full sm:w-14 h-[46px] bg-denin text-white rounded-xl disabled:opacity-30 hover:bg-blue-800 transition-all flex items-center justify-center shrink-0 shadow-lg shadow-denin/10 active:scale-95"
           title="Adicionar à cesta"
         >
-          <Plus size={24} />
+          
+          <ShoppingBag size={24} />
           <span className="sm:hidden ml-2 font-bold text-sm">Adicionar</span>
         </button>
       </div>
