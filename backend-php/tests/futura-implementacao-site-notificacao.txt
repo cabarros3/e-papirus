@@ -1,7 +1,7 @@
-Para quando o e-Papirus ganhar um sininho dentro do sistema no futuro, vocês fazem uma migração adicionando:
+Para quando o e-Papirus ganhar um sininho dentro do sistema no futuro, iremos fazer uma migração adicionando:
 
-ALTER TABLE notificacao_email
+ALTER TABLE notificacao
 ADD COLUMN data_leitura DATETIME NULL;
 
-ALTER TABLE notificacao_email
+ALTER TABLE notificacao
 MODIFY COLUMN status ENUM('enviado', 'erro', 'lido');
