@@ -154,7 +154,7 @@ export default function GerenciarExemplares() {
             <ArrowLeft size={20} className="text-gray-500" />
           </Link>
           <div>
-            <h1 className="text-2xl font-poppins font-bold text-gray-900 uppercase tracking-tight">
+            <h1 className="text-2xl font-poppins font-bold text-gray-900 tracking-tight">
               Gerenciar Exemplares
             </h1>
             <p className="text-sm text-gray-500 font-medium">
@@ -351,7 +351,7 @@ export default function GerenciarExemplares() {
                                       onClick={() =>
                                         handleDelete(exemplar.id_exemplar)
                                       }
-                                      className="text-red-500 p-1.5 hover:bg-red-50 rounded-lg"
+                                      className="text-gray-500 p-1.5 hover:bg-red-100 rounded-lg"
                                     >
                                       <Trash2 size={18} />
                                     </button>

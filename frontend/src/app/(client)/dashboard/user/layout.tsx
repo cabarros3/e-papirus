@@ -182,18 +182,18 @@ export default function ClientDashboardLayout({
         <div className="p-6 border-t border-gray-100">
           {isCollapsed ? (
             <div
-              title={`Matrícula: ${user.matricula || 'N/A'}`}
+              title={`Acesso: ${user.tipo || 'STAFF'}`}
               className="w-12 h-12 rounded-full bg-denin/10 text-denin flex items-center justify-center mx-auto text-xs font-black"
             >
-              {user.matricula?.slice(-2) || 'ID'}
+              ADM
             </div>
           ) : (
             <div className="bg-gray-50 rounded-2xl p-4 text-center overflow-hidden border border-gray-100">
               <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">
-                Matrícula
+                Acesso
               </p>
-              <p className="text-sm font-extrabold text-gray-700 truncate">
-                {user.matricula || 'N/A'}
+              <p className="text-sm font-extrabold text-gray-700 uppercase truncate">
+                {user.tipo || 'Bibliotecário(a)'}
               </p>
             </div>
           )}
@@ -229,7 +229,7 @@ export default function ClientDashboardLayout({
                     sessionStorage.clear();
                     router.push('/login');
                   }}
-                  className="w-full flex items-center gap-3 p-5 text-sm text-red-600 hover:bg-red-50 font-black transition-colors"
+                  className="w-full flex items-center gap-3 p-5 text-sm text-gray-600 hover:bg-gray-50 font-black transition-colors"
                 >
                   <LogOut size={20} /> Encerrar Sessão
                 </button>

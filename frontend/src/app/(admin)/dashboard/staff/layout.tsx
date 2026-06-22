@@ -417,7 +417,7 @@ export default function DashboardLayout({
               <div className="absolute right-0 mt-3 w-56 bg-white border border-gray-100 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 p-5 text-sm text-red-600 hover:bg-red-50 font-black transition-colors"
+                  className="w-full flex items-center gap-3 p-5 text-sm text-gray-600 hover:bg-gray-50 font-black transition-colors"
                 >
                   <LogOut size={20} /> Encerrar Sessão
                 </button>

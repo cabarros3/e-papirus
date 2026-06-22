@@ -207,7 +207,7 @@ export default function GerenciarAutores() {
                         setAutorParaDeletar(autor);
                         setIsDeleteModalOpen(true);
                       }}
-                      className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                      className="p-2.5 text-gray-400 hover:text-gray-500 hover:bg-red-100 rounded-xl transition-all"
                     >
                       <Trash2 size={18} />
                     </button>

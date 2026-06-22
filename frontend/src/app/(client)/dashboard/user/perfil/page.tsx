@@ -28,34 +28,19 @@ export default function PerfilUsuario() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   // 1. Sincronização: Busca os dados completos do banco ao carregar
-  useEffect(() => {
-    async function sincronizarDados() {
+useEffect(() => {
+  const handleStorageUpdate = () => {
+    const saved = sessionStorage.getItem('bib_user');
+    if (saved) {
       try {
-        const saved = sessionStorage.getItem('bib_user');
-        if (!saved) {
-          router.push('/login');
-          return;
-        }
-
-        const userSession = JSON.parse(saved);
-        // Tenta pegar id_usuario ou id_pessoa (dependendo de como está vindo do seu login)
-        const idParaBusca = userSession.id_usuario || userSession.id_pessoa;
-
-        const dadosCompletos =
-          await pessoaService.buscarDadosCompletos(idParaBusca);
-
-        setUser(dadosCompletos);
-        sessionStorage.setItem('bib_user', JSON.stringify(dadosCompletos));
-      } catch (error) {
-        console.error('Erro ao sincronizar perfil:', error);
-        toast.error('Não foi possível carregar seus dados atualizados.');
-      } finally {
-        setLoading(false);
-      }
+        setUser(JSON.parse(saved));
+      } catch {}
     }
+  };
 
-    sincronizarDados();
-  }, [router]);
+  window.addEventListener('storage', handleStorageUpdate);
+  return () => window.removeEventListener('storage', handleStorageUpdate);
+}, []);
 
   // 2. Salvar alterações de dados pessoais
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

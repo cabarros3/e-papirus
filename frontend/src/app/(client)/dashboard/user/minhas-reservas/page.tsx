@@ -192,7 +192,7 @@ export default function MinhasReservasPage() {
                   <button
                     onClick={() => handleCancelar(reserva.id_reserva)}
                     disabled={isCancelling === reserva.id_reserva}
-                    className="w-12 h-12 flex items-center justify-center text-red-400 hover:bg-red-50 hover:text-red-500 rounded-2xl transition-all disabled:opacity-50"
+                    className="w-12 h-12 flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-red-500 rounded-2xl transition-all disabled:opacity-50"
                     title="Cancelar Reserva"
                   >
                     {isCancelling === reserva.id_reserva ? (

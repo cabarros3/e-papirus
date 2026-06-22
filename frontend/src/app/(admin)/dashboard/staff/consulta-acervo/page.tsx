@@ -95,7 +95,7 @@ export default function ConsultarAcervo() {
           <ArrowLeft size={20} className="text-gray-500" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-tight">
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
             Consulta ao Acervo
           </h1>
           <p className="text-sm text-gray-500 font-medium">
