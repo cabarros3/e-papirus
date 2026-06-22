@@ -93,3 +93,27 @@ CREATE TABLE IF NOT EXISTS reserva (
     FOREIGN KEY (id_pessoa) REFERENCES pessoa(id_pessoa),
     FOREIGN KEY (id_exemplar) REFERENCES exemplar(id_exemplar)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Nova Tabela de Notificações !! --
+CREATE TABLE IF NOT EXISTS notificacao (
+    id_notificacao INT AUTO_INCREMENT PRIMARY KEY,
+
+    id_pessoa INT NOT NULL,
+    id_emprestimo INT NULL,
+
+    tipo_notificacao VARCHAR(50) NOT NULL,
+
+    assunto VARCHAR(255) NOT NULL,
+
+    data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    status ENUM('enviado', 'erro') DEFAULT 'enviado',
+
+    mensagem_erro TEXT NULL,
+
+    FOREIGN KEY (id_pessoa)
+        REFERENCES pessoa(id_pessoa),
+
+    FOREIGN KEY (id_emprestimo)
+        REFERENCES emprestimo(id_emprestimo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
