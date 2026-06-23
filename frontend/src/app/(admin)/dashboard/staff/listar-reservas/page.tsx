@@ -183,7 +183,7 @@ export default function ListarReservasPage() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => abrirConfirmacao(reserva.id_reserva)}
-                          className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-all"
+                          className="p-2 text-gray-500 hover:bg-red-100 rounded-lg transition-all"
                           title="Cancelar Reserva"
                         >
                           <Trash2 size={18} />
