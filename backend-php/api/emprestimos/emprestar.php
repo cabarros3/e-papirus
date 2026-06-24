@@ -7,8 +7,8 @@ error_reporting(E_ALL);
 require_once '../../config/cors.php';
 require_once '../../config/utils.php';
 require_once '../../db/db.php';
-require_once '../../config.php'; 
-require_once '../../vendor/autoload.php'; 
+require_once '../../config.php';
+require_once '../../vendor/autoload.php';
 
 use App\Services\EmailService;
 
@@ -42,15 +42,15 @@ try {
 
     // 2. Datas
     $dataHoje = date('Y-m-d');
-    $dataPrevista = (isset($data->data_prevista) && !empty($data->data_prevista)) 
-        ? $data->data_prevista 
+    $dataPrevista = (isset($data->data_prevista) && !empty($data->data_prevista))
+        ? $data->data_prevista
         : date('Y-m-d', strtotime("+7 days"));
 
     // 3. Inserir Empréstimo
     $sqlInsert = "INSERT INTO emprestimo (id_exemplar, id_pessoa, data_emprestimo, data_prevista) VALUES (?, ?, ?, ?)";
     $stmtInsert = $pdo->prepare($sqlInsert);
     $stmtInsert->execute([$data->id_exemplar, $data->id_pessoa, $dataHoje, $dataPrevista]);
-    
+
     $idEmprestimo = $pdo->lastInsertId();
 
     // 4. Atualizar Exemplar
@@ -73,12 +73,16 @@ try {
     $stmtDados->execute([$idEmprestimo]);
     $dadosEmprestimo = $stmtDados->fetch(PDO::FETCH_ASSOC);
 
+    error_log(print_r($dadosEmprestimo, true));
+
     $emailValido = !empty($dadosEmprestimo['aluno_email']) && filter_var($dadosEmprestimo['aluno_email'], FILTER_VALIDATE_EMAIL);
-    
+
     if ($emailValido) {
         // ob_start garante que qualquer saída (debug do PHPMailer ou erros) não vá para o cliente
         ob_start();
         try {
+
+            error_log("EmailService encontrada? " . (class_exists('App\Services\EmailService') ? 'SIM' : 'NAO'));
             // Usamos a verificação de classe para evitar o Fatal Error caso o autoload falhe
             if (class_exists('App\Services\EmailService')) {
                 $emailService = new EmailService();
@@ -86,19 +90,49 @@ try {
                 $corpo = "<h2>Olá, {$dadosEmprestimo['aluno_nome']}!</h2>
                           <p>Seu empréstimo do livro <strong>{$dadosEmprestimo['livro_titulo']}</strong> foi realizado com sucesso!</p>
                           <p>Data de devolução: " . date('d/m/Y', strtotime($dataPrevista)) . "</p>";
-                
-                $emailService->enviar($dadosEmprestimo['aluno_email'], $assunto, $corpo);
+
+                $enviado = $emailService->enviar(
+                    $dadosEmprestimo['aluno_email'],
+                    $assunto,
+                    $corpo
+                );
+
+                error_log("Resultado envio: " . ($enviado ? 'SUCESSO' : 'FALHOU'));
+
+                if (!$enviado) {
+                    error_log("PHPMailer retornou FALSE");
+                }
+
+                $stmtNotif = $pdo->prepare("
+                    INSERT INTO notificacao (
+                        id_pessoa,
+                        id_emprestimo,
+                        tipo_notificacao,
+                        assunto,
+                        status
+                    ) VALUES (?, ?, ?, ?, ?)
+                ");
+
+                $stmtNotif->execute([
+                    $data->id_pessoa,
+                    $idEmprestimo,
+                    'emprestimo_realizado',
+                    $assunto,
+                    'enviado'
+                ]);
+
             }
-        } catch (\Throwable $t) {
-            // Captura qualquer erro de e-mail (incluindo classe não encontrada) e apenas loga
-            error_log("Falha ao processar e-mail: " . $t->getMessage());
-        }
-        ob_end_clean(); // Limpa o buffer
-    }
+          } catch (\Throwable $t) {
+              error_log("ERRO EMAIL: " . $t->getMessage());
+          }
+
+          ob_end_clean();
+
+          } // fecha if ($emailValido)
 
     // Resposta final limpa
     enviarResposta("sucesso", "Empréstimo realizado!", [
-        "id_emprestimo" => $idEmprestimo, 
+        "id_emprestimo" => $idEmprestimo,
         "data_prevista" => $dataPrevista
     ], 201);
 

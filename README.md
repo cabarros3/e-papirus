@@ -1,6 +1,6 @@
 # E-Papirus
 
-O E-Papirus é um sistema de gestão de biblioteca desenvolvido durante nossa graduação em Tecnologia para Sistemas em Internet (TSI) no IFPE - Campus Igarassu. 
+O E-Papirus é um sistema de gestão de biblioteca desenvolvido durante nossa graduação em Tecnologia para Sistemas em Internet (TSI) no IFPE - Campus Igarassu.
 O projeto nasceu da necessidade de modernizar o acesso ao acervo acadêmico, facilitando tanto o trabalho administrativo quanto a consulta de livros, documentos e mídias pela comunidade escolar.
 
 ## Funcionalidades
@@ -99,9 +99,9 @@ DB_USER=seu_user
 DB_PASS=sua_senha
 
 MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USER=seu_email@gmail.com
-MAIL_PASS=sua_senha
+MAIL_PORT=587                      // Para SMTP, as mais comuns são: 25 (antiga), 465 (SSL/TLS), 587 (Gmail, recomendada)  
+MAIL_USER=epapirus.teste@gmail.com // User do e-Papirus
+MAIL_PASS=sua_senha                // Senha gerada
 
 JWT_SECRET=secret_jwt_aqui
 JWT_EXPIRATION=86400
