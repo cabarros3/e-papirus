@@ -78,16 +78,16 @@ try {
             $check = $pdo->prepare("SELECT COUNT(*) FROM notificacao WHERE id_emprestimo = ? AND tipo_notificacao = 'atraso' AND status = 'enviado'");
             $check->execute([$idEmprestimo]);
             if ($check->fetchColumn() > 0) {
-                echo "[" . date('Y-m-d H:i:s') . "] ⏭️  Atraso já notificado para {$nome} (empréstimo #{$idEmprestimo})\n";
+                echo "[" . date('Y-m-d H:i:s') . "]  Atraso já notificado para {$nome} (empréstimo #{$idEmprestimo})\n";
                 continue;
             }
 
             $tipoNotificacao = 'atraso';
-            $assunto = "🔴 Atraso na devolução - e-Papirus";
+            $assunto = "Atraso na Devolução: e-Papirus";
             $corpo = "<h2>Olá, {$nome}!</h2>";
             $corpo .= "<p>Você está com <strong>{$diasAtraso}</strong> dia(s) de atraso na devolução do livro <strong>{$titulo}</strong>.</p>";
             $corpo .= "<p>Data prevista: " . date('d/m/Y', strtotime($dataPrevista)) . "</p>";
-            $corpo .= "<p>Por favor, devolva o livro o mais rápido possível.</p>";
+            $corpo .= "<p>Por favor, devolva o livro o mais rápido possível!</p>";
             $corpo .= "<p>Atenciosamente,<br/>Equipe e-Papirus</p>";
 
         } elseif ($diferenca <= 3 && $diferenca >= 0) {
@@ -95,12 +95,12 @@ try {
             $check = $pdo->prepare("SELECT COUNT(*) FROM notificacao WHERE id_emprestimo = ? AND tipo_notificacao = 'lembrete' AND status = 'enviado'");
             $check->execute([$idEmprestimo]);
             if ($check->fetchColumn() > 0) {
-                echo "[" . date('Y-m-d H:i:s') . "] ⏭️  Lembrete já enviado para {$nome} (empréstimo #{$idEmprestimo})\n";
+                echo "[" . date('Y-m-d H:i:s') . "]   Lembrete já enviado para {$nome} (empréstimo #{$idEmprestimo})\n";
                 continue;
             }
 
             $tipoNotificacao = 'lembrete';
-            $assunto = "📚 Lembrete: Seu empréstimo está perto do vencimento";
+            $assunto = "Lembrete: Seu Empréstimo Está Perto do Vencimento";
             $corpo = "<h2>Olá, {$nome}!</h2>";
             $corpo .= "<p>Seu empréstimo do livro <strong>{$titulo}</strong> vence em <strong>{$diferenca}</strong> dia(s).</p>";
             $corpo .= "<p>Data prevista: " . date('d/m/Y', strtotime($dataPrevista)) . "</p>";
@@ -109,7 +109,7 @@ try {
 
         } else {
             // Não precisa enviar ainda
-            echo "[" . date('Y-m-d H:i:s') . "] ⏭️  {$nome} - faltam {$diferenca} dias (ainda não precisa notificar)\n";
+            echo "[" . date('Y-m-d H:i:s') . "]   {$nome} - faltam {$diferenca} dias (ainda não precisa notificar)\n";
             continue;
         }
 
@@ -122,32 +122,32 @@ try {
                 $insert = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status) VALUES (?, ?, ?, ?, 'enviado')");
                 $insert->execute([$idPessoa, $idEmprestimo, $tipoNotificacao, $assunto]);
                 $totalEnviados++;
-                echo "[" . date('Y-m-d H:i:s') . "] ✅ Notificação enviada para {$nome} ({$email}) - {$tipoNotificacao}\n";
+                echo "[" . date('Y-m-d H:i:s') . "] Notificação enviada para {$nome} ({$email}) - {$tipoNotificacao}\n";
             } else {
                 // Registrar erro
                 $insert = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status, mensagem_erro) VALUES (?, ?, ?, ?, 'erro', 'Falha no envio')");
                 $insert->execute([$idPessoa, $idEmprestimo, $tipoNotificacao, $assunto]);
-                echo "[" . date('Y-m-d H:i:s') . "] ❌ Erro ao enviar para {$nome}\n";
+                echo "[" . date('Y-m-d H:i:s') . "] Erro ao enviar para {$nome}\n";
             }
 
         } catch (\Exception $e) {
             // Registrar erro com mensagem
             $insert = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status, mensagem_erro) VALUES (?, ?, ?, ?, 'erro', ?)");
             $insert->execute([$idPessoa, $idEmprestimo, $tipoNotificacao, $assunto, $e->getMessage()]);
-            echo "[" . date('Y-m-d H:i:s') . "] ❌ Erro ao enviar para {$nome}: " . $e->getMessage() . "\n";
+            echo "[" . date('Y-m-d H:i:s') . "] Erro ao enviar para {$nome}: " . $e->getMessage() . "\n";
         }
     }
 
     $pdo->commit();
     echo "\n[" . date('Y-m-d H:i:s') . "] " . str_repeat('=', 50) . "\n";
-    echo "[" . date('Y-m-d H:i:s') . "] ✅ Processamento concluído! {$totalEnviados} notificações enviadas.\n";
+    echo "[" . date('Y-m-d H:i:s') . "] Processamento concluído! {$totalEnviados} notificações enviadas.\n";
     echo "[" . date('Y-m-d H:i:s') . "] " . str_repeat('=', 50) . "\n";
 
 } catch (PDOException $e) {
     $pdo->rollBack();
-    echo "[" . date('Y-m-d H:i:s') . "] ❌ Erro no banco de dados: " . $e->getMessage() . "\n";
+    echo "[" . date('Y-m-d H:i:s') . "] Erro no banco de dados: " . $e->getMessage() . "\n";
 } catch (\Exception $e) {
     $pdo->rollBack();
-    echo "[" . date('Y-m-d H:i:s') . "] ❌ Erro geral: " . $e->getMessage() . "\n";
+    echo "[" . date('Y-m-d H:i:s') . "] Erro geral: " . $e->getMessage() . "\n";
 }
 ?>
