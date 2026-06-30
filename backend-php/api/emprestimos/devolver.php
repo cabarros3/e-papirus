@@ -49,6 +49,7 @@ try {
     // Buscar dados para mensagem de confirmação (nome do aluno, email)
     $sqlDados = "
         SELECT
+            emp.id_pessoa,
             p.nome AS aluno_nome,
             p.email AS aluno_email,
             emp.data_emprestimo,
@@ -58,6 +59,7 @@ try {
         WHERE emp.id_emprestimo = ?
         LIMIT 1
     ";
+
     $stmtDados = $pdo->prepare($sqlDados);
     $stmtDados->execute([$data->id_emprestimo]);
     $dadosEmprestimo = $stmtDados->fetch(PDO::FETCH_ASSOC);
@@ -92,6 +94,24 @@ try {
                 $corpo .= "<p>Obrigado,<br/>Equipe e-Papirus</p>";
 
                 $emailService->enviar($dadosEmprestimo['aluno_email'], $assunto, $corpo);
+
+                $stmtNotif = $pdo->prepare("
+                    INSERT INTO notificacao (
+                        id_pessoa,
+                        id_emprestimo,
+                        tipo_notificacao,
+                        assunto,
+                        status
+                    ) VALUES (?, ?, ?, ?, ?)
+                ");
+
+                $stmtNotif->execute([
+                    $dadosEmprestimo['id_pessoa'],
+                    $data->id_emprestimo,
+                    'devolucao_realizada',
+                    $assunto,
+                    'enviado'
+                ]);
             }
         } catch (\Throwable $t) {
             error_log("Falha ao enviar e-mail de devolução: " . $t->getMessage());

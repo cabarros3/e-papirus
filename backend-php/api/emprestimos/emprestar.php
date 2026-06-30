@@ -1,4 +1,5 @@
 <?php
+
 // Desativa a exibição de erros diretamente na tela para não quebrar o JSON
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
@@ -72,17 +73,12 @@ try {
     $stmtDados = $pdo->prepare($sqlDados);
     $stmtDados->execute([$idEmprestimo]);
     $dadosEmprestimo = $stmtDados->fetch(PDO::FETCH_ASSOC);
-
-    error_log(print_r($dadosEmprestimo, true));
-
     $emailValido = !empty($dadosEmprestimo['aluno_email']) && filter_var($dadosEmprestimo['aluno_email'], FILTER_VALIDATE_EMAIL);
 
     if ($emailValido) {
         // ob_start garante que qualquer saída (debug do PHPMailer ou erros) não vá para o cliente
         ob_start();
         try {
-
-            error_log("EmailService encontrada? " . (class_exists('App\Services\EmailService') ? 'SIM' : 'NAO'));
             // Usamos a verificação de classe para evitar o Fatal Error caso o autoload falhe
             if (class_exists('App\Services\EmailService')) {
                 $emailService = new EmailService();
@@ -96,12 +92,6 @@ try {
                     $assunto,
                     $corpo
                 );
-
-                error_log("Resultado envio: " . ($enviado ? 'SUCESSO' : 'FALHOU'));
-
-                if (!$enviado) {
-                    error_log("PHPMailer retornou FALSE");
-                }
 
                 $stmtNotif = $pdo->prepare("
                     INSERT INTO notificacao (
