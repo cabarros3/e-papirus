@@ -5,8 +5,8 @@ DB_PASS=sua_senha
 
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
-MAIL_USER=seu_email@gmail.com
-MAIL_PASS=sua_senha
+MAIL_USER=email_user_do_epapirus
+MAIL_PASS=senha_de_app
 
 JWT_SECRET=secret_jwt_aqui
 JWT_EXPIRATION=86400

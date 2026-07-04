@@ -45,30 +45,27 @@ No terminal:
 
 1. Acesse a pasta:
 
-```bash
 cd frontend
-```
+
 
 2. Instale as dependências:
 
-```bash
 npm install
-```
+
 
 3. Configure seu arquivo .env.local
 
-```env
 NEXT_PUBLIC_API_URL=http://localhost:8000/api
 
 # se usar XAMPP / WAMP / Apache clássico DESCOMENTE ISSO AQUI
 # NEXT_PUBLIC_API_URL=http://localhost/nome-da-sua-pasta-backend/api
-```
 
-3. Inicie o projeto:
 
-```bash
+3. Inicie o projeto dentro da pasta frontend:
+
 npm run dev
-```
+
+
 
 ### Backend
 
@@ -78,34 +75,33 @@ No terminal:
 
 2. Acesse a pasta do servidor/api.
 
-```bash
 cd backend
-```
 
 3. Instale as dependências do PHP:
 
-```bash
 composer install
-```
 
 4. Configure seu arquivo .env com as credenciais de banco de dados e e-mail (PHPMailer)
 
 Exemplo de .env:
 
-```bash
 DB_HOST=localhost:3306
 DB_NAME=e_papirus
 DB_USER=seu_user
 DB_PASS=sua_senha
 
 MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587                      // Para SMTP, as mais comuns são: 25 (antiga), 465 (SSL/TLS), 587 (Gmail, recomendada)  
-MAIL_USER=epapirus.teste@gmail.com // User do e-Papirus
-MAIL_PASS=sua_senha                // Senha gerada
+MAIL_PORT=587                       
+MAIL_USER=email_user_do_epapirus
+MAIL_PASS=senha_de_app
 
 JWT_SECRET=secret_jwt_aqui
 JWT_EXPIRATION=86400
-```
+
+# Para o MAIL_PORT, as portas do SMTP recomendada para o gmail é 587
+# O email atual do e-Papirus é epapirus.biblioteca@gmail.com que deve ser colocado no MAIL_USER,
+# O MAIL_PASS é a senha de app gerada após o login da conta no seu dispositivo.
+# A chave secreta do JWT (JSON Web Token) serve como uma assinatura digital. Ela garante que os dados do token não foram alterados por terceiros após a emissão. Nunca use palavras comuns, nomes do projeto ou sequências simples. Use uma chave com pelo menos 32 ou 64 caracteres
 
 5. **Importe o banco de dados:**
 
@@ -113,32 +109,23 @@ JWT_EXPIRATION=86400
 
 No terminal MySQL ou em sua ferramenta de gerenciamento (phpMyAdmin, MySQL Workbench):
 
-```bash
 mysql -u seu_user -p < db/db.sql
 mysql -u seu_user -p < db/seed.sql
-```
 
-```bash
 # Acesse o MySQL
 mysql -u seu_user -p
 
 # Dentro do MySQL, execute os scripts:
 source db/db.sql
 source db/seed.sql
-```
 
 Ou, se preferir via linha de comando:
-
-```bash
 mysql -u seu_user -p < db/db.sql
 mysql -u seu_user -p < db/seed.sql
-```
 
 6. Inicie o projeto
 
-```bash
 php -S localhost:8000
-```
 
 ## Documentação - Endpoints da API
 
@@ -167,10 +154,10 @@ Authorization: Bearer <seu_token_jwt_aqui>
 
 ## Desenvolvedores
 
-- [Camilla](https://github.com/cabarros3)
-- [Luhan](https://github.com/luhanfelipe)
 - [Alan](https://github.com/alan-santosBS)
+- [Camilla](https://github.com/cabarros3)
 - [Dayvson](https://github.com/Devs097518)
-- [Luisa](https://github.com/luisavmf0)
 - [João Vitor](https://github.com/vitorcorreiia)
+- [Luhan](https://github.com/luhanfelipe)
+- [Luisa](https://github.com/luisavmf0)
 - [Yuri](https://github.com/yuriceleste)
