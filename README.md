@@ -75,7 +75,7 @@ No terminal:
 
 2. Acesse a pasta do servidor/api.
 
-cd backend
+cd backend-php
 
 3. Instale as dependências do PHP:
 
@@ -102,6 +102,7 @@ JWT_EXPIRATION=86400
 # O email atual do e-Papirus é epapirus.biblioteca@gmail.com que deve ser colocado no MAIL_USER,
 # O MAIL_PASS é a senha de app gerada após o login da conta no seu dispositivo.
 # A chave secreta do JWT (JSON Web Token) serve como uma assinatura digital. Ela garante que os dados do token não foram alterados por terceiros após a emissão. Nunca use palavras comuns, nomes do projeto ou sequências simples. Use uma chave com pelo menos 32 ou 64 caracteres
+# Verificar se há algum espaçamento desnecessário no arquivo 
 
 5. **Importe o banco de dados:**
 
