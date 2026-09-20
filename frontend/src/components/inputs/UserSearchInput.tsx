@@ -32,6 +32,7 @@ export function UserSearchInput({
     (u) =>
       u.nome.toLowerCase().includes(busca.toLowerCase()) ||
       (u.cpf && u.cpf.includes(busca)) ||
+      (u.matricula && u.matricula.includes(busca)) ||
       String(u.id_pessoa).includes(busca) ||
       (u.email && u.email.toLowerCase().includes(busca.toLowerCase()))
   );
