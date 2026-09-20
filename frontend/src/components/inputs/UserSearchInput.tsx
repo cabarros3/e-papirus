@@ -98,7 +98,7 @@ export function UserSearchInput({
                   <div className="flex items-center gap-1.5 text-gray-500">
                     <Hash size={10} />
                     <span className="text-[10px] font-medium">
-                      Matrícula: {u.id_pessoa}
+                      Matrícula: {u.matricula}
                     </span>
                   </div>
 
