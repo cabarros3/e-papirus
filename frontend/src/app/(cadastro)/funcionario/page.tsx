@@ -24,6 +24,7 @@ export default function CadastroFuncionario() {
   const [success, setSuccess] = useState(false);
   const [mensagem, setMensagem] = useState('');
   const [tipoMensagem, setTipoMensagem] = useState<'sucesso' | 'erro' | ''>('');
+  const isTelefoneIncompleto = telefone.replace(/\D/g, '').length > 0 && telefone.replace(/\D/g, '').length < 11;
 
   const criarItem = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,6 +82,18 @@ export default function CadastroFuncionario() {
       setTipoMensagem('erro');
     }
   };
+
+   const handleTelefoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value;
+
+      value = value.replace(/\D/g, "");
+      value = value.substring(0, 11);
+
+      value = value.replace(/^(\d{2})(\d)/g, "($1) $2");
+      value = value.replace(/(\d)(\d{4})$/, "$1-$2");
+
+      setTelefone(value);
+    };
 
   return (
     <>
@@ -239,27 +252,27 @@ export default function CadastroFuncionario() {
             </div>
           </div>
 
-          {/* TELEFONE */}
           <div>
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
               Telefone (Opcional)
             </label>
             <input
-              type="text"
+              type="tel"
               placeholder="(00) 00000-0000"
+              onChange={handleTelefoneChange}
               value={telefone}
-              onChange={(e) => setTelefone(e.target.value)}
-              disabled={loading || success}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-black bg-white transition-all disabled:opacity-50"
+              maxLength={15}
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
             />
           </div>
         </div>
 
         <button
           type="submit"
-          disabled={loading || success}
-          className={`w-full py-3.5 bg-gray-800 text-white rounded-xl font-bold shadow-lg shadow-gray-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2 
-            ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-900'}`}
+          // Desabilita se estiver carregando, se deu sucesso, ou se o telefone estiver pela metade
+          disabled={loading || success || isTelefoneIncompleto}
+          className={`w-full py-3.5 bg-gray-800 text-white rounded-xl font-bold shadow-lg shadow-gray-200 transition-all flex items-center justify-center gap-2 
+            ${(loading || isTelefoneIncompleto) ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-900 active:scale-[0.98]'}`}
         >
           {loading ? (
             <>
@@ -267,7 +280,7 @@ export default function CadastroFuncionario() {
               <span>Processando...</span>
             </>
           ) : (
-            'Finalizar Cadastro'
+            'Cadastrar Aluno'
           )}
         </button>
       </form>

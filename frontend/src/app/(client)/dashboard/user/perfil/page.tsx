@@ -26,6 +26,9 @@ export default function PerfilUsuario() {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [telefone, setTelefone] = useState('');
+
+  
 
   // 1. Sincronização: Busca os dados completos do banco ao carregar
 useEffect(() => {
@@ -75,6 +78,18 @@ useEffect(() => {
       setIsSubmitting(false);
     }
   };
+
+    const handleTelefoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value;
+
+      value = value.replace(/\D/g, "");
+      value = value.substring(0, 11);
+
+      value = value.replace(/^(\d{2})(\d)/g, "($1) $2");
+      value = value.replace(/(\d)(\d{4})$/, "$1-$2");
+
+      setTelefone(value);
+    };
 
   if (loading) {
     return (
@@ -167,10 +182,12 @@ useEffect(() => {
                       size={18}
                     />
                     <input
-                      name="telefone"
-                      defaultValue={user?.telefone || ''}
+                      type="tel"
                       placeholder="(00) 00000-0000"
-                      className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-denin/5 focus:border-denin outline-none transition-all font-semibold text-gray-700 bg-gray-50/30"
+                      onChange={handleTelefoneChange}
+                      value={telefone}
+                      maxLength={15}
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
                     />
                   </div>
                 </div>

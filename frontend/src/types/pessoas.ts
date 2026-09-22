@@ -25,7 +25,7 @@ export interface CadastroPessoaDTO {
   email: string;
   senha: string; // <-- ADICIONADO: Obrigatória para criar o login
   tipo: TipoPessoa;
-  telefone?: string;
+  telefone?: string | null;
   cargo?: CargoFuncionario | null;
 }
 

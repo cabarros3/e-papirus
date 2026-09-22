@@ -21,6 +21,8 @@ export default function CadastroAluno() {
   const [success, setSuccess] = useState(false);
   const [mensagem, setMensagem] = useState('');
   const [tipoMensagem, setTipoMensagem] = useState<'sucesso' | 'erro' | ''>('');
+  const isTelefoneIncompleto = telefone.replace(/\D/g, '').length > 0 && telefone.replace(/\D/g, '').length < 11;
+
 
   const criarItem = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +39,13 @@ export default function CadastroAluno() {
       return;
     }
 
+    const numerosTelefone = telefone.replace(/\D/g, '');
+    if (numerosTelefone.length > 0 && numerosTelefone.length < 11) {
+      setMensagem('O telefone é opcional, mas se preenchido, deve conter 11 números (DDD + 9 dígitos).');
+      setTipoMensagem('erro');
+      return;
+    }
+
     setLoading(true);
     setMensagem('');
 
@@ -44,12 +53,12 @@ export default function CadastroAluno() {
       const dados: CadastroPessoaDTO = {
         nome: nome.trim(),
         matricula: matricula.trim(),
-        cpf: cpf.replace(/\D/g, ''), // Limpa pontos/traços para caber no varchar(11)
+        cpf: cpf.replace(/\D/g, ''), 
         email: email.trim().toLowerCase(),
         senha: senha,
-        telefone: telefone.trim() || null, // Agora o banco aceita NULL corretamente
+        telefone: telefone.trim() || null, 
         tipo: 'aluno',
-        cargo: null, // Resolvido com o seu ALTER TABLE
+        cargo: null, 
       };
 
       const data = await pessoaService.criar(dados);
@@ -64,6 +73,18 @@ export default function CadastroAluno() {
       setMensagem(error.message || 'Erro ao cadastrar.');
       setTipoMensagem('erro');
     }
+};
+
+  const handleTelefoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+
+    value = value.replace(/\D/g, "");
+    value = value.substring(0, 11);
+
+    value = value.replace(/^(\d{2})(\d)/g, "($1) $2");
+    value = value.replace(/(\d)(\d{4})$/, "$1-$2");
+
+    setTelefone(value);
   };
 
   return (
@@ -200,10 +221,11 @@ export default function CadastroAluno() {
               Telefone (Opcional)
             </label>
             <input
-              type="text"
+              type="tel"
               placeholder="(00) 00000-0000"
-              onChange={(e) => setTelefone(e.target.value)}
+              onChange={handleTelefoneChange}
               value={telefone}
+              maxLength={15}
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
             />
           </div>
@@ -211,9 +233,10 @@ export default function CadastroAluno() {
 
         <button
           type="submit"
-          disabled={loading || success}
-          className={`w-full py-3.5 bg-gray-800 text-white rounded-xl font-bold shadow-lg shadow-gray-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2 
-            ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-900'}`}
+          // Desabilita se estiver carregando, se deu sucesso, ou se o telefone estiver pela metade
+          disabled={loading || success || isTelefoneIncompleto}
+          className={`w-full py-3.5 bg-gray-800 text-white rounded-xl font-bold shadow-lg shadow-gray-200 transition-all flex items-center justify-center gap-2 
+            ${(loading || isTelefoneIncompleto) ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-900 active:scale-[0.98]'}`}
         >
           {loading ? (
             <>

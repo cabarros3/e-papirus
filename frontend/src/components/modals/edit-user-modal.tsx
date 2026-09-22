@@ -37,6 +37,7 @@ export function ModalEditarUsuario({
   const [tipoSelecionado, setTipoSelecionado] = useState<TipoPessoa>(
     usuario.tipo
   );
+  const [telefone, setTelefone] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,6 +70,17 @@ export function ModalEditarUsuario({
       setIsSubmitting(false);
     }
   };
+
+    const handleTelefoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value;
+      value = value.replace(/\D/g, "");
+      value = value.substring(0, 11);
+  
+      value = value.replace(/^(\d{2})(\d)/g, "($1) $2");
+      value = value.replace(/(\d)(\d{4})$/, "$1-$2");
+  
+      setTelefone(value);
+    };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
@@ -122,9 +134,12 @@ export function ModalEditarUsuario({
                 <Phone size={12} /> Telefone
               </label>
               <input
-                name="telefone"
-                defaultValue={usuario.telefone || ''}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-denin outline-none font-bold text-gray-700"
+                type="tel"
+                placeholder="(00) 00000-0000"
+                onChange={handleTelefoneChange}
+                value={telefone}
+                maxLength={15}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
               />
             </div>
 
