@@ -57,8 +57,11 @@ npm install
 
 NEXT_PUBLIC_API_URL=http://localhost:8000/api
 
-# se usar XAMPP / WAMP / Apache clássico DESCOMENTE ISSO AQUI
-# NEXT_PUBLIC_API_URL=http://localhost/nome-da-sua-pasta-backend/api
+```
+se usar XAMPP / WAMP / Apache clássico, utilize desta maneira:
+
+NEXT_PUBLIC_API_URL=http://localhost/nome-da-sua-pasta-backend/api
+```
 
 
 3. Inicie o projeto dentro da pasta frontend:
@@ -98,11 +101,15 @@ MAIL_PASS=senha_de_app
 JWT_SECRET=secret_jwt_aqui
 JWT_EXPIRATION=86400
 
-# Para o MAIL_PORT, as portas do SMTP recomendada para o gmail é 587
-# O email atual do e-Papirus é epapirus.biblioteca@gmail.com que deve ser colocado no MAIL_USER,
-# O MAIL_PASS é a senha de app gerada após o login da conta no seu dispositivo.
-# A chave secreta do JWT (JSON Web Token) serve como uma assinatura digital. Ela garante que os dados do token não foram alterados por terceiros após a emissão. Nunca use palavras comuns, nomes do projeto ou sequências simples. Use uma chave com pelo menos 32 ou 64 caracteres
-# Verificar se há algum espaçamento desnecessário no arquivo
+
+    Para o MAIL_PORT, as portas do SMTP recomendada para o gmail é 587
+    O email deve ser colocado no MAIL_USER,
+    O MAIL_PASS é a senha de app gerada após o login da conta no seu dispositivo.
+    A chave secreta do JWT (JSON Web Token) serve como uma assinatura digital. Ela garante que os dados do 
+    token não foram alterados por terceiros após a emissão. Nunca use palavras comuns, nomes do projeto ou 
+    sequências simples. Use uma chave com pelo menos 32 ou 64 caracteres
+    Verificar se há algum espaçamento desnecessário no arquivo
+
 
 5. **Importe o banco de dados:**
 
