@@ -8,6 +8,7 @@ import {
   User,
   Book as BookIcon,
   Trash2,
+  Check,
 } from 'lucide-react';
 import { reservaService } from '@/services/reserva-service';
 import { Reserva } from '@/types/reservas';
@@ -24,6 +25,7 @@ export default function ListarReservasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idParaExcluir, setIdParaExcluir] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
 
   const carregarReservas = async () => {
     setLoading(true);
@@ -64,6 +66,20 @@ export default function ListarReservasPage() {
     } finally {
       setIsDeleting(false);
       setIdParaExcluir(null);
+    }
+  };
+
+  const handleConfirmarEmprestimo = async (id: number) => {
+    setIsConfirming(true);
+
+    try {
+      await reservaService.confirmar(id);
+      toast.success('Reserva confirmada e empréstimo realizado!');
+      await carregarReservas();
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao confirmar reserva.');
+    } finally {
+      setIsConfirming(false);
     }
   };
 
@@ -182,8 +198,18 @@ export default function ListarReservasPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
                         <button
+                          onClick={() => handleConfirmarEmprestimo(reserva.id_reserva)}
+                          disabled={isConfirming}
+                          className="p-2 text-gray-500 hover:bg-green-100 rounded-lg transition-all disabled:opacity-50"
+                          title="Confirmar Empréstimo"
+                        >
+                          <Check size={18} />
+                        </button>
+
+                        <button
                           onClick={() => abrirConfirmacao(reserva.id_reserva)}
-                          className="p-2 text-gray-500 hover:bg-red-100 rounded-lg transition-all"
+                          disabled={isConfirming}
+                          className="p-2 text-gray-500 hover:bg-red-100 rounded-lg transition-all disabled:opacity-50"
                           title="Cancelar Reserva"
                         >
                           <Trash2 size={18} />

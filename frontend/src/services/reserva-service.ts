@@ -63,6 +63,22 @@ export const reservaService = {
     return this.parseResponse<null>(response);
   },
 
+  async confirmar(id: number): Promise<ApiResponse<{
+    id_emprestimo: number;
+    data_prevista: string;
+  }>> {
+    const response = await fetch(`${API_URL}/reservas/confirmar.php`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ id_reserva: id }),
+    });
+
+    return this.parseResponse<{
+      id_emprestimo: number;
+      data_prevista: string;
+    }>(response);
+  },
+
   async cancelar(id: number): Promise<ApiResponse<null>> {
     const response = await fetch(`${API_URL}/reservas/delete.php?id=${id}`, {
       method: 'DELETE',
