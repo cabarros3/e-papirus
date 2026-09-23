@@ -37,7 +37,9 @@ export function ModalEditarUsuario({
   const [tipoSelecionado, setTipoSelecionado] = useState<TipoPessoa>(
     usuario.tipo
   );
-  const [telefone, setTelefone] = useState('');
+  const [telefone, setTelefone] = useState(usuario.telefone || '');
+  const isTelefoneIncompleto = telefone.replace(/\D/g, '').length > 0 && telefone.replace(/\D/g, '').length < 11;
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,7 +53,7 @@ export function ModalEditarUsuario({
       email: String(formData.get('email')),
       cpf: String(formData.get('cpf')),
       matricula: String(formData.get('matricula')),
-      telefone: String(formData.get('telefone')),
+      telefone: String(formData.get('telefone')) || null,
       tipo: tipoSelecionado,
       cargo:
         tipoSelecionado === 'funcionario'
@@ -134,12 +136,13 @@ export function ModalEditarUsuario({
                 <Phone size={12} /> Telefone
               </label>
               <input
+                name="telefone"
                 type="tel"
                 placeholder="(00) 00000-0000"
                 onChange={handleTelefoneChange}
                 value={telefone}
                 maxLength={15}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-denin outline-none font-bold text-gray-700"
               />
             </div>
 
@@ -213,8 +216,9 @@ export function ModalEditarUsuario({
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="flex-[2] bg-[#0056b3] text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#004494] transition-all shadow-xl shadow-blue-200/50"
+              disabled={isSubmitting || isTelefoneIncompleto}
+              className={`flex-[2] bg-[#0056b3] text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-xl shadow-blue-200/50
+                ${(isSubmitting || isTelefoneIncompleto) ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#004494] active:scale-[0.98]'}`}
             >
               {isSubmitting ? (
                 <Loader2 className="animate-spin" />
