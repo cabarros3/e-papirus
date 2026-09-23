@@ -1,4 +1,5 @@
 <?php
+
 require_once '../../config/cors.php';
 require_once '../../config/utils.php';
 require_once '../../db/db.php';
@@ -7,7 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     enviarResposta("erro", "Método inválido. Use DELETE.", null, 405);
 }
 
-// Pega o ID via URL (ex: delete.php?id=5)
 $idReserva = $_GET['id'] ?? null;
 
 if (!$idReserva) {
@@ -17,32 +17,66 @@ if (!$idReserva) {
 try {
     $pdo->beginTransaction();
 
-    // 1. Antes de deletar, precisamos saber qual livro/exemplar estava reservado
-    // para liberar a disponibilidade
-    $sqlBusca = "SELECT id_livro FROM reserva WHERE id_reserva = ?";
+    // Busca a reserva e o exemplar específico associado a ela
+    $sqlBusca = "SELECT id_exemplar, status
+                 FROM reserva
+                 WHERE id_reserva = ?
+                 FOR UPDATE";
+
     $stmtBusca = $pdo->prepare($sqlBusca);
     $stmtBusca->execute([$idReserva]);
     $reserva = $stmtBusca->fetch(PDO::FETCH_ASSOC);
 
-    if ($reserva) {
-        // 2. Liberar o primeiro exemplar que estiver 'reservado' desse livro
-        $sqlLiberar = "UPDATE exemplar SET disponibilidade = 'disponivel' 
-                       WHERE id_livro = ? AND disponibilidade = 'reservado' 
-                       LIMIT 1";
-        $stmtLiberar = $pdo->prepare($sqlLiberar);
-        $stmtLiberar->execute([$reserva['id_livro']]);
+    if (!$reserva) {
+        $pdo->rollBack();
+        enviarResposta("erro", "Reserva não encontrada.", null, 404);
     }
 
-    // 3. Deleta a reserva (ou muda o status para 'cancelada' se preferir manter histórico)
-    $sqlDelete = "DELETE FROM reserva WHERE id_reserva = ?";
-    $stmtDelete = $pdo->prepare($sqlDelete);
-    $stmtDelete->execute([$idReserva]);
+    if ($reserva['status'] !== 'ativa') {
+        $pdo->rollBack();
+        enviarResposta(
+            "erro",
+            "Esta reserva não está ativa e não pode ser cancelada.",
+            null,
+            409
+        );
+    }
+
+    // Libera exatamente o exemplar da reserva
+    $sqlLiberar = "UPDATE exemplar
+                   SET disponibilidade = 'disponivel'
+                   WHERE id_exemplar = ?";
+
+    $stmtLiberar = $pdo->prepare($sqlLiberar);
+    $stmtLiberar->execute([$reserva['id_exemplar']]);
+
+    // Mantém a reserva no histórico e apenas altera seu status
+    $sqlCancelar = "UPDATE reserva
+                    SET status = 'cancelada'
+                    WHERE id_reserva = ?";
+
+    $stmtCancelar = $pdo->prepare($sqlCancelar);
+    $stmtCancelar->execute([$idReserva]);
 
     $pdo->commit();
-    enviarResposta("sucesso", "Reserva cancelada e exemplar liberado.", null, 200);
+
+    enviarResposta(
+        "sucesso",
+        "Reserva cancelada e exemplar liberado.",
+        null,
+        200
+    );
 
 } catch (PDOException $e) {
-    $pdo->rollBack();
-    enviarResposta("erro", "Erro ao cancelar reserva: " . $e->getMessage(), null, 500);
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+
+    enviarResposta(
+        "erro",
+        "Erro ao cancelar reserva: " . $e->getMessage(),
+        null,
+        500
+    );
 }
 ?>
