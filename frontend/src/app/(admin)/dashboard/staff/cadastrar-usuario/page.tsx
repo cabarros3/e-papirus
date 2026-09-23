@@ -26,8 +26,14 @@ import Link from 'next/link';
 
 export default function CadastrarPessoa() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // Tipando o estado com o seu TipoPessoa para evitar erros de casting
   const [tipoUsuario, setTipoUsuario] = useState<TipoPessoa>('aluno');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [telefone, setTelefone] = useState('');
+  const [mensagem, setMensagem] = useState('');
+  const [tipoMensagem, setTipoMensagem] = useState<'sucesso' | 'erro' | ''>('');
+  const isTelefoneIncompleto = telefone.replace(/\D/g, '').length > 0 && telefone.replace(/\D/g, '').length < 11;
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,29 +42,35 @@ export default function CadastrarPessoa() {
     const senha = String(formData.get('senha'));
     const confirmaSenha = String(formData.get('confirma_senha'));
 
+
     if (senha !== confirmaSenha) {
       toast.error('As senhas não coincidem!');
       return;
     }
 
+    const numerosTelefone = telefone.replace(/\D/g, '');
+    if (numerosTelefone.length > 0 && numerosTelefone.length < 11) {
+      setMensagem('O telefone é opcional, mas se preenchido, deve conter 11 números (DDD + 9 dígitos).');
+      setTipoMensagem('erro');
+      return;
+    }
+
+    setLoading(true);
+    setMensagem('');
     setIsSubmitting(true);
 
     try {
       // Payload agora segue rigorosamente a interface CadastroPessoaDTO
-      const payload: CadastroPessoaDTO = {
-        nome: String(formData.get('nome')),
-        email: String(formData.get('email')),
-        cpf: String(formData.get('cpf')),
-        matricula: String(formData.get('matricula')),
-        telefone: String(formData.get('telefone')),
-        tipo: tipoUsuario,
-        senha: senha,
-        // Só envia o cargo se for funcionário, e faz o cast para o tipo específico
-        cargo:
-          tipoUsuario === 'funcionario'
-            ? (formData.get('cargo') as CargoFuncionario)
-            : null,
-      };
+    const payload: CadastroPessoaDTO = {
+      nome: String(formData.get('nome')),
+      email: String(formData.get('email')),
+      cpf: String(formData.get('cpf')),
+      matricula: String(formData.get('matricula')),
+      telefone: telefone || null, 
+      tipo: tipoUsuario,
+      senha: senha,
+      cargo: tipoUsuario === 'funcionario' ? (formData.get('cargo') as CargoFuncionario) : null,
+    };
 
       await pessoaService.criar(payload);
       toast.success('Usuário cadastrado com sucesso!');
@@ -70,6 +82,18 @@ export default function CadastrarPessoa() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleTelefoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+
+    value = value.replace(/\D/g, "");
+    value = value.substring(0, 11);
+
+    value = value.replace(/^(\d{2})(\d)/g, "($1) $2");
+    value = value.replace(/(\d)(\d{4})$/, "$1-$2");
+
+    setTelefone(value);
   };
 
   return (
@@ -148,8 +172,12 @@ export default function CadastrarPessoa() {
                 />
                 <input
                   name="telefone"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-denin outline-none"
+                  type="tel"
                   placeholder="(00) 00000-0000"
+                  onChange={handleTelefoneChange}
+                  value={telefone}
+                  maxLength={15}
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
                 />
               </div>
             </div>
@@ -275,15 +303,18 @@ export default function CadastrarPessoa() {
         <div className="pt-4 flex justify-end">
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="w-full max-w-xs bg-denin text-white py-5 rounded-3xl font-bold flex items-center justify-center gap-3 hover:bg-blue-800 transition-all shadow-xl shadow-denin/20 active:scale-[0.98]"
+            // Desabilita se estiver carregando, se deu sucesso, ou se o telefone estiver pela metade
+            disabled={loading || success || isTelefoneIncompleto}
+            className={`w-full py-3.5 bg-gray-800 text-white rounded-xl font-bold shadow-lg shadow-gray-200 transition-all flex items-center justify-center gap-2 
+              ${(loading || isTelefoneIncompleto) ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-900 active:scale-[0.98]'}`}
           >
-            {isSubmitting ? (
-              <Loader2 className="animate-spin" />
-            ) : (
+            {loading ? (
               <>
-                <UserPlus size={20} /> Salvar Cadastro
+                <Loader2 className="animate-spin" size={20} />
+                <span>Processando...</span>
               </>
+            ) : (
+              'Cadastrar Aluno'
             )}
           </button>
         </div>
