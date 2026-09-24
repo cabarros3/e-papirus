@@ -31,6 +31,7 @@ export default function ListarReservasPage() {
     setLoading(true);
     try {
       const response = await reservaService.listarTodas();
+
       if (response.status === 'sucesso' && response.dados) {
         setReservas(response.dados);
       } else {
@@ -56,6 +57,7 @@ export default function ListarReservasPage() {
     if (!idParaExcluir) return;
 
     setIsDeleting(true);
+
     try {
       await reservaService.cancelar(idParaExcluir);
       toast.success('Reserva cancelada com sucesso!');
@@ -89,12 +91,13 @@ export default function ListarReservasPage() {
       r.nome_pessoa?.toLowerCase().includes(filtro.toLowerCase())
   );
 
-  if (loading)
+  if (loading) {
     return (
       <div className="h-96 flex items-center justify-center">
         <Loader2 className="animate-spin text-denin" size={40} />
       </div>
     );
+  }
 
   return (
     <div className="space-y-6">
@@ -112,10 +115,12 @@ export default function ListarReservasPage() {
           <h1 className="text-2xl font-bold text-gray-900">
             Gestão de Reservas
           </h1>
+
           <p className="text-sm text-gray-500">
-            Visualize e controle as reservas ativas do sistema.
+            Visualize e controle as reservas do sistema.
           </p>
         </div>
+
         <Link
           href="/dashboard/staff/cadastrar-reservas"
           className="bg-denin text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:brightness-110 transition-all flex items-center gap-2 w-fit"
@@ -129,6 +134,7 @@ export default function ListarReservasPage() {
           className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
           size={18}
         />
+
         <input
           type="text"
           placeholder="Buscar por livro ou usuário..."
@@ -146,20 +152,29 @@ export default function ListarReservasPage() {
                 <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">
                   Livro
                 </th>
-                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">
+
+                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-center">
                   Usuário
                 </th>
-                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">
+
+                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-center">
                   Data Reserva
                 </th>
-                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">
+
+                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-center">
                   Expira em
                 </th>
+
+                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-center">
+                  Situação
+                </th>
+
                 <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-center">
                   Ações
                 </th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-gray-50">
               {reservasFiltradas.length > 0 ? (
                 reservasFiltradas.map((reserva) => (
@@ -172,48 +187,79 @@ export default function ListarReservasPage() {
                         <div className="p-2 bg-blue-50 rounded-lg text-denin">
                           <BookIcon size={16} />
                         </div>
+
                         <span className="text-sm font-bold text-gray-900">
                           {reserva.titulo}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 font-medium">
-                      <div className="flex items-center gap-2">
+
+                    <td className="px-6 py-4 text-sm text-gray-600 font-medium text-center">
+                      <div className="flex items-center justify-center gap-2">
                         <User size={14} className="text-gray-400" />
                         {reserva.nome_pessoa}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+
+                    <td className="px-6 py-4 text-sm text-gray-500 text-center">
                       {new Date(reserva.data_reserva).toLocaleDateString(
                         'pt-BR'
                       )}
                     </td>
-                    <td className="px-6 py-4">
+
+                    <td className="px-6 py-4 text-center">
                       <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-xs font-bold">
                         {new Date(reserva.data_expiracao).toLocaleDateString(
                           'pt-BR'
                         )}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-center gap-2">
-                        <button
-                          onClick={() => handleConfirmarEmprestimo(reserva.id_reserva)}
-                          disabled={isConfirming}
-                          className="p-2 text-gray-500 hover:bg-green-100 rounded-lg transition-all disabled:opacity-50"
-                          title="Confirmar Empréstimo"
-                        >
-                          <Check size={18} />
-                        </button>
 
-                        <button
-                          onClick={() => abrirConfirmacao(reserva.id_reserva)}
-                          disabled={isConfirming}
-                          className="p-2 text-gray-500 hover:bg-red-100 rounded-lg transition-all disabled:opacity-50"
-                          title="Cancelar Reserva"
-                        >
-                          <Trash2 size={18} />
-                        </button>
+                    <td className="px-6 py-4 text-center">
+                      <span
+                        className={`inline-flex px-4 py-2 rounded-full text-[10px] font-black uppercase border tracking-widest whitespace-nowrap ${
+                          reserva.status === 'ativa'
+                            ? 'bg-blue-50 text-blue-600 border-blue-100'
+                            : reserva.status === 'concluida'
+                            ? 'bg-green-50 text-green-600 border-green-100'
+                            : 'bg-red-50 text-red-600 border-red-100'
+                        }`}
+                      >
+                        {reserva.status === 'ativa'
+                          ? 'Aguardando Retirada'
+                          : reserva.status === 'concluida'
+                          ? 'Retirado'
+                          : 'Cancelada'}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        {reserva.status === 'ativa' && (
+                          <>
+                            <button
+                              onClick={() =>
+                                handleConfirmarEmprestimo(reserva.id_reserva)
+                              }
+                              disabled={isConfirming}
+                              className="p-2 text-gray-500 hover:bg-green-100 rounded-lg transition-all disabled:opacity-50"
+                              title="Confirmar Empréstimo"
+                            >
+                              <Check size={18} />
+                            </button>
+
+                            <button
+                              onClick={() =>
+                                abrirConfirmacao(reserva.id_reserva)
+                              }
+                              disabled={isConfirming}
+                              className="p-2 text-gray-500 hover:bg-red-100 rounded-lg transition-all disabled:opacity-50"
+                              title="Cancelar Reserva"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -221,7 +267,7 @@ export default function ListarReservasPage() {
               ) : (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={6}
                     className="px-6 py-12 text-center text-gray-400 text-sm italic"
                   >
                     Nenhuma reserva encontrada.
