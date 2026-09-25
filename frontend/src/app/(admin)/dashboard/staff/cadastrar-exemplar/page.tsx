@@ -8,6 +8,7 @@ import {
 } from '@/services/exemplar-service';
 import { BookService } from '@/services/book-service';
 import { toast } from 'sonner';
+import { ResumoEmprestimoModal } from '@/components/modals/resumo-emprestimo-modal';
 import Link from 'next/link';
 import {
   Edit3,
@@ -34,6 +35,7 @@ export default function GerenciarExemplares() {
   const [idLivro, setIdLivro] = useState('');
   const [localizacao, setLocalizacao] = useState('');
   const [tempData, setTempData] = useState<Partial<ExemplarAgrupado>>({});
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   const handleDelete = async (id: number) => {
     if (!confirm('Tem certeza que deseja excluir este exemplar?')) return;
@@ -96,7 +98,7 @@ export default function GerenciarExemplares() {
         localizacao: localizacao,
         disponibilidade: 'disponivel',
       });
-      toast.success('Exemplar cadastrado!');
+      setIsSuccessModalOpen(true);
       setIdLivro('');
       setLocalizacao('');
       await loadExemplares();
@@ -144,6 +146,15 @@ export default function GerenciarExemplares() {
   return (
     // Alterado para px-8 (32px)
     <div className="min-h-screen bg-gray-50 py-2 px-8 font-sans text-gray-700">
+      <ResumoEmprestimoModal
+        isOpen={isSuccessModalOpen}
+        dados={null}
+        titulo="Exemplar cadastrado!"
+        mensagem="O exemplar foi cadastrado com sucesso no sistema e-Papirus."
+        textoBotao="Continuar"
+        onConfirm={() => setIsSuccessModalOpen(false)}
+      />
+
       <div className="max-w-7xl mx-auto">
         {/* Header - Alinhamento idêntico ao "Consulta ao Acervo" */}
         <div className="flex items-center gap-4 mb-8">
