@@ -6,6 +6,7 @@ namespace Tests\Api\Auth;
 
 use Tests\Support\AuthHelpers;
 use Tests\Support\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class LoginTest extends TestCase
 {
@@ -48,5 +49,65 @@ final class LoginTest extends TestCase
 
         $this->assertSame('Usuario de Teste', $dados['usuario']['nome']);
         $this->assertArrayNotHasKey('senha', $dados['usuario']);
+    }
+
+    
+    // ---------- Login com credenciais inválidas ----------
+
+    public function testLoginComSenhaIncorretaRetorna401(): void
+    {
+        $this->garantirUsuarioCadastrado();
+
+        $resposta = $this->login($this->dadosUsuario()['email'], 'senha-errada');
+        $corpo = $this->corpo($resposta);
+
+        $this->assertSame(401, $resposta->getStatusCode(), (string) $resposta->getBody());
+        $this->assertSame('erro', $corpo['status']);
+        $this->assertNull($corpo['dados']);
+    }
+
+    public function testLoginComUsuarioInexistenteRetorna401(): void
+    {
+        $resposta = $this->login('naoexiste@epapirus.local', 'qualquer-senha');
+        $corpo = $this->corpo($resposta);
+
+        $this->assertSame(401, $resposta->getStatusCode(), (string) $resposta->getBody());
+        $this->assertSame('erro', $corpo['status']);
+        $this->assertNull($corpo['dados']);
+    }
+
+    public function testMensagemDeErroNaoRevelaSeOEmailExiste(): void
+    {
+        $this->garantirUsuarioCadastrado();
+
+        $senhaErrada = $this->corpo($this->login($this->dadosUsuario()['email'], 'senha-errada'));
+        $inexistente = $this->corpo($this->login('naoexiste@epapirus.local', 'senha-errada'));
+
+        $this->assertSame($senhaErrada['mensagem'], $inexistente['mensagem']);
+    }
+
+    #[DataProvider('payloadsIncompletos')]
+    public function testLoginComCamposFaltandoRetorna400(array $payload): void
+    {
+        $resposta = $this->http->post('/api/auth/login.php', ['json' => $payload]);
+
+        $this->assertSame(400, $resposta->getStatusCode(), (string) $resposta->getBody());
+        $this->assertSame('erro', $this->corpo($resposta)['status']);
+    }
+
+    public static function payloadsIncompletos(): array
+    {
+        return [
+            'sem senha'   => [['email' => 'teste@epapirus.local']],
+            'sem email'   => [['senha' => 'senha-de-teste-123']],
+            'corpo vazio' => [[]],
+        ];
+    }
+
+    public function testLoginComMetodoGetRetorna405(): void
+    {
+        $resposta = $this->http->get('/api/auth/login.php');
+
+        $this->assertSame(405, $resposta->getStatusCode(), (string) $resposta->getBody());
     }
 }
