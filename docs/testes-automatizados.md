@@ -38,6 +38,21 @@ Os scripts ficam em `tests/banco/`.
 1. Um usuário MySQL exclusivo, `epapirus_test`, com permissão **somente** no banco `epapirus_test`. Mesmo que algum comando saia errado, o MySQL recusa mexer no `e_papirus`.
 2. O script de reset remove as linhas `CREATE DATABASE` e `USE` na hora de importar (usando `sed`), sem alterar os arquivos originais, e escolhe o banco de destino no próprio comando.
 
+## Item 4: classe base dos testes
+
+O arquivo `tests/Support/TestCase.php` é a classe base (abstrata) que todos os testes de módulo vão herdar. Ela estende o `TestCase` do PHPUnit e usa o método `setUp()`, que o PHPUnit executa **antes de cada teste**, para fazer duas coisas:
+
+- **Recriar o banco de teste.** Apaga e recria o `epapirus_test` e importa `db/db.sql` e `db/seed.sql` (sem as linhas `CREATE DATABASE`/`USE`), para que todo teste comece do mesmo estado. É o mesmo reset do script `tests/banco/resetar-banco-teste.sh`, só que feito pelo PHP.
+- **Entregar um cliente HTTP.** A propriedade `$this->http` é um cliente Guzzle com `base_uri` `http://localhost:8001` (pode ser trocada pela variável de ambiente `TEST_BASE_URL`), `timeout` de 10 segundos e `http_errors => false`, de modo que respostas 4xx e 5xx voltam como respostas normais em vez de lançar exceção.
+
+**Trava de segurança.** Host, nome do banco, usuário e senha do reset são constantes escritas dentro da classe (`127.0.0.1`, `epapirus_test`), e não lidas do `.env`. Assim, mesmo uma configuração errada do `.env` não faz o reset atingir o banco de desenvolvimento. Além disso, o usuário `epapirus_test` só tem permissão nesse banco.
+
+**Autoload.** O `composer.json` ganhou um bloco `autoload-dev` que mapeia o namespace `Tests\` para a pasta `tests/`, e por isso as classes de teste usam `namespace Tests\Support` e `namespace Tests\Api`. Depois de alterar o autoload, é preciso rodar `composer dump-autoload`.
+
+**Limitação atual.** O `TestCase` assume que a API de teste já está rodando na porta 8001. Subir a API automaticamente faz parte do item 5.
+
+**Como validar.** Um teste temporário que apenas verifica `$this->http` (e depois foi apagado) passou com `OK (1 test, 1 assertion)`, o que confirma que o PHPUnit acha a classe, conecta como `epapirus_test` e recria o banco sem erro.
+
 **Arquivos:**
 
 - `tests/banco/criar-banco-teste.sql`: cria o banco `epapirus_test` e o usuário `epapirus_test` (senha `epapirus_test`, válida só no MySQL local e só para esse banco descartável).
@@ -58,15 +73,20 @@ mysql -u epapirus_test -pepapirus_test epapirus_test -e "SHOW TABLES; SELECT COU
 
 O esperado é uma lista de 11 tabelas (incluindo `notificacao`) e 13 assuntos, que é o que o `seed.sql` insere.
 
-## Como a API vai usar o banco de teste (item 5, a confirmar)
+## Como a API vai usar o banco de teste (item 5)
 
-O `config.php` lê as credenciais do banco do arquivo `.env` com `Dotenv::createImmutable`, e o `db/db.php` cria a conexão PDO com elas. Nesse modo, uma variável que já existe no ambiente quando a API sobe tem prioridade sobre o `.env`. A ideia é subir a API de teste em outra porta com as variáveis do banco de teste definidas no ambiente, por exemplo:
+O `config.php` lê as credenciais do banco do `.env` com `Dotenv::createImmutable` e as lê de `$_ENV`. O `db/db.php` cria a conexão PDO com elas. Em modo imutável, uma variável que **já existe no ambiente** quando a API sobe tem prioridade sobre o `.env`, então é possível apontar a API para o banco de teste sem alterar o `.env` nem o código de produção.
+
+**Descoberta confirmada na prática:** o PHP instalado pelo sistema (PHP 8.3 no Linux Mint) não preenche `$_ENV` por padrão, e o `config.php` falha com `Undefined array key "DB_HOST"` (e as demais). Resolve-se subindo a API com `-d variables_order=EGPCS`:
 
 ```bash
-DB_HOST=localhost DB_NAME=epapirus_test DB_USER=epapirus_test DB_PASS=epapirus_test php -S localhost:8001
+DB_HOST=127.0.0.1 DB_NAME=epapirus_test DB_USER=epapirus_test DB_PASS=epapirus_test \
+  php -d variables_order=EGPCS -S localhost:8001
 ```
 
-Assim o `.env` de desenvolvimento não é alterado e o código de produção também não. **Isso ainda não foi testado na prática** e deve ser confirmado no item 5.
+Com isso, `DB_NAME` passa a valer `epapirus_test`. O teste foi feito carregando o `config.php` pela linha de comando. **Ainda falta** confirmar subindo o servidor de fato e chamando um endpoint.
+
+**Cuidado com e-mail.** O `config.php` também lê `MAIL_HOST`, `MAIL_PORT`, `MAIL_USER` e `MAIL_PASS`. Se a API de teste herdar essas variáveis do `.env`, um teste de notificação poderia enviar e-mail de verdade. Na subida da API de teste, essas variáveis devem ser sobrescritas com valores falsos.
 
 ## Pontos de atenção para os próximos itens
 
@@ -76,8 +96,7 @@ Assim o `.env` de desenvolvimento não é alterado e o código de produção tam
 
 ## Itens restantes da issue 1
 
-- Item 4: `tests/Support/TestCase.php` (cliente Guzzle e reset do banco no `setUp`).
-- Item 5: definir o ambiente de teste (variáveis apontando para o banco de teste).
+- Item 5: definir o ambiente de teste (variáveis apontando para o banco de teste; ver a seção acima).
 - Item 6: adicionar o script `composer test`.
-- Item 7: criar um teste de fumaça (a API responde 200 em uma rota simples).
+- Item 7: criar um teste de fumaça (a API responde 200 em uma rota simples). Como os endpoints usam JWT, vale escolher uma rota pública ou criar um helper de login no `TestCase`.
 - Item 8: documentar no README como rodar os testes.
