@@ -84,7 +84,7 @@ DB_HOST=127.0.0.1 DB_NAME=epapirus_test DB_USER=epapirus_test DB_PASS=epapirus_t
   php -d variables_order=EGPCS -S localhost:8001
 ```
 
-Com isso, `DB_NAME` passa a valer `epapirus_test`. O teste foi feito carregando o `config.php` pela linha de comando. **Ainda falta** confirmar subindo o servidor de fato e chamando um endpoint.
+Com isso, `DB_NAME` passa a valer `epapirus_test`. O teste foi feito carregando o `config.php` pela linha de comando. A API de teste sobe com bash tests/subir-api-teste.sh (porta 8001, banco epapirus_test, e-mail falso). A API de desenvolvimento continua na 8000.
 
 **Cuidado com e-mail.** O `config.php` também lê `MAIL_HOST`, `MAIL_PORT`, `MAIL_USER` e `MAIL_PASS`. Se a API de teste herdar essas variáveis do `.env`, um teste de notificação poderia enviar e-mail de verdade. Na subida da API de teste, essas variáveis devem ser sobrescritas com valores falsos.
 
