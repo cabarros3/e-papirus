@@ -17,5 +17,11 @@
   "require-dev": {
     "phpunit/phpunit": "^12.5",
     "guzzlehttp/guzzle": "^8.2"
+  },
+  "scripts": {
+  "test": "bash tests/rodar-testes.sh"
+  },
+  "config": {
+    "process-timeout": 0
   }
 }
