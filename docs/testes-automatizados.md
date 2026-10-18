@@ -49,7 +49,7 @@ O arquivo `tests/Support/TestCase.php` é a classe base (abstrata) que todos os 
 
 **Autoload.** O `composer.json` ganhou um bloco `autoload-dev` que mapeia o namespace `Tests\` para a pasta `tests/`, e por isso as classes de teste usam `namespace Tests\Support` e `namespace Tests\Api`. Depois de alterar o autoload, é preciso rodar `composer dump-autoload`.
 
-**Limitação atual.** O `TestCase` assume que a API de teste já está rodando na porta 8001. Subir a API automaticamente faz parte do item 5.
+**Observação.** O `TestCase` assume que a API de teste está rodando na porta 8001. Com `composer test` isso é feito automaticamente (ver item 6); ao rodar `vendor/bin/phpunit` direto, suba a API antes com `bash tests/subir-api-teste.sh`.
 
 **Como validar.** Um teste temporário que apenas verifica `$this->http` (e depois foi apagado) passou com `OK (1 test, 1 assertion)`, o que confirma que o PHPUnit acha a classe, conecta como `epapirus_test` e recria o banco sem erro.
 
@@ -73,20 +73,17 @@ mysql -u epapirus_test -pepapirus_test epapirus_test -e "SHOW TABLES; SELECT COU
 
 O esperado é uma lista de 11 tabelas (incluindo `notificacao`) e 13 assuntos, que é o que o `seed.sql` insere.
 
-## Como a API vai usar o banco de teste (item 5)
+## Item 5: ambiente de teste da API
 
-O `config.php` lê as credenciais do banco do `.env` com `Dotenv::createImmutable` e as lê de `$_ENV`. O `db/db.php` cria a conexão PDO com elas. Em modo imutável, uma variável que **já existe no ambiente** quando a API sobe tem prioridade sobre o `.env`, então é possível apontar a API para o banco de teste sem alterar o `.env` nem o código de produção.
+O `config.php` lê as credenciais do banco do `.env` com `Dotenv::createImmutable`, e o `db/db.php` cria a conexão PDO com elas. Em modo imutável, uma variável que já existe no ambiente quando a API sobe tem prioridade sobre o `.env`, e é assim que a API de teste aponta para o banco de teste sem alterar o `.env` nem o código de produção.
 
-**Descoberta confirmada na prática:** o PHP instalado pelo sistema (PHP 8.3 no Linux Mint) não preenche `$_ENV` por padrão, e o `config.php` falha com `Undefined array key "DB_HOST"` (e as demais). Resolve-se subindo a API com `-d variables_order=EGPCS`:
+O script `tests/subir-api-teste.sh` sobe a API na **porta 8001** com:
 
-```bash
-DB_HOST=127.0.0.1 DB_NAME=epapirus_test DB_USER=epapirus_test DB_PASS=epapirus_test \
-  php -d variables_order=EGPCS -S localhost:8001
-```
+- `DB_HOST`, `DB_NAME`, `DB_USER` e `DB_PASS` do banco `epapirus_test`;
+- `MAIL_*` falsos (porta 1, que recusa conexão), para que nenhum teste envie e-mail de verdade;
+- `-d variables_order=EGPCS`, porque o PHP instalado pelo sistema não preenche `$_ENV` por padrão e o `config.php` falha com `Undefined array key "DB_HOST"`.
 
-Com isso, `DB_NAME` passa a valer `epapirus_test`. O teste foi feito carregando o `config.php` pela linha de comando. A API de teste sobe com bash tests/subir-api-teste.sh (porta 8001, banco epapirus_test, e-mail falso). A API de desenvolvimento continua na 8000.
-
-**Cuidado com e-mail.** O `config.php` também lê `MAIL_HOST`, `MAIL_PORT`, `MAIL_USER` e `MAIL_PASS`. Se a API de teste herdar essas variáveis do `.env`, um teste de notificação poderia enviar e-mail de verdade. Na subida da API de teste, essas variáveis devem ser sobrescritas com valores falsos.
+O script deve ser executado a partir de `backend-php/`. Se o `config.php` passar a ler outras variáveis de conexão (ex.: `DB_PORT`), acrescente-as ao script.
 
 ## Pontos de atenção para os próximos itens
 
