@@ -1,17 +1,9 @@
 <?php
-
-// Desativa a exibição de erros diretamente na tela para não quebrar o JSON
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 0);
-error_reporting(E_ALL);
-
 require_once '../../config/cors.php';
 require_once '../../config/utils.php';
 require_once '../../db/db.php';
 require_once '../../config.php';
 require_once '../../vendor/autoload.php';
-
-use App\Services\EmailService;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     enviarResposta("erro", "Método inválido. Use POST.", null, 405);
@@ -19,116 +11,103 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $data = json_decode(file_get_contents("php://input"));
 
-if (!isset($data->id_exemplar) || !isset($data->id_pessoa)) {
-    enviarResposta("erro", "Informe o exemplar e a pessoa (leitor).", null, 400);
+// Validações básicas
+if (!isset($data->id_exemplar) || !isset($data->id_pessoa) || !isset($data->data_prevista)) {
+    enviarResposta("erro", "Dados incompletos. Informe id_exemplar, id_pessoa e data_prevista.", null, 400);
 }
 
 try {
     $pdo->beginTransaction();
 
-    // 1. Verificar disponibilidade
-    $stmtCheck = $pdo->prepare("SELECT disponibilidade FROM exemplar WHERE id_exemplar = ? FOR UPDATE");
-    $stmtCheck->execute([$data->id_exemplar]);
-    $exemplar = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+    // 1. Verificar se o exemplar existe e está disponível
+    $stmtEx = $pdo->prepare("SELECT id_livro, disponibilidade FROM exemplar WHERE id_exemplar = ? FOR UPDATE");
+    $stmtEx->execute([$data->id_exemplar]);
+    $exemplar = $stmtEx->fetch(PDO::FETCH_ASSOC);
 
     if (!$exemplar) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
+        $pdo->rollBack();
         enviarResposta("erro", "Exemplar não encontrado.", null, 404);
+        exit;
     }
 
     if ($exemplar['disponibilidade'] !== 'disponivel') {
-        if ($pdo->inTransaction()) $pdo->rollBack();
-        enviarResposta("erro", "Este exemplar não está disponível (Status: " . $exemplar['disponibilidade'] . ").", null, 409);
+        $pdo->rollBack();
+        enviarResposta("erro", "Este exemplar não está disponível para empréstimo.", null, 409);
+        exit;
     }
 
-    // 2. Datas
-    $dataHoje = date('Y-m-d');
-    $dataPrevista = (isset($data->data_prevista) && !empty($data->data_prevista))
-        ? $data->data_prevista
-        : date('Y-m-d', strtotime("+7 days"));
+    // 2. Buscar dados do aluno e do livro para o e-mail
+    $sqlDados = "
+        SELECT
+            p.nome AS aluno_nome,
+            p.email AS aluno_email,
+            l.titulo AS livro_titulo
+        FROM pessoa p
+        JOIN exemplar ex ON ex.id_livro = ?
+        JOIN livro l ON ex.id_livro = l.id_livro
+        WHERE p.id_pessoa = ?
+        LIMIT 1
+    ";
+    $stmtDados = $pdo->prepare($sqlDados);
+    $stmtDados->execute([$exemplar['id_livro'], $data->id_pessoa]);
+    $dadosEmprestimo = $stmtDados->fetch(PDO::FETCH_ASSOC);
 
-    // 3. Inserir Empréstimo
+    // 3. Inserir o empréstimo
+    $dataHoje = date('Y-m-d');
     $sqlInsert = "INSERT INTO emprestimo (id_exemplar, id_pessoa, data_emprestimo, data_prevista) VALUES (?, ?, ?, ?)";
     $stmtInsert = $pdo->prepare($sqlInsert);
-    $stmtInsert->execute([$data->id_exemplar, $data->id_pessoa, $dataHoje, $dataPrevista]);
+    $stmtInsert->execute([$data->id_exemplar, $data->id_pessoa, $dataHoje, $data->data_prevista]);
 
     $idEmprestimo = $pdo->lastInsertId();
 
-    // 4. Atualizar Exemplar
-    $sqlUpdate = "UPDATE exemplar SET disponibilidade = 'emprestado' WHERE id_exemplar = ?";
-    $stmtUpdate = $pdo->prepare($sqlUpdate);
-    $stmtUpdate->execute([$data->id_exemplar]);
+    // 4. Atualizar a disponibilidade do exemplar para 'emprestado'
+    $stmtUpEx = $pdo->prepare("UPDATE exemplar SET disponibilidade = 'emprestado' WHERE id_exemplar = ?");
+    $stmtUpEx->execute([$data->id_exemplar]);
 
     $pdo->commit();
 
-    // --- NOTIFICAÇÃO POR EMAIL ---
-    $sqlDados = "
-        SELECT p.nome AS aluno_nome, p.email AS aluno_email, l.titulo AS livro_titulo
-        FROM pessoa p
-        INNER JOIN emprestimo e ON p.id_pessoa = e.id_pessoa
-        INNER JOIN exemplar ex ON e.id_exemplar = ex.id_exemplar
-        INNER JOIN livro l ON ex.id_livro = l.id_livro
-        WHERE e.id_emprestimo = ?
-    ";
-    $stmtDados = $pdo->prepare($sqlDados);
-    $stmtDados->execute([$idEmprestimo]);
-    $dadosEmprestimo = $stmtDados->fetch(PDO::FETCH_ASSOC);
+    // ============================================
+    // 5. ENVIAR NOTIFICAÇÃO (USANDO O NOVO TEMPLATE)
+    // ============================================
     $emailValido = !empty($dadosEmprestimo['aluno_email']) && filter_var($dadosEmprestimo['aluno_email'], FILTER_VALIDATE_EMAIL);
 
     if ($emailValido) {
-        // ob_start garante que qualquer saída (debug do PHPMailer ou erros) não vá para o cliente
-        ob_start();
         try {
-            // Usamos a verificação de classe para evitar o Fatal Error caso o autoload falhe
-            if (class_exists('App\Services\EmailService')) {
-                $emailService = new EmailService();
-                $assunto = "Confirmação de Empréstimo — e-Papirus";
-                $corpo = "<h2>Olá, {$dadosEmprestimo['aluno_nome']}!</h2>
-                          <p>Seu empréstimo do livro <strong>{$dadosEmprestimo['livro_titulo']}</strong> foi realizado com sucesso!</p>
-                          <p>Data de devolução: " . date('d/m/Y', strtotime($dataPrevista)) . "</p>";
+            $emailService = new \App\Services\EmailService();
 
-                $enviado = $emailService->enviar(
-                    $dadosEmprestimo['aluno_email'],
-                    $assunto,
-                    $corpo
-                );
+            $enviou = $emailService->enviarNotificacao(
+                $dadosEmprestimo['aluno_email'],
+                'emprestimo',
+                [
+                    'nome'  => $dadosEmprestimo['aluno_nome'],
+                    'livro' => $dadosEmprestimo['livro_titulo'],
+                    'data'  => date('d/m/Y', strtotime($data->data_prevista)),
+                ]
+            );
 
-                $stmtNotif = $pdo->prepare("
-                    INSERT INTO notificacao (
-                        id_pessoa,
-                        id_emprestimo,
-                        tipo_notificacao,
-                        assunto,
-                        status
-                    ) VALUES (?, ?, ?, ?, ?)
-                ");
-
-                $stmtNotif->execute([
-                    $data->id_pessoa,
-                    $idEmprestimo,
-                    'emprestimo_realizado',
-                    $assunto,
-                    'enviado'
-                ]);
-
+            // Registra no banco (sucesso ou erro)
+            if ($enviou) {
+                $insertNotif = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status) VALUES (?, ?, 'emprestimo', 'Empréstimo Confirmado', 'enviado')");
+                $insertNotif->execute([$data->id_pessoa, $idEmprestimo]);
+            } else {
+                $insertNotif = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status, mensagem_erro) VALUES (?, ?, 'emprestimo', 'Empréstimo Confirmado', 'erro', 'Falha no envio do e-mail')");
+                $insertNotif->execute([$data->id_pessoa, $idEmprestimo]);
             }
-          } catch (\Throwable $t) {
-              error_log("ERRO EMAIL: " . $t->getMessage());
-          }
+        } catch (\Throwable $e) {
+            // Falha no e-mail NÃO impede o empréstimo
+            error_log("Falha ao enviar e-mail de empréstimo: " . $e->getMessage());
+            $insertNotif = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status, mensagem_erro) VALUES (?, ?, 'emprestimo', 'Empréstimo Confirmado', 'erro', ?)");
+            $insertNotif->execute([$data->id_pessoa, $idEmprestimo, $e->getMessage()]);
+        }
+    }
 
-          ob_end_clean();
-
-          } // fecha if ($emailValido)
-
-    // Resposta final limpa
-    enviarResposta("sucesso", "Empréstimo realizado!", [
-        "id_emprestimo" => $idEmprestimo,
-        "data_prevista" => $dataPrevista
-    ], 201);
+    // ============================================
+    // 6. RESPOSTA DE SUCESSO
+    // ============================================
+    enviarResposta("sucesso", "Empréstimo realizado com sucesso!", ["id_emprestimo" => $idEmprestimo], 201);
 
 } catch (PDOException $e) {
-    if ($pdo->inTransaction()) $pdo->rollBack();
-    enviarResposta("erro", "Erro de banco de dados: " . $e->getMessage(), null, 500);
-} catch (\Exception $e) {
-    enviarResposta("erro", "Erro inesperado: " . $e->getMessage(), null, 500);
+    $pdo->rollBack();
+    enviarResposta("erro", "Erro ao realizar empréstimo: " . $e->getMessage(), null, 500);
 }
+?>
