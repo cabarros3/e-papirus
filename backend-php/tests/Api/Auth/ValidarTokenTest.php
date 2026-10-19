@@ -19,6 +19,8 @@ final class ValidarTokenTest extends TestCase
     use AuthHelpers;
 
     private const ROTA_PROTEGIDA = '/api/reservas/create.php';
+    // Deve ser igual ao JWT_SECRET definido em tests/subir-api-teste.sh
+    private const CHAVE_DE_TESTE = 'epapirus-chave-jwt-somente-para-testes-2026';
 
     // ---------- Acesso negado ----------
 
@@ -75,6 +77,26 @@ final class ValidarTokenTest extends TestCase
         $this->assertNotSame(401, $resposta->getStatusCode(), (string) $resposta->getBody());
     }
 
+    // ---------- Expiração ----------
+
+    public function testTokenExpiradoRetorna401(): void
+    {
+        $token = $this->gerarToken(['exp' => time() - 60]);
+
+        $corpo = $this->assertNegado($this->postComAuthorization('Bearer ' . $token));
+
+        $this->assertSame('Token expirado.', $corpo['mensagem']);
+    }
+
+    public function testTokenAssinadoComAChaveDeTesteEPassaPelaValidacao(): void
+    {
+        $token = $this->gerarToken(['exp' => time() + 3600]);
+
+        $resposta = $this->postComAuthorization('Bearer ' . $token);
+
+        $this->assertNotSame(401, $resposta->getStatusCode(), (string) $resposta->getBody());
+    }
+
     // ---------- Auxiliares ----------
 
     private function postComAuthorization(string $valor): ResponseInterface
@@ -82,6 +104,25 @@ final class ValidarTokenTest extends TestCase
         return $this->http->post(self::ROTA_PROTEGIDA, [
             'headers' => ['Authorization' => $valor],
         ]);
+    }
+
+        /** Gera um JWT assinado com a chave de teste da API; $sobrescrever troca campos do payload. */
+    private function gerarToken(array $sobrescrever = []): string
+    {
+        $payload = array_merge([
+            'iss'  => 'e-papirus',
+            'iat'  => time() - 120,
+            'exp'  => time() + 3600,
+            'data' => [
+                'id_usuario' => 1,
+                'id_pessoa'  => 1,
+                'tipo'       => 'aluno',
+                'cargo'      => null,
+                'nome'       => 'Usuario de Teste',
+            ],
+        ], $sobrescrever);
+
+        return JWT::encode($payload, self::CHAVE_DE_TESTE, 'HS256');
     }
 
     /** Confere o envelope padrão de acesso negado e devolve o corpo para checar a mensagem. */
