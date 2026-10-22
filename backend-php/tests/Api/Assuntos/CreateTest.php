@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Tests\Api\Assuntos;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use Psr\Http\Message\ResponseInterface;
+use Tests\Support\AssuntoHelpers;
 use Tests\Support\TestCase;
+
 
 final class CreateTest extends TestCase
 {
+    use AssuntoHelpers;
+
     // A pasta do módulo é "assuntos" (o endpoints.txt cita "assunto", no singular).
     private const ROTA = '/api/assuntos/create.php';
 
@@ -86,10 +89,4 @@ final class CreateTest extends TestCase
         $this->assertSame(405, $resposta->getStatusCode(), (string) $resposta->getBody());
     }
 
-    // ---------- Auxiliares ----------
-
-    private function criarAssunto(string $nome): ResponseInterface
-    {
-        return $this->http->post(self::ROTA, ['json' => ['nome_assunto' => $nome]]);
-    }
-}
+}    
