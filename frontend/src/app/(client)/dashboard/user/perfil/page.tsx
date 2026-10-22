@@ -30,20 +30,64 @@ export default function PerfilUsuario() {
 
   
 
-  // 1. Sincronização: Busca os dados completos do banco ao carregar
-useEffect(() => {
-  const handleStorageUpdate = () => {
-    const saved = sessionStorage.getItem('bib_user');
-    if (saved) {
-      try {
-        setUser(JSON.parse(saved));
-      } catch {}
-    }
-  };
 
-  window.addEventListener('storage', handleStorageUpdate);
-  return () => window.removeEventListener('storage', handleStorageUpdate);
-}, []);
+useEffect(() => {
+  let ativo = true;
+
+  async function carregarPerfil() {
+    try {
+      const saved = sessionStorage.getItem('bib_user');
+      const token = sessionStorage.getItem('bib_token');
+
+      if (!saved || !token) {
+        router.replace('/login');
+        return;
+      }
+
+      const usuario = JSON.parse(saved);
+
+      if (!usuario.id_usuario) {
+        throw new Error(
+          'O ID do usuário não foi encontrado na sessão. Faça login novamente.'
+        );
+      }
+
+      const dadosCompletos = await pessoaService.buscarDadosCompletos(
+        usuario.id_usuario
+      );
+
+      if (!ativo) return;
+
+      setUser({
+        ...usuario,
+        ...dadosCompletos,
+      });
+
+      setTelefone(dadosCompletos.telefone ?? '');
+    } catch (err) {
+      if (!ativo) return;
+
+      console.error('Erro ao carregar perfil:', err);
+
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : 'Não foi possível carregar os dados do perfil.'
+      );
+    } finally {
+      if (ativo) {
+        setLoading(false);
+      }
+    }
+  }
+
+  carregarPerfil();
+
+  return () => {
+    ativo = false;
+  };
+}, [router]);
+
 
   // 2. Salvar alterações de dados pessoais
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -172,25 +216,30 @@ useEffect(() => {
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-600 ml-1">
-                    Telefone
-                  </label>
-                  <div className="relative group">
-                    <Phone
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-denin transition-colors"
-                      size={18}
-                    />
-                    <input
-                      type="tel"
-                      placeholder="(00) 00000-0000"
-                      onChange={handleTelefoneChange}
-                      value={telefone}
-                      maxLength={15}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-gray-700 bg-white"
-                    />
-                  </div>
+                
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-600 ml-1">
+                  Telefone
+                </label>
+
+                <div className="relative group">
+                  <Phone
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-denin transition-colors"
+                    size={18}
+                  />
+
+                  <input
+                    type="tel"
+                    name="telefone"
+                    value={telefone}
+                    onChange={handleTelefoneChange}
+                    maxLength={15}
+                    placeholder="(00) 00000-0000"
+                    className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-denin/5 focus:border-denin outline-none transition-all font-semibold text-gray-700 bg-gray-50/30"
+                  />
                 </div>
+              </div>
+
               </div>
             </section>
 
