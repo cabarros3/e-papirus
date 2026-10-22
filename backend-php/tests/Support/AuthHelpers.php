@@ -64,14 +64,4 @@ trait AuthHelpers
 
         return $dados;
     }
-
-    /** Converte o corpo da resposta em array, falhando o teste se não for JSON. */
-    protected function corpo(ResponseInterface $resposta): array
-    {
-        $corpo = json_decode((string) $resposta->getBody(), true);
-
-        $this->assertIsArray($corpo, 'A resposta deveria ser um JSON: ' . (string) $resposta->getBody());
-
-        return $corpo;
-    }
 }

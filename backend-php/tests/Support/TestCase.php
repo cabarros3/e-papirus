@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Support;
 
+use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Client;
 use PDO;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
@@ -36,6 +37,16 @@ abstract class TestCase extends PHPUnitTestCase
             'http_errors' => false, // respostas 4xx/5xx viram objeto, não exceção
             'timeout'     => 10,
         ]);
+    }
+
+    /** Converte o corpo da resposta em array, falhando o teste se não for JSON. */
+    protected function corpo(ResponseInterface $resposta): array
+    {
+        $corpo = json_decode((string) $resposta->getBody(), true);
+
+        $this->assertIsArray($corpo, 'A resposta deveria ser um JSON: ' . (string) $resposta->getBody());
+
+        return $corpo;
     }
 
     private function resetarBanco(): void
