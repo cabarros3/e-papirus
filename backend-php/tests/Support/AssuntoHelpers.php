@@ -32,4 +32,15 @@ trait AssuntoHelpers
 
         return (int) $this->corpo($resposta)['dados']['id'];
     }
+
+    
+    /** Chama a listagem, confere o 200 e devolve a lista de assuntos. */
+    protected function listarAssuntos(): array
+    {
+        $resposta = $this->http->get('/api/assuntos/index.php');
+
+        $this->assertSame(200, $resposta->getStatusCode(), (string) $resposta->getBody());
+
+        return $this->corpo($resposta)['dados'];
+    }
 }
