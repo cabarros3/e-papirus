@@ -18,7 +18,7 @@ if (!isset($data->id_emprestimo)) {
 try {
     $pdo->beginTransaction();
 
-    // 1. Buscar dados do empréstimo (para saber qual é o exemplar e o livro)
+    // 1. Buscar dados do empréstimo
     $stmtGet = $pdo->prepare("
         SELECT
             e.id_exemplar,
@@ -46,175 +46,93 @@ try {
         exit;
     }
 
-    // Buscar dados para mensagem de confirmação (nome do aluno, email)
-    $sqlDados = "
-        SELECT
-            emp.id_pessoa,
-            p.nome AS aluno_nome,
-            p.email AS aluno_email,
-            emp.data_emprestimo,
-            emp.data_prevista
-        FROM emprestimo emp
-        JOIN pessoa p ON emp.id_pessoa = p.id_pessoa
-        WHERE emp.id_emprestimo = ?
-        LIMIT 1
-    ";
-
+    // 2. Buscar dados do aluno
+    $sqlDados = "SELECT p.nome AS aluno_nome, p.email AS aluno_email FROM emprestimo emp JOIN pessoa p ON emp.id_pessoa = p.id_pessoa WHERE emp.id_emprestimo = ?";
     $stmtDados = $pdo->prepare($sqlDados);
     $stmtDados->execute([$data->id_emprestimo]);
     $dadosEmprestimo = $stmtDados->fetch(PDO::FETCH_ASSOC);
 
     $dataHoje = date('Y-m-d');
 
-    // 2. Atualizar tabela EMPRESTIMO (setar data_devolucao)
+    // 3. Atualizar tabelas
     $stmtUpEmp = $pdo->prepare("UPDATE emprestimo SET data_devolucao = ? WHERE id_emprestimo = ?");
     $stmtUpEmp->execute([$dataHoje, $data->id_emprestimo]);
 
-    // 3. Atualizar tabela EXEMPLAR (liberar para 'disponivel')
     $stmtUpEx = $pdo->prepare("UPDATE exemplar SET disponibilidade = 'disponivel' WHERE id_exemplar = ?");
     $stmtUpEx->execute([$emp['id_exemplar']]);
 
     $pdo->commit();
 
     // ============================================
-    // 4. NOTIFICAÇÃO DE CONFIRMAÇÃO DE DEVOLUÇÃO
+    // 4. E-MAIL: CONFIRMAÇÃO DE DEVOLUÇÃO
     // ============================================
     $emailValido = !empty($dadosEmprestimo['aluno_email']) && filter_var($dadosEmprestimo['aluno_email'], FILTER_VALIDATE_EMAIL);
+
     if ($emailValido) {
-        ob_start();
         try {
-            if (class_exists('App\\Services\\EmailService')) {
-                $emailService = new \App\Services\EmailService();
-                $assunto = "Confirmacao de Devolucao - e-Papirus";
-                $corpo = "<h2>Olá, {$dadosEmprestimo['aluno_nome']}!</h2>";
-                $corpo .= "<p>Registramos a devolução do livro <strong>{$emp['livro_titulo']}</strong> em " . date('d/m/Y', strtotime($dataHoje)) . ".</p>";
-                if ($dataHoje > $dadosEmprestimo['data_prevista']) {
-                    $corpo .= "<p><strong>Observação:</strong> A devolução foi realizada com atraso.</p>";
-                }
-                $corpo .= "<p>Obrigado,<br/>Equipe e-Papirus</p>";
+            $emailService = new \App\Services\EmailService();
 
-                $emailService->enviar($dadosEmprestimo['aluno_email'], $assunto, $corpo);
+            $observacao = ($dataHoje > $dadosEmprestimo['data_prevista'])
+                ? "⚠️ <strong>Observação:</strong> A devolução foi realizada com atraso."
+                : "";
 
-                $stmtNotif = $pdo->prepare("
-                    INSERT INTO notificacao (
-                        id_pessoa,
-                        id_emprestimo,
-                        tipo_notificacao,
-                        assunto,
-                        status
-                    ) VALUES (?, ?, ?, ?, ?)
-                ");
+            $enviou = $emailService->enviarNotificacao(
+                $dadosEmprestimo['aluno_email'],
+                'devolucao',
+                [
+                    'nome'       => $dadosEmprestimo['aluno_nome'],
+                    'livro'      => $emp['livro_titulo'],
+                    'data'       => date('d/m/Y', strtotime($dataHoje)),
+                    'observacao' => $observacao
+                ]
+            );
 
-                $stmtNotif->execute([
-                    $dadosEmprestimo['id_pessoa'],
-                    $data->id_emprestimo,
-                    'devolucao_realizada',
-                    $assunto,
-                    'enviado'
-                ]);
+            if ($enviou) {
+                $insertNotif = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status) VALUES (?, ?, 'devolucao', 'Devolução Confirmada', 'enviado')");
+                $insertNotif->execute([$dadosEmprestimo['id_pessoa'] ?? $dadosEmprestimo['aluno_id'] ?? 0, $data->id_emprestimo]); // Fallback caso não tenha id_pessoa na busca
+            } else {
+                $insertNotif = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status, mensagem_erro) VALUES (?, ?, 'devolucao', 'Devolução Confirmada', 'erro', 'Falha no envio do e-mail')");
+                $insertNotif->execute([$dadosEmprestimo['id_pessoa'] ?? $dadosEmprestimo['aluno_id'] ?? 0, $data->id_emprestimo]);
             }
         } catch (\Throwable $t) {
             error_log("Falha ao enviar e-mail de devolução: " . $t->getMessage());
         }
-        ob_end_clean();
     }
 
     // ============================================
-    // 5. NOTIFICAÇÃO DE RESERVA DISPONÍVEL
+    // 5. E-MAIL: RESERVA DISPONÍVEL (se houver)
     // ============================================
     try {
-        // Buscar reservas ativas para este livro
-        $sqlReserva = "
-            SELECT
-                r.id_reserva,
-                r.id_pessoa,
-                p.nome AS pessoa_nome,
-                p.email AS pessoa_email,
-                r.data_expiracao
-            FROM reserva r
-            JOIN pessoa p ON r.id_pessoa = p.id_pessoa
-            WHERE r.id_livro = ?
-            AND r.status = 'ativa'
-            AND r.data_expiracao >= CURDATE()
-            ORDER BY r.data_reserva ASC
-            LIMIT 1
-        ";
+        $sqlReserva = "SELECT r.id_pessoa, p.nome AS pessoa_nome, p.email AS pessoa_email, r.data_expiracao FROM reserva r JOIN pessoa p ON r.id_pessoa = p.id_pessoa WHERE r.id_livro = ? AND r.status = 'ativa' AND r.data_expiracao >= CURDATE() ORDER BY r.data_reserva ASC LIMIT 1";
         $stmtReserva = $pdo->prepare($sqlReserva);
         $stmtReserva->execute([$emp['id_livro']]);
         $reserva = $stmtReserva->fetch(PDO::FETCH_ASSOC);
 
         if ($reserva && !empty($reserva['pessoa_email']) && filter_var($reserva['pessoa_email'], FILTER_VALIDATE_EMAIL)) {
-            // Enviar e-mail de reserva disponível
             $emailService = new \App\Services\EmailService();
-            $assuntoReserva = "Reserva Disponivel - e-Papirus";
 
-            $corpoReserva = "
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: #27ae60; color: white; padding: 15px; text-align: center; }
-                    .content { padding: 20px; background: #f9f9f9; }
-                    .footer { text-align: center; padding: 10px; font-size: 12px; color: #666; }
-                    .alert { background: #d5f5e3; padding: 15px; border-left: 4px solid #27ae60; margin: 15px 0; }
-                </style>
-            </head>
-            <body>
-                <div class='container'>
-                    <div class='header'>
-                        <h2>e-Papirus</h2>
-                    </div>
-                    <div class='content'>
-                        <h3>Olá, " . $reserva['pessoa_nome'] . "!</h3>
-                        <div class='alert'>
-                            <p><strong>O livro que você reservou está disponível!</strong></p>
-                        </div>
-                        <p><strong>Livro:</strong> " . $emp['livro_titulo'] . "</p>
-                        <p><strong>Prazo para retirada:</strong> " . date('d/m/Y', strtotime($reserva['data_expiracao'])) . "</p>
-                        <p>Compareça à biblioteca para retirar o livro dentro do prazo.</p>
-                        <p>Atenciosamente,<br/>Equipe e-Papirus</p>
-                    </div>
-                    <div class='footer'>
-                        <p>Este e-mail foi enviado automaticamente pelo sistema e-Papirus.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
-            ";
-
-            $enviouReserva = $emailService->enviar($reserva['pessoa_email'], $assuntoReserva, $corpoReserva);
+            $enviouReserva = $emailService->enviarNotificacao(
+                $reserva['pessoa_email'],
+                'reserva_disponivel',
+                [
+                    'nome'  => $reserva['pessoa_nome'],
+                    'livro' => $emp['livro_titulo'],
+                    'data'  => date('d/m/Y', strtotime($reserva['data_expiracao']))
+                ]
+            );
 
             if ($enviouReserva) {
-                // Registrar notificação
-                $insertNotif = $pdo->prepare("
-                    INSERT INTO notificacao (id_pessoa, tipo_notificacao, assunto, status)
-                    VALUES (?, 'reserva_disponivel', ?, 'enviado')
-                ");
-                $insertNotif->execute([$reserva['id_pessoa'], $assuntoReserva]);
-
-                // Atualizar status da reserva para 'concluida' (opcional - pode ser feito depois quando retirar)
-                // $updateReserva = $pdo->prepare("UPDATE reserva SET status = 'concluida' WHERE id_reserva = ?");
-                // $updateReserva->execute([$reserva['id_reserva']]);
-            } else {
-                // Registrar erro
-                $insertNotif = $pdo->prepare("
-                    INSERT INTO notificacao (id_pessoa, tipo_notificacao, assunto, status, mensagem_erro)
-                    VALUES (?, 'reserva_disponivel', ?, 'erro', 'Falha no envio do e-mail')
-                ");
-                $insertNotif->execute([$reserva['id_pessoa'], $assuntoReserva]);
+                $insertNotif = $pdo->prepare("INSERT INTO notificacao (id_pessoa, tipo_notificacao, assunto, status) VALUES (?, 'reserva_disponivel', 'O livro que você reservou está disponível!', 'enviado')");
+                $insertNotif->execute([$reserva['id_pessoa']]);
             }
         }
     } catch (\Throwable $t) {
         error_log("Falha ao enviar notificação de reserva disponível: " . $t->getMessage());
-        // Não impede a devolução
     }
 
-    // ============================================
-    // 6. RESPOSTA
-    // ============================================
+    // 6. Resposta
     $mensagem = "Devolução realizada com sucesso.";
-    if ($dataHoje > $dadosEmprestimo['data_prevista']) {
+    if ($dataHoje > $emp['data_prevista']) {
         $mensagem .= " (ATENÇÃO: Devolvido com atraso!)";
     }
 

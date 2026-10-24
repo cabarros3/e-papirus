@@ -217,12 +217,16 @@ export default function ClientDashboardLayout({
             </div>
 
             <div className="group relative">
-              <div
-                title={user.nome}
+              <button
+                type="button"
+                title="Acessar meu perfil"
+                aria-label="Acessar meu perfil"
+                onClick={() => router.push('/dashboard/user/perfil')}
                 className="w-12 h-12 rounded-full bg-denin flex items-center justify-center text-white text-base font-black cursor-pointer shadow-md hover:scale-105 transition-transform"
               >
                 {user.nome.substring(0, 2).toUpperCase()}
-              </div>
+              </button>
+
               <div className="absolute right-0 mt-3 w-56 bg-white border border-gray-100 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
                 <button
                   onClick={() => {

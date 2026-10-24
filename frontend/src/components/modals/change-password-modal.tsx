@@ -19,7 +19,7 @@ export function ModalAlterarSenha({
     const formData = new FormData(e.currentTarget);
 
     const senha_atual = String(formData.get('atual'));
-    const nova_senha = String(formData.get('nova'));
+    const nova_senha = String(formData.get('nova_senha'));
     const confirma = String(formData.get('confirma'));
 
     if (nova_senha !== confirma) {
