@@ -8,10 +8,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\ResponseInterface;
 use Tests\Support\AssuntoHelpers;
 use Tests\Support\TestCase;
+use Tests\Support\LivroHelpers;
 
 final class DeleteTest extends TestCase
 {
     use AssuntoHelpers;
+    use LivroHelpers;
 
     private const ROTA = '/api/assuntos/delete.php';
 
@@ -103,5 +105,29 @@ final class DeleteTest extends TestCase
     private function excluirAssunto(int $id): ResponseInterface
     {
         return $this->http->delete(self::ROTA, ['json' => ['id_assunto' => $id]]);
+    }
+
+    // ---------- Assunto com livros vinculados ----------
+
+    public function testAssuntoComLivrosVinculadosRetorna409(): void
+    {
+        $idAssunto = $this->garantirAssuntoCriado('Assunto Com Livro');
+        $this->criarLivro(['id_assunto' => $idAssunto]);
+        $livrosAntes = $this->contarLivros();
+
+        $resposta = $this->excluirAssunto($idAssunto);
+        $corpo = $this->corpo($resposta);
+
+        $this->assertSame(409, $resposta->getStatusCode(), (string) $resposta->getBody());
+        $this->assertSame('erro', $corpo['status']);
+        $this->assertNull($corpo['dados']);
+        $this->assertStringContainsString('livros vinculados', $corpo['mensagem']);
+
+        $this->assertContains(
+            'Assunto Com Livro',
+            array_column($this->listarAssuntos(), 'nome_assunto'),
+            'O assunto não deveria ter sido excluído.'
+        );
+        $this->assertSame($livrosAntes, $this->contarLivros(), 'O livro vinculado não deveria ser afetado.');
     }
 }
