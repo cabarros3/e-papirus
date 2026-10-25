@@ -59,4 +59,24 @@ trait PessoaHelpers
     {
         return $this->http->get('/api/pessoas/index.php', ['query' => ['id' => $id]]);
     }
+
+    /**
+     * Insere direto no banco de TESTE uma pessoa sem login (usuario_sistema), que a API nao consegue criar.
+     * Usa as mesmas credenciais fixas do TestCase: nunca aponta para o banco de desenvolvimento.
+     */
+    protected function inserirPessoaSemLogin(): int
+    {
+        $pdo = new \PDO(
+            'mysql:host=127.0.0.1;dbname=epapirus_test;charset=utf8mb4',
+            'epapirus_test',
+            'epapirus_test',
+            [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]
+        );
+
+        $pdo->prepare(
+            'INSERT INTO pessoa (nome, matricula, cpf, email, tipo) VALUES (?, ?, ?, ?, ?)'
+        )->execute(['Pessoa Sem Login', '20260777', '99988870777', 'semlogin@epapirus.local', 'aluno']);
+
+        return (int) $pdo->lastInsertId();
+    }
 }
