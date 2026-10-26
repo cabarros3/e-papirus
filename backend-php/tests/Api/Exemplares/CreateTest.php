@@ -62,19 +62,36 @@ final class CreateTest extends TestCase
         $this->assertSame(1, $primeiroDoLivroB['numero_exemplar']);
     }
 
-    // ---------- Livro inexistente (PENDENTE) ----------
-    // O create.php não confere se o livro existe. Com chave estrangeira em exemplar.id_livro,
-    // o INSERT falha e a API responde 500; sem ela, o exemplar órfão é gravado com 201.
-    // O correto seria 404. Quando for corrigido, apague a linha do markTestIncomplete.
+    // ---------- Livro inexistente ----------
+    // O create.php não confere se o livro existe: a chave estrangeira de exemplar.id_livro barra
+    // o INSERT e a API responde 500 (erro do banco). O correto seria 404.
+    // Quando for corrigido, apague a linha do markTestIncomplete.
 
     public function testLivroInexistenteRetorna404(): void
     {
-        $this->markTestIncomplete('Pendente: create.php não confere se o livro existe (hoje responde 500 ou grava o exemplar órfão, conforme o schema).');
-
+        $this->markTestIncomplete('Pendente: create.php não confere se o livro existe (hoje responde 500 por causa da chave estrangeira).');
         $resposta = $this->cadastrarExemplar(999999);
         $corpo = $this->corpo($resposta);
 
         $this->assertSame(404, $resposta->getStatusCode(), (string) $resposta->getBody());
+        $this->assertSame('erro', $corpo['status']);
+    }
+
+    // ---------- Disponibilidade inválida (PENDENTE) ----------
+    // disponibilidade é um ENUM('disponivel','emprestado','reservado') e o create.php não valida o valor.
+    // Com um valor fora da lista, o banco recusa o INSERT (modo estrito) e a API responde 500;
+    // o correto seria 400. Quando for corrigido, apague a linha do markTestIncomplete.
+
+    public function testDisponibilidadeInvalidaRetorna400(): void
+    {
+        $this->markTestIncomplete('Pendente: create.php não valida disponibilidade (hoje o banco recusa o valor e a API responde 500).');
+
+        $idLivro = $this->criarLivro();
+
+        $resposta = $this->cadastrarExemplar($idLivro, ['disponibilidade' => 'perdido']);
+        $corpo = $this->corpo($resposta);
+
+        $this->assertSame(400, $resposta->getStatusCode(), (string) $resposta->getBody());
         $this->assertSame('erro', $corpo['status']);
     }
 
