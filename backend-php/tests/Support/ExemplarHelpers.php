@@ -49,4 +49,19 @@ trait ExemplarHelpers
             'numero_exemplar' => (int) $dados['numero_exemplar'],
         ];
     }
+
+    /** Corpo pronto para enviar ao update.php (só inclui o que for passado em $sobrescrever). */
+    protected function dadosAtualizacaoExemplar(int $idExemplar, array $sobrescrever = []): array
+    {
+        return array_merge([
+            'id_exemplar' => $idExemplar,
+        ], $sobrescrever);
+    }
+
+    protected function atualizarExemplar(int $idExemplar, array $sobrescrever = []): ResponseInterface
+    {
+        return $this->http->put('/api/exemplares/update.php', [
+            'json' => $this->dadosAtualizacaoExemplar($idExemplar, $sobrescrever),
+        ]);
+    }
 }
