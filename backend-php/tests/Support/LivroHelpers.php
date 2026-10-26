@@ -66,4 +66,23 @@ trait LivroHelpers
 
         return count($corpo['dados']);
     }
+
+    
+    protected function buscarExemplares(array $query = []): ResponseInterface
+    {
+        return $this->http->get('/api/exemplares/index.php', ['query' => $query]);
+    }
+
+    /** Devolve os exemplares de um livro (lista vazia se não tiver), falhando o teste se a listagem não der 200. */
+    protected function exemplaresDoLivro(int $idLivro): array
+    {
+        $resposta = $this->buscarExemplares(['id_livro' => $idLivro]);
+
+        $this->assertSame(200, $resposta->getStatusCode(), (string) $resposta->getBody());
+
+        $livros = $this->corpo($resposta)['dados'];
+        $this->assertCount(1, $livros, 'O filtro por livro deveria devolver exatamente um livro.');
+
+        return $livros[0]['exemplares'];
+    }
 }
