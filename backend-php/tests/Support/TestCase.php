@@ -73,4 +73,18 @@ abstract class TestCase extends PHPUnitTestCase
             } while ($consulta->nextRowset());
         }
     }
+
+    /**
+     * Conexao PDO com o banco de TESTE (nunca o de desenvolvimento), para montar ou conferir
+     * estados que a API nao consegue criar. Usa as mesmas constantes fixas do reset.
+     */
+    protected function conexaoBancoDeTeste(): PDO
+    {
+        return new PDO(
+            sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', self::DB_HOST, self::DB_NAME),
+            self::DB_USER,
+            self::DB_PASS,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        );
+    }
 }
