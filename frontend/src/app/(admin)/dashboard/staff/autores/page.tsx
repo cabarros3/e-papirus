@@ -159,7 +159,7 @@ export default function GerenciarAutores() {
         <table className="w-full text-left border-collapse">
           <thead className="bg-gray-50 border-b border-gray-100 text-gray-400">
             <tr>
-              <th className="p-5 text-xs font-bold uppercase w-24">ID</th>
+              {/* COLUNA ID REMOVIDA */}
               <th className="p-5 text-xs font-bold uppercase">Nome</th>
               <th className="p-5 text-xs font-bold uppercase text-right">
                 Ações
@@ -169,13 +169,13 @@ export default function GerenciarAutores() {
           <tbody className="divide-y divide-gray-50">
             {loading ? (
               <tr>
-                <td colSpan={3} className="p-20 text-center">
+                <td colSpan={2} className="p-20 text-center">
                   <Loader2 className="animate-spin mx-auto text-denin" />
                 </td>
               </tr>
             ) : currentData.length === 0 ? (
               <tr>
-                <td colSpan={3} className="p-20 text-center text-gray-400">
+                <td colSpan={2} className="p-20 text-center text-gray-400">
                   Nenhum autor encontrado.
                 </td>
               </tr>
@@ -185,13 +185,12 @@ export default function GerenciarAutores() {
                   key={autor.id_autor}
                   className="hover:bg-gray-50/50 group transition-colors"
                 >
-                  <td className="p-5 text-sm font-mono text-gray-400">
-                    #{autor.id_autor}
-                  </td>
+                  {/* CÉLULA DO ID REMOVIDA */}
                   <td className="p-5 text-sm font-semibold text-gray-800 uppercase">
                     {autor.nome_autor}
                   </td>
-                  <td className="p-5 text-right flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {/* BOTÕES SEMPRE VISÍVEIS (removido opacity-0 group-hover:opacity-100) */}
+                  <td className="p-5 text-right flex justify-end gap-2">
                     <button
                       onClick={() => {
                         setAutorParaEditar(autor);
@@ -199,6 +198,7 @@ export default function GerenciarAutores() {
                         setIsEditModalOpen(true);
                       }}
                       className="p-2.5 text-gray-400 hover:text-denin hover:bg-denin/10 rounded-xl transition-all"
+                      title="Editar autor"
                     >
                       <Edit3 size={18} />
                     </button>
@@ -207,7 +207,8 @@ export default function GerenciarAutores() {
                         setAutorParaDeletar(autor);
                         setIsDeleteModalOpen(true);
                       }}
-                      className="p-2.5 text-gray-400 hover:text-gray-500 hover:bg-red-100 rounded-xl transition-all"
+                      className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-100 rounded-xl transition-all"
+                      title="Excluir autor"
                     >
                       <Trash2 size={18} />
                     </button>

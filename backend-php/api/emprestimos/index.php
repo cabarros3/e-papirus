@@ -13,7 +13,7 @@ $id_pessoa = isset($_GET['id_pessoa']) ? $_GET['id_pessoa'] : null;
 $id_exemplar = isset($_GET['id_exemplar']) ? $_GET['id_exemplar'] : null;
 
 try {
-    $sql = "SELECT 
+    $sql = "SELECT
                 emp.id_emprestimo,
                 emp.data_emprestimo,
                 emp.data_prevista,
@@ -21,6 +21,7 @@ try {
                 l.titulo,
                 l.id_livro,
                 e.id_exemplar,
+                e.numero_exemplar,
                 p.nome as nome_pessoa,
                 p.tipo as tipo_pessoa,
                 p.email as email_pessoa
@@ -38,17 +39,17 @@ try {
     if ($status === 'pendente') {
         // Tudo que está com o leitor (independente se atrasou ou não)
         $conditions[] = "emp.data_devolucao IS NULL";
-    
+
     } elseif ($status === 'devolvido') {
         // Tudo que já foi devolvido
         $conditions[] = "emp.data_devolucao IS NOT NULL";
-    
+
     } elseif ($status === 'atrasado') {
         // Não devolvido E data prevista é MENOR que hoje
         $conditions[] = "emp.data_devolucao IS NULL";
         $conditions[] = "emp.data_prevista < ?";
         $params[] = $dataHoje;
-    
+
     } elseif ($status === 'em_dia') {
         // Não devolvido E data prevista é MAIOR ou IGUAL a hoje
         $conditions[] = "emp.data_devolucao IS NULL";
