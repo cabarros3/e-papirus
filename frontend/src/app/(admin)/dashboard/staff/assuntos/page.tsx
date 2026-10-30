@@ -158,7 +158,7 @@ export default function GerenciarAssuntos() {
         <table className="w-full text-left border-collapse">
           <thead className="bg-gray-50 border-b border-gray-100 text-gray-400">
             <tr>
-              <th className="p-5 text-xs font-bold uppercase w-24">ID</th>
+              {/* COLUNA ID REMOVIDA */}
               <th className="p-5 text-xs font-bold uppercase">Nome</th>
               <th className="p-5 text-xs font-bold uppercase text-right">
                 Ações
@@ -168,7 +168,7 @@ export default function GerenciarAssuntos() {
           <tbody className="divide-y divide-gray-50">
             {loading ? (
               <tr>
-                <td colSpan={3} className="p-20 text-center">
+                <td colSpan={2} className="p-20 text-center">
                   <Loader2 className="animate-spin mx-auto text-denin" />
                 </td>
               </tr>
@@ -178,20 +178,20 @@ export default function GerenciarAssuntos() {
                   key={item.id_assunto}
                   className="hover:bg-gray-50/50 group transition-colors"
                 >
-                  <td className="p-5 text-sm font-mono text-gray-400">
-                    #{item.id_assunto}
-                  </td>
+                  {/* CÉLULA DO ID REMOVIDA */}
                   <td className="p-5 text-sm font-semibold text-gray-800 uppercase">
                     {item.nome_assunto}
                   </td>
-                  <td className="p-5 text-right flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {/* BOTÕES SEMPRE VISÍVEIS */}
+                  <td className="p-5 text-right flex justify-end gap-2">
                     <button
                       onClick={() => {
                         setAssuntoParaEditar(item);
                         setNomeEditado(item.nome_assunto);
                         setIsEditModalOpen(true);
                       }}
-                      className="p-2 text-gray-400 hover:text-denin hover:bg-denin/10 rounded-lg"
+                      className="p-2 text-gray-400 hover:text-denin hover:bg-denin/10 rounded-lg transition-colors"
+                      title="Editar assunto"
                     >
                       <Edit3 size={18} />
                     </button>
@@ -200,7 +200,8 @@ export default function GerenciarAssuntos() {
                         setAssuntoParaDeletar(item);
                         setIsDeleteModalOpen(true);
                       }}
-                      className="p-2 text-gray-400 hover:text-gray-500 hover:bg-red-100 rounded-lg"
+                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-100 rounded-lg transition-colors"
+                      title="Excluir assunto"
                     >
                       <Trash2 size={18} />
                     </button>
