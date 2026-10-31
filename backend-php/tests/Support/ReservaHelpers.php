@@ -44,4 +44,26 @@ trait ReservaHelpers
             'data_expiracao' => $dados['data_expiracao'],
         ];
     }
+    
+    /** GET em /api/reservas/index.php; o token é opcional para permitir testar o acesso sem login. */
+    protected function buscarReservas(array $query = [], ?string $token = null): ResponseInterface
+    {
+        $opcoes = ['query' => $query];
+
+        if ($token !== null) {
+            $opcoes['headers'] = ['Authorization' => 'Bearer ' . $token];
+        }
+
+        return $this->http->get('/api/reservas/index.php', $opcoes);
+    }
+
+    /** Lista as reservas (com ou sem filtro), confere o 200 e devolve a lista. */
+    protected function listarReservas(string $token, array $query = []): array
+    {
+        $resposta = $this->buscarReservas($query, $token);
+
+        $this->assertSame(200, $resposta->getStatusCode(), (string) $resposta->getBody());
+
+        return $this->corpo($resposta)['dados'];
+    }
 }
