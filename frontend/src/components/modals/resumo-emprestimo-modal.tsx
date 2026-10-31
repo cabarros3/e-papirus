@@ -65,8 +65,9 @@ export function ResumoEmprestimoModal({
                   <p className="text-sm font-bold text-gray-900">
                     {dados.livro}
                   </p>
+                  {/* CORREÇÃO: Removido o '#' e padronizado o texto */}
                   <p className="text-xs text-denin font-medium">
-                    Exemplar #{dados.exemplar}
+                    Exemplar: {dados.exemplar}
                   </p>
                 </div>
               </div>

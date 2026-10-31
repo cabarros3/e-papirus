@@ -64,8 +64,9 @@ export function ResumoDevolucaoModal({
                       </p>
 
                       <div className="flex items-center justify-between gap-2 mt-1">
+                        {/* CORREÇÃO: Removido o '#' e padronizado o texto */}
                         <p className="text-xs text-gray-500">
-                          Exemplar #{item.id_exemplar}
+                          Exemplar: {item.id_exemplar}
                         </p>
 
                         <p className="text-[10px] font-bold text-green-600 uppercase">
