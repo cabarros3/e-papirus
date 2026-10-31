@@ -64,4 +64,36 @@ trait AuthHelpers
 
         return $dados;
     }
+
+    
+    /**
+     * Cadastra e loga o usuário de teste número $n (1 a 3) e devolve o campo "dados" do login.
+     * O 1 é o usuário padrão; os demais têm e-mail, CPF e matrícula próprios, para permitir
+     * vários usuários no mesmo teste (ex.: fila de reservas).
+     */
+    protected function cadastrarELogarUsuario(int $n): array
+    {
+        $cpfs = [1 => '52998224725', 2 => '11144477735', 3 => '39053344705'];
+        $this->assertArrayHasKey($n, $cpfs, 'Só há dados de teste para os usuários 1 a 3.');
+
+        $sobrescrever = $n === 1 ? [] : [
+            'email'     => "usuario{$n}@epapirus.local",
+            'cpf'       => $cpfs[$n],
+            'matricula' => '2026000' . $n,
+        ];
+
+        $cadastro = $this->cadastrarUsuario($sobrescrever);
+        $this->assertSame(
+            201,
+            $cadastro->getStatusCode(),
+            'Cadastro (pré-condição) falhou: ' . (string) $cadastro->getBody()
+        );
+
+        $usuario = $this->dadosUsuario($sobrescrever);
+        $dados = $this->corpo($this->login($usuario['email'], $usuario['senha']))['dados'] ?? null;
+        $this->assertIsArray($dados, 'Login (pré-condição) não devolveu dados.');
+
+        return $dados;
+    }
 }
+

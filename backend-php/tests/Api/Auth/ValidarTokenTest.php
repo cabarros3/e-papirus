@@ -8,6 +8,7 @@ use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface;
 use Tests\Support\AuthHelpers;
 use Tests\Support\TestCase;
+use Tests\Support\TokenHelpers;
 
 /**
  * validar_token.php só define a função validarAcesso(), que não tem URL própria.
@@ -17,10 +18,11 @@ use Tests\Support\TestCase;
 final class ValidarTokenTest extends TestCase
 {
     use AuthHelpers;
+    use TokenHelpers;
 
     private const ROTA_PROTEGIDA = '/api/reservas/create.php';
     // Deve ser igual ao JWT_SECRET definido em tests/subir-api-teste.sh
-    private const CHAVE_DE_TESTE = 'epapirus-chave-jwt-somente-para-testes-2026';
+    // private const CHAVE_DE_TESTE = 'epapirus-chave-jwt-somente-para-testes-2026';
 
     // ---------- Acesso negado ----------
 
