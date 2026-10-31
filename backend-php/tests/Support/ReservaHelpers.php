@@ -66,4 +66,29 @@ trait ReservaHelpers
 
         return $this->corpo($resposta)['dados'];
     }
+
+    
+    /** PUT em /api/reservas/update.php; o token é opcional para permitir testar o acesso sem login. */
+    protected function atualizarReserva(array $corpo, ?string $token = null): ResponseInterface
+    {
+        $opcoes = ['json' => $corpo];
+
+        if ($token !== null) {
+            $opcoes['headers'] = ['Authorization' => 'Bearer ' . $token];
+        }
+
+        return $this->http->put('/api/reservas/update.php', $opcoes);
+    }
+
+    /** Procura uma reserva na lista da pessoa; devolve null se ela não estiver lá. */
+    protected function acharReserva(string $token, int $idPessoa, int $idReserva): ?array
+    {
+        foreach ($this->listarReservas($token, ['id_pessoa' => $idPessoa]) as $reserva) {
+            if ((int) $reserva['id_reserva'] === $idReserva) {
+                return $reserva;
+            }
+        }
+
+        return null;
+    }
 }
