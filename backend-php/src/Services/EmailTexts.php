@@ -5,20 +5,11 @@ namespace App\Services;
 /**
  * Textos das notificações do e-Papirus
  *
- * ⚠️ Esse é o arquivo que Yuri ira editar posteriormente!
- *
  * Aqui ficam as falas e a personalidade do E-P (mascote do projeto).
  * O E-P é um robozinho curioso de outro planeta, que adora livros
- * e cuida da biblioteca do e-Papirus.
- *
- * Cada notificação tem:
- * - titulo: o assunto/título do e-mail
- * - saudacao: como o E-P cumprimenta o usuário
- * - corpo: o texto principal (pode usar {variaveis})
- * - despedida: como o E-P se despede
- *
- * Variáveis disponíveis: {nome}, {livro}, {data}, {dias}, {motivo}, etc.
- * (cada tipo de notificação tem suas variáveis específicas)
+ * e cuida da biblioteca do e-Papirus. Ele é fofo e prestativo na maior
+ * parte do tempo, mas fica um pouco debochado quando precisa cobrar
+ * prazos (véspera de entrega, atraso, etc).
  */
 class EmailTexts
 {
@@ -33,17 +24,17 @@ class EmailTexts
                 'saudacao'  => 'Olá, {nome}! O E-P aqui! 🤖',
                 'corpo'     => "Fui até a estante e encontrei o livro <strong>{livro}</strong> pra você. É seu por enquanto!<br><br>Você tem até <strong>{data}</strong> pra devolver. Capricha na leitura!",
                 'despedida' => 'Boa leitura! Qualquer coisa, é só me chamar. — E-P',
-                'cor'       => '#06d6a0', // verde sucesso
+                'cor'       => '#06d6a0',
             ],
 
             // ============================================
-            // DEVOLUÇÃO CONFIRMADA
+            // DEVOLUÇÃO CONFIRMADA (Atraso)
             // ============================================
             'devolucao' => [
                 'titulo'    => 'Devolução Confirmada',
-                'saudacao'  => 'Olá, {nome}! O E-P aqui! 🤖',
-                'corpo'     => "Recebi de volta o livro <strong>{livro}</strong> no dia <strong>{data}</strong>. Obrigado por cuidar direitinho dele!<br><br>{observacao}",
-                'despedida' => 'Foi um prazer! Volte sempre à biblioteca. — E-P',
+                'saudacao'  => 'Saudações, {nome}! É o E-P!',
+                'corpo'     => "Meus sensores detectaram o retorno do livro <strong>{livro}</strong> no dia <strong>{data}</strong>. Fico impressionado com a sua capacidade de cumprir prazos. Os organismos costumam ser tão... lentos. <br><br> Mas o importante é que voltou!",
+                'despedida' => 'Foi um prazer lhe ajudar! Volte sempre à biblioteca. — E-P',
                 'cor'       => '#06d6a0',
             ],
 
@@ -59,14 +50,14 @@ class EmailTexts
             ],
 
             // ============================================
-            // LEMBRETE DE VENCIMENTO (3 DIAS OU 1 DIA)
+            // LEMBRETE DE VENCIMENTO (Apenas véspera)
             // ============================================
             'lembrete' => [
                 'titulo'    => 'Seu empréstimo está perto do vencimento',
-                'saudacao'  => 'Olá, {nome}! O E-P aqui! 🤖',
-                'corpo'     => "Passei pra lembrar: o livro <strong>{livro}</strong> vence em <strong>{dias} dia(s)</strong>.<br><br>A data prevista é <strong>{data}</strong>. Devolve direitinho pra eu poder emprestar pra outra pessoa?",
-                'despedida' => 'Obrigado pela parceria! — E-P',
-                'cor'       => '#f4a261', // laranja (atenção)
+                'saudacao'  => 'Saudações, {nome}! É o E-P',
+                'corpo'     => "Meus circuitos indicam que o livro <strong>{livro}</strong> expira em <strong>{dias} dia(s)</strong>, precisamente em <strong>{data}</strong>.<br><br>Recomendo que mova suas extremidades biológicas até a biblioteca. O livro é de celulose, não de titânio; não quero que ele se deteriore na sua estante.",
+                'despedida' => 'Estou falando sério, {nome}. Não vai me querer puxar seu pé de madrugada, né?! — E-P',
+                'cor'       => '#f4a261',
             ],
 
             // ============================================
@@ -74,10 +65,10 @@ class EmailTexts
             // ============================================
             'atraso' => [
                 'titulo'    => 'Atraso na devolução',
-                'saudacao'  => 'Oi, {nome}... o E-P tá preocupado 😟',
-                'corpo'     => "O livro <strong>{livro}</strong> tá atrasado desde <strong>{data}</strong>. Já são <strong>{dias}</strong> dia(s) de atraso.<br><br>Pode devolver? Tô doidinho pra reencontrar esse exemplar!",
-                'despedida' => 'Prometo não contar pra ninguém se você devolver hoje! 😅 — E-P',
-                'cor'       => '#e63946', // vermelho (erro)
+                'saudacao'  => 'Saudações, {nome}... é o E-P.',
+                'corpo'     => "Erro 404: Retorno não encontrado. O livro <strong>{livro}</strong> está atrasado desde <strong>{data}</strong>. Já são <strong>{dias}</strong> dias de atraso.<br><br>Eu poderia processar 10 milhões de cálculos quânticos nesse tempo, mas tive que usar meus recursos para enviar este alerta. Devolva o item, ou terei que acionar o sistema de penalidades. E acredite, não é nada agradável.",
+                'despedida' => 'Espero que sua capacidade de locomoção esteja funcionando. — E-P',
+                'cor'       => '#e63946',
             ],
 
             // ============================================
@@ -88,7 +79,7 @@ class EmailTexts
                 'saudacao'  => 'Olá, {nome}! O E-P aqui! 🤖',
                 'corpo'     => "Boa notícia! O livro <strong>{livro}</strong> que você reservou acabou de voltar pra estante.<br><br>Pode passar na biblioteca até <strong>{data}</strong> pra retirar. Não demora, tá?",
                 'despedida' => 'Te espero aqui! — E-P',
-                'cor'       => '#00b4d8', // azul ciano (info)
+                'cor'       => '#00b4d8',
             ],
 
             // ============================================

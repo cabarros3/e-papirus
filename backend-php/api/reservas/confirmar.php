@@ -3,6 +3,8 @@
 require_once '../../config/cors.php';
 require_once '../../config/utils.php';
 require_once '../../db/db.php';
+require_once '../../config.php';
+require_once '../../vendor/autoload.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     enviarResposta("erro", "Método inválido. Use POST.", null, 405);
@@ -43,7 +45,7 @@ try {
     }
 
     // Verifica o exemplar específico da reserva
-    $sqlExemplar = "SELECT disponibilidade
+    $sqlExemplar = "SELECT disponibilidade, id_livro
                     FROM exemplar
                     WHERE id_exemplar = ?
                     FOR UPDATE";
@@ -105,8 +107,47 @@ try {
         $data->id_reserva
     ]);
 
+    // --- BUSCA DADOS PARA O E-MAIL ---
+    $sqlInfo = "SELECT p.nome AS aluno_nome, p.email AS aluno_email, l.titulo, a.nome_autor
+                FROM pessoa p
+                JOIN livro l ON l.id_livro = ?
+                LEFT JOIN livro_autor la ON la.id_livro = l.id_livro
+                LEFT JOIN autor a ON a.id_autor = la.id_autor
+                WHERE p.id_pessoa = ? LIMIT 1";
+    $stmtInfo = $pdo->prepare($sqlInfo);
+    $stmtInfo->execute([$exemplar['id_livro'], $reserva['id_pessoa']]);
+    $info = $stmtInfo->fetch(PDO::FETCH_ASSOC);
+
     // Confirma todas as alterações
     $pdo->commit();
+
+    // --- ENVIAR NOTIFICAÇÃO DE RESERVA CONFIRMADA ---
+    $emailValido = !empty($info['aluno_email']) && filter_var($info['aluno_email'], FILTER_VALIDATE_EMAIL);
+    if ($emailValido) {
+        try {
+            $emailService = new \App\Services\EmailService();
+            $enviou = $emailService->enviarNotificacao(
+                $info['aluno_email'],
+                'reserva_confirmada',
+                [
+                    'nome'  => $info['aluno_nome'],
+                    'livro' => $info['titulo'],
+                    'autor' => $info['nome_autor'] ?? 'Autor não informado',
+                    'data'  => date('d/m/Y', strtotime($dataPrevista))
+                ]
+            );
+
+            if ($enviou) {
+                $insertNotif = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status) VALUES (?, ?, 'reserva_confirmada', 'Reserva Confirmada e Empréstimo Realizado', 'enviado')");
+                $insertNotif->execute([$reserva['id_pessoa'], $idEmprestimo]);
+            } else {
+                $insertNotif = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status, mensagem_erro) VALUES (?, ?, 'reserva_confirmada', 'Reserva Confirmada e Empréstimo Realizado', 'erro', 'Falha no envio')");
+                $insertNotif->execute([$reserva['id_pessoa'], $idEmprestimo]);
+            }
+        } catch (\Throwable $e) {
+            error_log("Falha ao enviar e-mail de reserva confirmada: " . $e->getMessage());
+        }
+    }
 
     enviarResposta(
         "sucesso",

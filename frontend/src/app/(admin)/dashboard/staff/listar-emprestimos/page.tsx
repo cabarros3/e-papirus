@@ -186,7 +186,7 @@ export default function ListaEmprestimos() {
                               {emp.titulo}
                             </p>
                             <p className="text-[10px] text-gray-500">
-                              ID Exemplar: #{emp.id_exemplar}
+                              Exemplar: {emp.numero_exemplar ?? emp.id_exemplar}
                             </p>
                           </div>
                         </div>

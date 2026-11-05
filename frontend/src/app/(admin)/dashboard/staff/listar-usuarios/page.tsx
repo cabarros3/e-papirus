@@ -188,7 +188,7 @@ export default function ListarUsuarios() {
                               {u.nome}
                             </p>
                             <p className="text-[10px] text-gray-400 font-bold italic">
-                              ID: #{u.id_pessoa}
+                              Matrícula: {u.matricula}
                             </p>
                           </div>
                         </div>
