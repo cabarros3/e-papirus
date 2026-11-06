@@ -199,6 +199,38 @@ final class AdminTest extends TestCase
         $this->assertCount(5, $dados['atividade_recente']);
     }
 
+    // ---------- Banco vazio ----------
+
+    public function testBancoVazioRetornaTotaisZeradosEListasVazias(): void
+    {
+        $this->esvaziarBanco();
+
+        $dados = $this->dadosDoDashboardAdmin();
+
+        foreach (['total_livros', 'total_exemplares', 'total_usuarios', 'emprestimos_ativos', 'emprestimos_atrasados'] as $campo) {
+            $this->assertEquals(0, $dados[$campo], "{$campo} deveria ser 0.");
+        }
+        $this->assertSame([], $dados['atividade_recente']);
+        $this->assertSame([], $dados['top_livros']);
+    }
+
+    public function testSemEmprestimosOsIndicadoresDeCirculacaoSaoZero(): void
+    {
+        [$idAssunto, $idAutor] = $this->prepararBancoComCatalogoBase();
+        $this->criarLivroComExemplares('Livro A', $idAssunto, $idAutor, 2);
+        $this->inserirPessoa('Leitor Um', 1);
+
+        $dados = $this->dadosDoDashboardAdmin();
+
+        $this->assertEquals(1, $dados['total_livros']);
+        $this->assertEquals(2, $dados['total_exemplares']);
+        $this->assertEquals(1, $dados['total_usuarios']);
+        $this->assertEquals(0, $dados['emprestimos_ativos']);
+        $this->assertEquals(0, $dados['emprestimos_atrasados']);
+        $this->assertSame([], $dados['atividade_recente']);
+        $this->assertSame([], $dados['top_livros']);
+    }
+
     // ---------- Auxiliares ----------
 
     private function assertAcessoNegado(ResponseInterface $resposta, int $status, string $mensagem): void

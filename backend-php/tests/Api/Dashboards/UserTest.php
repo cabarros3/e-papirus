@@ -93,6 +93,21 @@ final class UserTest extends TestCase
         $this->assertSame([], $dados['meus_livros']);
     }
 
+    // ---------- Banco vazio ----------
+
+    public function testBancoVazioRetornaDashboardZerado(): void
+    {
+        $this->esvaziarBanco();
+
+        $dados = $this->dadosDoDashboardUsuario(1);
+
+        $this->assertEquals(0, $dados['ativos']);
+        $this->assertEquals(0, $dados['atrasados']);
+        $this->assertEquals(0, $dados['historico_lidos']);
+        $this->assertSame([], $dados['meus_livros']);
+    }
+
+
     // ---------- Validação e método ----------
 
     #[DataProvider('queriesSemId')]
