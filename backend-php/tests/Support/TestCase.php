@@ -49,6 +49,17 @@ abstract class TestCase extends PHPUnitTestCase
         return $corpo;
     }
 
+     /** Conexão direta com o banco de TESTE (usa as constantes fixas da classe, nunca o banco de desenvolvimento). */
+    protected function pdoDeTeste(): PDO
+    {
+        return new PDO(
+            sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', self::DB_HOST, self::DB_NAME),
+            self::DB_USER,
+            self::DB_PASS,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        );
+    }
+
     private function resetarBanco(): void
     {
         $pdo = new PDO(
