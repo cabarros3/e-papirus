@@ -21,4 +21,4 @@ MAIL_HOST=127.0.0.1 \
 MAIL_PORT=1 \
 MAIL_USER=teste \
 MAIL_PASS=teste \
-exec php -d variables_order=EGPCS -S localhost:8001
+exec php -d variables_order=EGPCS -S 127.0.0.1:8001
