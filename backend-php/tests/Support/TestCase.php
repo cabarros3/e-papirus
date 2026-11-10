@@ -12,9 +12,8 @@ use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 /**
  * Classe base dos testes de integração da API.
  *
- * Antes de cada teste:
- *  - recria o banco de teste (schema + seeds);
- *  - entrega um cliente HTTP ($this->http) apontando para a API de teste.
+ * Na primeira execução: cria o banco de teste (schema + seeds).
+ * Antes de cada teste: limpa as tabelas e reimporta apenas o seed (rápido).
  */
 abstract class TestCase extends PHPUnitTestCase
 {
@@ -24,33 +23,42 @@ abstract class TestCase extends PHPUnitTestCase
     private const DB_USER = 'epapirus_test';
     private const DB_PASS = 'epapirus_test';
 
+    /** Garante que o schema seja criado só uma vez por execução do PHPUnit. */
+    private static bool $bancoCriado = false;
+
     protected Client $http;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->resetarBanco();
+        if (!self::$bancoCriado) {
+            $this->criarBanco();
+            self::$bancoCriado = true;
+        }
+
+        $this->resetarDados();
 
         $this->http = new Client([
             'base_uri'    => getenv('TEST_BASE_URL') ?: 'http://localhost:8001',
-            'http_errors' => false, // respostas 4xx/5xx viram objeto, não exceção
+            'http_errors' => false,
             'timeout'     => 10,
         ]);
     }
 
-    /** Converte o corpo da resposta em array, falhando o teste se não for JSON. */
     protected function corpo(ResponseInterface $resposta): array
     {
         $corpo = json_decode((string) $resposta->getBody(), true);
-
         $this->assertIsArray($corpo, 'A resposta deveria ser um JSON: ' . (string) $resposta->getBody());
-
         return $corpo;
     }
 
-     /** Conexão direta com o banco de TESTE (usa as constantes fixas da classe, nunca o banco de desenvolvimento). */
     protected function pdoDeTeste(): PDO
+    {
+        return $this->conexaoBancoDeTeste();
+    }
+
+    protected function conexaoBancoDeTeste(): PDO
     {
         return new PDO(
             sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', self::DB_HOST, self::DB_NAME),
@@ -60,7 +68,8 @@ abstract class TestCase extends PHPUnitTestCase
         );
     }
 
-    private function resetarBanco(): void
+    /** Cria o banco de teste do zero (só na primeira vez). */
+    private function criarBanco(): void
     {
         $pdo = new PDO(
             sprintf('mysql:host=%s;charset=utf8mb4', self::DB_HOST),
@@ -75,27 +84,44 @@ abstract class TestCase extends PHPUnitTestCase
 
         foreach (['db.sql', 'seed.sql'] as $arquivo) {
             $sql = file_get_contents(__DIR__ . '/../../db/' . $arquivo);
-            // Remove CREATE DATABASE / USE: o banco de destino já foi escolhido acima.
             $sql = preg_replace('/^(CREATE DATABASE|USE) .*$/m', '', $sql);
-
             $consulta = $pdo->query($sql);
-            // Percorre todos os comandos do arquivo para que erros em qualquer um apareçam.
             do {
             } while ($consulta->nextRowset());
         }
     }
 
-    /**
-     * Conexao PDO com o banco de TESTE (nunca o de desenvolvimento), para montar ou conferir
-     * estados que a API nao consegue criar. Usa as mesmas constantes fixas do reset.
-     */
-    protected function conexaoBancoDeTeste(): PDO
+    /** Limpa todas as tabelas e reimporta apenas o seed (rápido). */
+    private function resetarDados(): void
     {
-        return new PDO(
-            sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', self::DB_HOST, self::DB_NAME),
-            self::DB_USER,
-            self::DB_PASS,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-        );
+        $pdo = $this->conexaoBancoDeTeste();
+
+        $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+
+        $tabelas = [
+            'notificacao',
+            'renovacao',
+            'reserva',
+            'emprestimo',
+            'livro_autor',
+            'exemplar',
+            'livro',
+            'autor',
+            'assunto',
+            'usuario_sistema',
+            'pessoa',
+        ];
+
+        foreach ($tabelas as $tabela) {
+            $pdo->exec("TRUNCATE TABLE {$tabela}");
+        }
+
+        $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
+
+        $sql = file_get_contents(__DIR__ . '/../../db/seed.sql');
+        $sql = preg_replace('/^(CREATE DATABASE|USE) .*$/m', '', $sql);
+        $consulta = $pdo->query($sql);
+        do {
+        } while ($consulta->nextRowset());
     }
 }
