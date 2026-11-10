@@ -21,7 +21,7 @@ API_PID=$!
 trap 'kill "$API_PID" 2>/dev/null; wait "$API_PID" 2>/dev/null; rm -f "$LOG"' EXIT
 
 # Espera a API responder (até ~5 s).
-for _ in $(seq 1 50); do
+for _ in $(seq 1 150); do
   porta_aberta && break
   if ! kill -0 "$API_PID" 2>/dev/null; then
     echo "A API de teste não subiu:" >&2
