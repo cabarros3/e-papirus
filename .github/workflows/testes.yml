@@ -41,6 +41,22 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-interaction
         working-directory: backend-php
 
+      - name: Criar .env fake para o CI
+        run: |
+          cat > .env <<EOF
+          DB_HOST=127.0.0.1
+          DB_NAME=epapirus_test
+          DB_USER=epapirus_test
+          DB_PASS=epapirus_test
+          MAIL_HOST=127.0.0.1
+          MAIL_PORT=1025
+          MAIL_USER=teste@epapirus.local
+          MAIL_PASS=teste
+          JWT_SECRET=teste
+          JWT_EXPIRATION=86400
+          EOF
+        working-directory: backend-php
+
       - name: Aguardar o MySQL ficar pronto
         run: |
           for i in {1..30}; do
