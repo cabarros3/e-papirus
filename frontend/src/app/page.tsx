@@ -60,7 +60,6 @@ export default function Home() {
   }, []);
 
   return (
-    // Adicionado bg-background para o fundo seguir o tema
     <div className="relative min-h-screen flex flex-col font-sans bg-background transition-colors duration-300">
       <BackgroundShapes />
       <Header />
@@ -77,13 +76,11 @@ export default function Home() {
           />
 
           <div className="space-y-6">
-            {/* Título Principal - Adicionado dark:text-white */}
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white transition-colors">
               <Link href='/'>
                 <span className="text-denin dark:text-vivid-sky">e</span>-Papirus
               </Link>
             </h1>
-            {/* Descrição - Adicionado dark:text-gray-300 */}
             <p className="md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed transition-colors">
               Explore milhares de livros, artigos e conteúdos acadêmicos em um
               só lugar.
