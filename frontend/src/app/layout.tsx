@@ -1,18 +1,18 @@
 import type { Metadata } from 'next';
 import { Poppins, Inter } from 'next/font/google';
 import './globals.css';
+import { ThemeProvider } from '@/components/theme-provider';
 
-// Configurando a fonte Poppins
 const poppins = Poppins({
   variable: '--font-poppins',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'], // opcional, adiciona os pesos que você vai usar
+  weight: ['400', '500', '600', '700'],
 });
 
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
-  weight: ['400', '500'], // Pesos para leitura
+  weight: ['400', '500'],
 });
 
 export const metadata: Metadata = {
@@ -29,49 +29,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
-      <body
-        // className={`${poppins.variable} ${inter.variable} font-sans antialiased`}
-        className={`${poppins.className} antialiased`}
-      >
-        {children}
+    <html lang="pt-br" suppressHydrationWarning>
+      <body className={`${poppins.className} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
 }
-
-// TODO: PARA QUANDO FOR USAR O AUTH
-
-// import type { Metadata } from "next";
-// import { Poppins } from "next/font/google";
-// import "./globals.css";
-// // 1. Importe o Provider que criamos
-// import { AuthProvider } from "@/contexts/AuthContext";
-
-// // Configurando a fonte Poppins
-// const poppins = Poppins({
-//   variable: "--font-poppins",
-//   subsets: ["latin"],
-//   weight: ["400", "500", "600", "700"],
-// });
-
-// export const metadata: Metadata = {
-//   title: "e-Papirus",
-//   description: "Biblioteca",
-// };
-
-// export default function RootLayout({
-//   children,
-// }: Readonly<{
-//   children: React.ReactNode;
-// }>) {
-//   return (
-//     // Dica: Mudei para pt-br para acessibilidade correta no Brasil
-//     <html lang="pt-br">
-//       <body className={`${poppins.variable} antialiased`}>
-//         {/* 2. Envolva o children com o AuthProvider */}
-//         <AuthProvider>{children}</AuthProvider>
-//       </body>
-//     </html>
-//   );
-// }
