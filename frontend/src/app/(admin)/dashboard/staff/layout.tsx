@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { Toaster } from 'sonner';
 import { Pessoa } from '@/types/pessoas';
+import { ThemeToggle } from '@/components/theme-toggle'; // IMPORTADO
 
 export default function DashboardLayout({
   children,
@@ -42,12 +43,10 @@ export default function DashboardLayout({
   const router = useRouter();
   const pathname = usePathname();
 
-  // Sidebar inicia sempre fechada (true)
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isReady, setIsReady] = useState(false);
   const [user, setUser] = useState<Pessoa | null>(null);
 
-  // Estados dos Submenus
   const [openAcervo, setOpenAcervo] = useState(false);
   const [openItens, setOpenItens] = useState(false);
   const [openCirculacao, setOpenCirculacao] = useState(false);
@@ -83,8 +82,8 @@ export default function DashboardLayout({
 
   if (!isReady || !user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="animate-spin text-denin" size={32} />
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-center justify-center transition-colors">
+        <Loader2 className="animate-spin text-denin dark:text-vivid-sky" size={32} />
       </div>
     );
   }
@@ -92,29 +91,28 @@ export default function DashboardLayout({
   const isActive = (path: string) => pathname === path;
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors">
       <aside
         className={`${
           isCollapsed ? 'w-24' : 'w-72'
-        } bg-white border-r border-gray-200 hidden md:flex flex-col transition-all duration-300 ease-in-out relative flex-shrink-0`}
+        } bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 hidden md:flex flex-col transition-all duration-300 ease-in-out relative flex-shrink-0`}
       >
         <div
-          className={`h-20 border-b border-gray-100 flex items-center px-6 ${isCollapsed ? 'justify-center' : 'justify-between'}`}
+          className={`h-20 border-b border-gray-100 dark:border-slate-800 flex items-center px-6 ${isCollapsed ? 'justify-center' : 'justify-between'}`}
         >
           <div
             className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}
           >
-            <div className="text-2xl font-bold text-black whitespace-nowrap">
+            <div className="text-2xl font-bold text-black dark:text-white whitespace-nowrap transition-colors">
               <Link href={'/'}>
-                <span className="text-denin">e</span>-Papirus
+                <span className="text-denin dark:text-vivid-sky">e</span>-Papirus
               </Link>
-              
             </div>
           </div>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             title={isCollapsed ? 'Expandir Menu' : 'Recolher Menu'}
-            className="p-2 hover:bg-gray-50 rounded-lg text-gray-400 hover:text-denin transition-colors shrink-0"
+            className="p-2 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg text-gray-400 hover:text-denin dark:hover:text-vivid-sky transition-colors shrink-0"
           >
             {isCollapsed ? (
               <PanelLeftOpen size={24} />
@@ -141,7 +139,7 @@ export default function DashboardLayout({
                 setOpenAcervo(!openAcervo);
               }}
               title={isCollapsed ? 'Acervo' : ''}
-              className={`w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-all ${isCollapsed ? 'justify-center' : 'justify-between'}`}
+              className={`w-full flex items-center p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all ${isCollapsed ? 'justify-center' : 'justify-between'}`}
             >
               <div className="flex items-center gap-3">
                 <SquareLibrary size={20} className="shrink-0" />
@@ -160,10 +158,10 @@ export default function DashboardLayout({
             </button>
 
             {openAcervo && !isCollapsed && (
-              <div className="ml-4 pl-4 border-l-2 border-gray-100 space-y-1 mt-1">
+              <div className="ml-4 pl-4 border-l-2 border-gray-100 dark:border-slate-800 space-y-1 mt-1">
                 <button
                   onClick={() => setOpenItens(!openItens)}
-                  className="w-full flex items-center justify-between p-2.5 rounded-lg text-gray-600 hover:text-denin transition-colors"
+                  className="w-full flex items-center justify-between p-2.5 rounded-lg text-gray-600 dark:text-gray-400 hover:text-denin dark:hover:text-vivid-sky transition-colors"
                 >
                   <div className="flex items-center gap-2">
                     <BookMarked size={18} />
@@ -217,7 +215,7 @@ export default function DashboardLayout({
                 setOpenCirculacao(!openCirculacao);
               }}
               title={isCollapsed ? 'Circulação' : ''}
-              className={`w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-all ${isCollapsed ? 'justify-center' : 'justify-between'}`}
+              className={`w-full flex items-center p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all ${isCollapsed ? 'justify-center' : 'justify-between'}`}
             >
               <div className="flex items-center gap-3">
                 <HandHelping size={20} className="shrink-0" />
@@ -236,11 +234,10 @@ export default function DashboardLayout({
             </button>
 
             {openCirculacao && !isCollapsed && (
-              <div className="ml-4 pl-4 border-l-2 border-gray-100 space-y-1 mt-1 font-medium">
-                {/* SUBMENU: EMPRÉSTIMOS */}
+              <div className="ml-4 pl-4 border-l-2 border-gray-100 dark:border-slate-800 space-y-1 mt-1 font-medium">
                 <button
                   onClick={() => setOpenEmprestimoMenu(!openEmprestimoMenu)}
-                  className="w-full flex items-center justify-between p-2.5 rounded-lg text-gray-600 hover:text-denin transition-colors"
+                  className="w-full flex items-center justify-between p-2.5 rounded-lg text-gray-600 dark:text-gray-400 hover:text-denin dark:hover:text-vivid-sky transition-colors"
                 >
                   <div className="flex items-center gap-2">
                     <BookUp size={18} />
@@ -254,7 +251,7 @@ export default function DashboardLayout({
                   />
                 </button>
                 {openEmprestimoMenu && (
-                  <div className="ml-4 border-l-2 border-gray-100 space-y-1 flex-w">
+                  <div className="ml-4 border-l-2 border-gray-100 dark:border-slate-800 space-y-1 flex-w">
                     <SubNavItem
                       href="/dashboard/staff/listar-emprestimos"
                       icon={<ClipboardPen size={16} />}
@@ -268,12 +265,6 @@ export default function DashboardLayout({
                   </div>
                 )}
 
-                {/* <SubNavItem
-                  href="/dashboard/staff/devolucao"
-                  icon={<RotateCcw size={18} />}
-                  label="Devolução"
-                /> */}
-                
                 <SubNavItem
                   href="/dashboard/staff/Renovacao"
                   icon={<Repeat size={18} />}
@@ -285,10 +276,9 @@ export default function DashboardLayout({
                   label="Devolução"
                 />
 
-                {/* SUBMENU: RESERVAS */}
                 <button
                   onClick={() => setOpenReservaMenu(!openReservaMenu)}
-                  className="w-full flex items-center justify-between p-2.5 rounded-lg text-gray-600 hover:text-denin transition-colors"
+                  className="w-full flex items-center justify-between p-2.5 rounded-lg text-gray-600 dark:text-gray-400 hover:text-denin dark:hover:text-vivid-sky transition-colors"
                 >
                   <div className="flex items-center gap-2">
                     <CalendarDays size={18} />
@@ -302,7 +292,7 @@ export default function DashboardLayout({
                   />
                 </button>
                 {openReservaMenu && (
-                  <div className="ml-4 border-l-2 border-gray-100 space-y-1">
+                  <div className="ml-4 border-l-2 border-gray-100 dark:border-slate-800 space-y-1">
                     <SubNavItem
                       href="/dashboard/staff/listar-reservas"
                       icon={<ClipboardPen size={16} />}
@@ -319,7 +309,7 @@ export default function DashboardLayout({
             )}
           </div>
 
-          {/* MENU: USUÁRIOS (AJUSTADO) */}
+          {/* MENU: USUÁRIOS */}
           <div className="space-y-1">
             <button
               onClick={() => {
@@ -327,7 +317,7 @@ export default function DashboardLayout({
                 setOpenUsuarios(!openUsuarios);
               }}
               title={isCollapsed ? 'Usuários' : ''}
-              className={`w-full flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-all ${isCollapsed ? 'justify-center' : 'justify-between'}`}
+              className={`w-full flex items-center p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all ${isCollapsed ? 'justify-center' : 'justify-between'}`}
             >
               <div className="flex items-center gap-3">
                 <Users size={20} className="shrink-0" />
@@ -346,7 +336,7 @@ export default function DashboardLayout({
             </button>
 
             {openUsuarios && !isCollapsed && (
-              <div className="ml-4 pl-4 border-l-2 border-gray-100 space-y-1 mt-1 font-medium">
+              <div className="ml-4 pl-4 border-l-2 border-gray-100 dark:border-slate-800 space-y-1 mt-1 font-medium">
                 <SubNavItem
                   href="/dashboard/staff/listar-usuarios"
                   icon={<ClipboardPen size={18} />}
@@ -370,20 +360,20 @@ export default function DashboardLayout({
         </nav>
 
         {/* FOOTER DA SIDEBAR */}
-        <div className="p-6 border-t border-gray-100">
+        <div className="p-6 border-t border-gray-100 dark:border-slate-800">
           {isCollapsed ? (
             <div
               title={`Acesso: ${user.tipo || 'STAFF'}`}
-              className="w-12 h-12 rounded-full bg-denin/10 text-denin flex items-center justify-center mx-auto text-xs font-black"
+              className="w-12 h-12 rounded-full bg-denin/10 dark:bg-denin/20 text-denin dark:text-vivid-sky flex items-center justify-center mx-auto text-xs font-black"
             >
               ADM
             </div>
           ) : (
-            <div className="bg-gray-50 rounded-2xl p-4 text-center overflow-hidden border border-gray-100">
-              <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">
+            <div className="bg-gray-50 dark:bg-slate-800 rounded-2xl p-4 text-center overflow-hidden border border-gray-100 dark:border-slate-700">
+              <p className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">
                 Acesso
               </p>
-              <p className="text-sm font-extrabold text-gray-700 truncate">
+              <p className="text-sm font-extrabold text-gray-700 dark:text-gray-300 truncate">
                 {user.tipo || 'Bibliotecário(a)'}
               </p>
             </div>
@@ -392,17 +382,19 @@ export default function DashboardLayout({
       </aside>
 
       <main className="grow flex flex-col min-w-0">
-        <header className="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-10 shadow-sm">
-          <div className="text-sm text-gray-500 font-medium italic truncate mr-4">
+        <header className="h-20 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 flex items-center justify-between px-10 shadow-sm transition-colors">
+          <div className="text-sm text-gray-500 dark:text-gray-400 font-medium italic truncate mr-4">
             Painel Administrativo
           </div>
 
           <div className="flex items-center gap-6 shrink-0">
+            <ThemeToggle />
+
             <div className="flex flex-col items-end hidden sm:flex">
-              <span className="text-sm font-bold text-gray-900 uppercase leading-none mb-1">
+              <span className="text-sm font-bold text-gray-900 dark:text-white uppercase leading-none mb-1">
                 {user.nome}
               </span>
-              <span className="text-xs text-denin font-bold uppercase tracking-widest">
+              <span className="text-xs text-denin dark:text-vivid-sky font-bold uppercase tracking-widest">
                 {user.cargo || user.tipo || 'STAFF'}
               </span>
             </div>
@@ -410,14 +402,14 @@ export default function DashboardLayout({
             <div className="group relative">
               <div
                 title={user.nome}
-                className="w-12 h-12 rounded-full bg-denin flex items-center justify-center text-white text-base font-black cursor-pointer shadow-md hover:scale-105 transition-transform"
+                className="w-12 h-12 rounded-full bg-denin dark:bg-vivid-sky flex items-center justify-center text-white text-base font-black cursor-pointer shadow-md hover:scale-105 transition-transform"
               >
                 {user.nome.substring(0, 2).toUpperCase()}
               </div>
-              <div className="absolute right-0 mt-3 w-56 bg-white border border-gray-100 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
+              <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 p-5 text-sm text-gray-600 hover:bg-gray-50 font-black transition-colors"
+                  className="w-full flex items-center gap-3 p-5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 font-black transition-colors"
                 >
                   <LogOut size={20} /> Encerrar Sessão
                 </button>
@@ -426,10 +418,10 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        <div className="p-10 grow overflow-y-auto">{children}</div>
+        <div className="p-10 grow overflow-y-auto transition-colors">{children}</div>
       </main>
 
-      <Toaster position="top-right" richColors closeButton />
+      <Toaster position="top-right" richColors closeButton theme="system" />
     </div>
   );
 }
@@ -442,8 +434,8 @@ function NavItem({ href, icon, label, active, collapsed }: any) {
       title={collapsed ? label : ''}
       className={`flex items-center gap-4 p-4 rounded-xl transition-all ${
         active
-          ? 'text-denin bg-denin/5 font-bold'
-          : 'text-gray-700 hover:text-denin hover:bg-gray-50'
+          ? 'text-denin dark:text-vivid-sky bg-denin/5 dark:bg-vivid-sky/10 font-bold'
+          : 'text-gray-700 dark:text-gray-300 hover:text-denin dark:hover:text-vivid-sky hover:bg-gray-50 dark:hover:bg-slate-800'
       } ${collapsed ? 'justify-center' : ''}`}
     >
       <div className="shrink-0">{icon}</div>
@@ -465,8 +457,8 @@ function SubNavItem({ href, icon, label }: any) {
       href={href}
       className={`flex items-center gap-3 p-3 text-sm font-bold rounded-lg transition-all whitespace-nowrap ${
         active
-          ? 'text-denin bg-denin/10'
-          : 'text-gray-600 hover:text-denin hover:bg-denin/5'
+          ? 'text-denin dark:text-vivid-sky bg-denin/10 dark:bg-vivid-sky/20'
+          : 'text-gray-600 dark:text-gray-400 hover:text-denin dark:hover:text-vivid-sky hover:bg-denin/5 dark:hover:bg-slate-800'
       }`}
     >
       <div className="shrink-0">{icon}</div>
