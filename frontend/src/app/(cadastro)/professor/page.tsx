@@ -252,7 +252,7 @@ export default function CadastroProfessor() {
               <span>Processando...</span>
             </>
           ) : (
-            'Cadastrar Aluno'
+            'Cadastrar Professor'
           )}
         </button>
       </form>

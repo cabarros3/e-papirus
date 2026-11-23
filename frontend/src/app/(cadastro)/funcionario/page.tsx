@@ -280,7 +280,7 @@ export default function CadastroFuncionario() {
               <span>Processando...</span>
             </>
           ) : (
-            'Cadastrar Aluno'
+            'Cadastrar Funcionário'
           )}
         </button>
       </form>

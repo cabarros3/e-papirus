@@ -22,7 +22,7 @@ export function ResumoEmprestimoModal({
   onConfirm,
   titulo = 'Empréstimo Confirmado!',
   mensagem = 'O registro foi concluído com sucesso no sistema e-Papirus.',
-  textoBotao = 'Voltar para Dashboard',
+  textoBotao = 'Voltar para o Painel',
 }: ResumoEmprestimoModalProps) {
   if (!isOpen) return null;
 
