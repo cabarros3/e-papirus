@@ -287,7 +287,7 @@ export default function MeusEmprestimos() {
                           </p>
                         </div>
                         <Link
-                          href="/acervo"
+                          href="/resultados"
                           className="mt-4 bg-gray-900 text-white px-6 py-3 rounded-xl text-xs font-black hover:bg-black transition-all uppercase tracking-widest"
                         >
                           Explorar Acervo

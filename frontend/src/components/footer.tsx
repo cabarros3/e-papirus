@@ -7,7 +7,7 @@ export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-100 pt-20 pb-10 mt-24 w-full">
       <div className="max-w-[1600px] mx-auto px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-20">
           {/* Coluna Logo e Manifesto */}
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-3">
@@ -39,64 +39,15 @@ export default function Footer() {
                   href="/resultados"
                   className="hover:text-denin transition-colors"
                 >
-                  Categorias
+                  Acervo
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/resultados"
+                  href="/sobre"
                   className="hover:text-denin transition-colors"
                 >
-                  Novidades
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/resultados"
-                  className="hover:text-denin transition-colors"
-                >
-                  Mais lidos
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Suporte */}
-          <div>
-            <h4 className="font-black text-sm uppercase tracking-[0.2em] mb-8 text-gray-400">
-              Suporte
-            </h4>
-            <ul className="text-base md:text-lg font-bold text-gray-600 space-y-5">
-              <li>
-                <Link
-                  href="/ajuda"
-                  className="hover:text-denin transition-colors"
-                >
-                  Central de Ajuda
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/termos"
-                  className="hover:text-denin transition-colors"
-                >
-                  Termos de Uso
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/privacidade"
-                  className="hover:text-denin transition-colors"
-                >
-                  Privacidade
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contato"
-                  className="hover:text-denin transition-colors"
-                >
-                  Contato
+                  Sobre
                 </Link>
               </li>
             </ul>
