@@ -33,19 +33,32 @@ CREATE TABLE IF NOT EXISTS livro_autor (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS exemplar (
-    id_exemplar INT PRIMARY KEY AUTO_INCREMENT,
-    id_livro INT,
-    numero_exemplar INT,
-    localizacao VARCHAR(100),
-    disponibilidade ENUM('disponivel','emprestado','reservado','quarentena') NOT NULL DEFAULT 'disponivel',
-    estado_fisico ENUM('bom','danificado','perdido','em_restauracao') NOT NULL DEFAULT 'bom',
-    tipo_circulacao ENUM('emprestavel','consulta_local') NOT NULL DEFAULT 'emprestavel',
-    tipo_aquisicao ENUM('compra','doacao','permuta') DEFAULT NULL,
-    data_aquisicao DATE DEFAULT NULL,
-    numero_nota_fiscal VARCHAR(50) DEFAULT NULL,
-    fornecedor VARCHAR(150) DEFAULT NULL,
-    observacao_aquisicao TEXT DEFAULT NULL,
-    FOREIGN KEY (id_livro) REFERENCES livro(id_livro)
+    id_exemplar           INT PRIMARY KEY AUTO_INCREMENT,
+    id_livro              INT,
+    numero_exemplar       INT,
+    localizacao           VARCHAR(100),
+
+    -- Disponibilidade (com o novo estado 'quarentena')
+    disponibilidade       ENUM('disponivel','emprestado','reservado','quarentena')
+                          NOT NULL DEFAULT 'disponivel',
+
+    -- Estado e circulação
+    estado_fisico         ENUM('bom','danificado','perdido','em_restauracao')
+                          NOT NULL DEFAULT 'bom',
+    tipo_circulacao       ENUM('emprestavel','consulta_local')
+                          NOT NULL DEFAULT 'emprestavel',
+
+    -- Dados de aquisição (nullable: exemplares antigos podem não ter)
+    tipo_aquisicao        ENUM('compra','doacao','permuta') DEFAULT NULL,
+    data_aquisicao        DATE         DEFAULT NULL,
+    numero_nota_fiscal    VARCHAR(50)  DEFAULT NULL,
+    fornecedor            VARCHAR(150) DEFAULT NULL,
+    observacao_aquisicao  TEXT         DEFAULT NULL,
+
+    FOREIGN KEY (id_livro) REFERENCES livro(id_livro),
+
+    -- Recomendado: acelera a checagem de empréstimo
+    INDEX idx_exemplar_emprestimo (tipo_circulacao, disponibilidade)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Opcional (recomendado)
