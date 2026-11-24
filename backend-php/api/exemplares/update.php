@@ -18,19 +18,73 @@ try {
     $campos = [];
     $params = [];
 
-    if (isset($data->localizacao)) {
+    if (property_exists($data, 'localizacao')) {
         $campos[] = "localizacao = ?";
         $params[] = $data->localizacao;
     }
     
-    if (isset($data->disponibilidade)) {
-        // Validação de segurança para garantir que o valor é válido no ENUM do banco
-        $validos = ['disponivel', 'emprestado', 'reservado'];
+    if (property_exists($data, 'disponibilidade')) {
+        // ISSUE: Adicionado 'quarentena' nos valores válidos
+        $validos = ['disponivel', 'emprestado', 'reservado', 'quarentena'];
         if (!in_array($data->disponibilidade, $validos)) {
-            enviarResposta("erro", "Status inválido. Use: disponivel, emprestado ou reservado.", null, 400);
+            enviarResposta("erro", "Status inválido. Use: disponivel, emprestado, reservado ou quarentena.", null, 400);
         }
         $campos[] = "disponibilidade = ?";
         $params[] = $data->disponibilidade;
+    }
+
+    // --- NOVOS CAMPOS (ESTADO E CIRCULAÇÃO) ---
+    if (property_exists($data, 'estado_fisico')) {
+        $validos = ['bom', 'danificado', 'perdido', 'em_restauracao'];
+        if (!in_array($data->estado_fisico, $validos)) {
+            enviarResposta("erro", "Estado físico inválido.", null, 400);
+        }
+        $campos[] = "estado_fisico = ?";
+        $params[] = $data->estado_fisico;
+    }
+
+    if (property_exists($data, 'tipo_circulacao')) {
+        $validos = ['emprestavel', 'consulta_local'];
+        if (!in_array($data->tipo_circulacao, $validos)) {
+            enviarResposta("erro", "Tipo de circulação inválido.", null, 400);
+        }
+        $campos[] = "tipo_circulacao = ?";
+        $params[] = $data->tipo_circulacao;
+    }
+
+    // --- NOVOS CAMPOS (AQUISIÇÃO - Aceitam NULL para limpar o dado) ---
+    if (property_exists($data, 'tipo_aquisicao')) {
+        if (empty($data->tipo_aquisicao)) {
+            $campos[] = "tipo_aquisicao = ?";
+            $params[] = null;
+        } else {
+            $validos = ['compra', 'doacao', 'permuta'];
+            if (!in_array($data->tipo_aquisicao, $validos)) {
+                enviarResposta("erro", "Tipo de aquisição inválido.", null, 400);
+            }
+            $campos[] = "tipo_aquisicao = ?";
+            $params[] = $data->tipo_aquisicao;
+        }
+    }
+
+    if (property_exists($data, 'data_aquisicao')) {
+        $campos[] = "data_aquisicao = ?";
+        $params[] = empty($data->data_aquisicao) ? null : $data->data_aquisicao;
+    }
+
+    if (property_exists($data, 'numero_nota_fiscal')) {
+        $campos[] = "numero_nota_fiscal = ?";
+        $params[] = empty($data->numero_nota_fiscal) ? null : $data->numero_nota_fiscal;
+    }
+
+    if (property_exists($data, 'fornecedor')) {
+        $campos[] = "fornecedor = ?";
+        $params[] = empty($data->fornecedor) ? null : $data->fornecedor;
+    }
+
+    if (property_exists($data, 'observacao_aquisicao')) {
+        $campos[] = "observacao_aquisicao = ?";
+        $params[] = empty($data->observacao_aquisicao) ? null : $data->observacao_aquisicao;
     }
 
     if (empty($campos)) {

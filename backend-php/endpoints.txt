@@ -102,3 +102,48 @@ TYPE
   descricao_fisica: string,
   autores: Autores[]  // array do tipo autores
 }
+
+EXEMPLARES
+
+/api/exemplares/create.php
+/api/exemplares/index.php
+/api/exemplares/update.php
+/api/exemplares/delete.php
+
+
+body da requisição para criar EXEMPLARES
+
+{
+  "id_livro": 1,
+  "localizacao": "Estante A3",
+  "disponibilidade": "disponivel",
+  "estado_fisico": "bom",
+  "tipo_circulacao": "emprestavel",
+  "tipo_aquisicao": "compra",
+  "data_aquisicao": "2024-03-15",
+  "numero_nota_fiscal": "NF-001234",
+  "fornecedor": "Distribuidora Livros SP",
+  "observacao_aquisicao": "Exemplar adquirido para o acervo principal."
+}
+
+
+EMPRÉSTIMOS
+
+/api/emprestimos/emprestar.php
+/api/emprestimos/devolver.php
+/api/emprestimos/index.php
+
+
+body da requisição para realizar EMPRÉSTIMO
+
+{
+  "id_exemplar": 5,
+  "id_pessoa": 10,
+  "data_prevista": "2024-06-01"
+}
+
+body da requisição para realizar DEVOLUÇÃO
+
+{
+  "id_emprestimo": 105
+}

@@ -1,12 +1,27 @@
 import { API_URL, defaultHeaders } from './api';
 
+// --- TIPOS DE ENUM (Para evitar erros de digitação e facilitar manutenção) ---
+export type Disponibilidade = 'disponivel' | 'emprestado' | 'reservado' | 'quarentena';
+export type EstadoFisico = 'bom' | 'danificado' | 'perdido' | 'em_restauracao';
+export type TipoCirculacao = 'emprestavel' | 'consulta_local';
+export type TipoAquisicao = 'compra' | 'doacao' | 'permuta';
+
 // Interface do exemplar básico
 export interface Exemplar {
   id_exemplar?: number;
   id_livro: number;
   localizacao: string;
-  disponibilidade: 'disponivel' | 'emprestado' | 'reservado';
+  disponibilidade: Disponibilidade;
   numero_exemplar?: number;
+  
+  // --- NOVOS CAMPOS ---
+  estado_fisico?: EstadoFisico;
+  tipo_circulacao?: TipoCirculacao;
+  tipo_aquisicao?: TipoAquisicao | null;
+  data_aquisicao?: string | null; // Formato YYYY-MM-DD
+  numero_nota_fiscal?: string | null;
+  fornecedor?: string | null;
+  observacao_aquisicao?: string | null;
 }
 
 // Interface para exemplar com dados do livro (lista flat)
@@ -20,7 +35,20 @@ export interface ExemplarAgrupado {
   id_exemplar: number;
   numero_exemplar: number;
   localizacao: string;
-  disponibilidade: 'disponivel' | 'emprestado' | 'reservado';
+  disponibilidade: Disponibilidade;
+  
+  // --- NOVOS CAMPOS ---
+  estado_fisico: EstadoFisico;
+  tipo_circulacao: TipoCirculacao;
+  tipo_aquisicao: TipoAquisicao | null;
+  data_aquisicao: string | null;
+  numero_nota_fiscal: string | null;
+  fornecedor: string | null;
+  observacao_aquisicao: string | null;
+
+  // --- CAMPOS COMPUTADOS PELO BACKEND ---
+  pode_emprestar?: boolean;
+  motivo_bloqueio?: string | null;
 }
 
 // Interface para livro com seus exemplares agrupados
@@ -139,7 +167,7 @@ export class ExemplaresService {
   static async createExemplar(dados: Exemplar): Promise<void> {
     const response = await fetch(`${API_URL}/exemplares/create.php`, {
       method: 'POST',
-      headers: defaultHeaders(), // AJUSTE: Adicionado ()
+      headers: defaultHeaders(),
       body: JSON.stringify(dados),
     });
 
@@ -157,7 +185,7 @@ export class ExemplaresService {
   static async updateExemplar(dados: Exemplar): Promise<void> {
     const response = await fetch(`${API_URL}/exemplares/update.php`, {
       method: 'PUT',
-      headers: defaultHeaders(), // AJUSTE: Adicionado ()
+      headers: defaultHeaders(),
       body: JSON.stringify(dados),
     });
 
@@ -175,7 +203,7 @@ export class ExemplaresService {
   static async deleteExemplar(id: number): Promise<void> {
     const response = await fetch(`${API_URL}/exemplares/delete.php?id=${id}`, {
       method: 'DELETE',
-      headers: defaultHeaders(), // AJUSTE: Adicionado ()
+      headers: defaultHeaders(),
     });
 
     const result = await response.json();
