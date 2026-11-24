@@ -25,6 +25,7 @@ try {
             e.data_prevista,
             e.data_devolucao,
             ex.id_livro,
+            ex.tipo_circulacao,
             l.titulo AS livro_titulo
         FROM emprestimo e
         JOIN exemplar ex ON e.id_exemplar = ex.id_exemplar
@@ -58,7 +59,13 @@ try {
     $stmtUpEmp = $pdo->prepare("UPDATE emprestimo SET data_devolucao = ? WHERE id_emprestimo = ?");
     $stmtUpEmp->execute([$dataHoje, $data->id_emprestimo]);
 
-    $stmtUpEx = $pdo->prepare("UPDATE exemplar SET disponibilidade = 'disponivel' WHERE id_exemplar = ?");
+    // ---------------------------------------------------------------
+    // ISSUE: devolução coloca o exemplar em QUARENTENA (não em disponivel).
+    // O exemplar permanece em quarentena até o bibliotecário liberá-lo
+    // manualmente (sem prazo fixo). Nesse período, não pode ser emprestado
+    // nem reservado.
+    // ---------------------------------------------------------------
+    $stmtUpEx = $pdo->prepare("UPDATE exemplar SET disponibilidade = 'quarentena' WHERE id_exemplar = ?");
     $stmtUpEx->execute([$emp['id_exemplar']]);
 
     $pdo->commit();
@@ -72,7 +79,7 @@ try {
         try {
             $emailService = new \App\Services\EmailService();
 
-            $observacao = ($dataHoje > $dadosEmprestimo['data_prevista'])
+            $observacao = ($dataHoje > $emp['data_prevista'])
                 ? "⚠️ <strong>Observação:</strong> A devolução foi realizada com atraso."
                 : "";
 
@@ -89,7 +96,7 @@ try {
 
             if ($enviou) {
                 $insertNotif = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status) VALUES (?, ?, 'devolucao', 'Devolução Confirmada', 'enviado')");
-                $insertNotif->execute([$dadosEmprestimo['id_pessoa'] ?? $dadosEmprestimo['aluno_id'] ?? 0, $data->id_emprestimo]); // Fallback caso não tenha id_pessoa na busca
+                $insertNotif->execute([$dadosEmprestimo['id_pessoa'] ?? $dadosEmprestimo['aluno_id'] ?? 0, $data->id_emprestimo]);
             } else {
                 $insertNotif = $pdo->prepare("INSERT INTO notificacao (id_pessoa, id_emprestimo, tipo_notificacao, assunto, status, mensagem_erro) VALUES (?, ?, 'devolucao', 'Devolução Confirmada', 'erro', 'Falha no envio do e-mail')");
                 $insertNotif->execute([$dadosEmprestimo['id_pessoa'] ?? $dadosEmprestimo['aluno_id'] ?? 0, $data->id_emprestimo]);
@@ -100,8 +107,23 @@ try {
     }
 
     // ============================================
-    // 5. E-MAIL: RESERVA DISPONÍVEL (se houver)
+    // 5. E-MAIL: RESERVA DISPONÍVEL
     // ============================================
+    // ATENÇÃO: com o fluxo de quarentena, o exemplar NÃO está realmente
+    // disponível após a devolução — está isolado. Notificar o próximo da
+    // fila agora seria incorreto ("seu livro chegou!" quando ele não
+    // pode ser retirado ainda).
+    //
+    // A notificação de reserva deve ser disparada quando o exemplar for
+    // LIBERADO da quarentena (endpoint futuro: liberar_quarentena.php).
+    //
+    // Por isso, mantemos este bloco DESATIVADO enquanto o fluxo de
+    // quarentena estiver ativo. Se a biblioteca decidir voltar para
+    // devolução→disponivel, basta descomentar.
+    //
+    // TODO(issue-quarentena): mover este bloco para liberar_quarentena.php
+    // ============================================
+    /*
     try {
         $sqlReserva = "SELECT r.id_pessoa, p.nome AS pessoa_nome, p.email AS pessoa_email, r.data_expiracao FROM reserva r JOIN pessoa p ON r.id_pessoa = p.id_pessoa WHERE r.id_livro = ? AND r.status = 'ativa' AND r.data_expiracao >= CURDATE() ORDER BY r.data_reserva ASC LIMIT 1";
         $stmtReserva = $pdo->prepare($sqlReserva);
@@ -129,9 +151,10 @@ try {
     } catch (\Throwable $t) {
         error_log("Falha ao enviar notificação de reserva disponível: " . $t->getMessage());
     }
+    */
 
     // 6. Resposta
-    $mensagem = "Devolução realizada com sucesso.";
+    $mensagem = "Devolução realizada com sucesso. O exemplar foi encaminhado para quarentena.";
     if ($dataHoje > $emp['data_prevista']) {
         $mensagem .= " (ATENÇÃO: Devolvido com atraso!)";
     }

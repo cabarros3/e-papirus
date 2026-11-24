@@ -19,8 +19,8 @@ if (!isset($data->id_exemplar) || !isset($data->id_pessoa) || !isset($data->data
 try {
     $pdo->beginTransaction();
 
-    // 1. Verificar se o exemplar existe e está disponível
-    $stmtEx = $pdo->prepare("SELECT id_livro, disponibilidade FROM exemplar WHERE id_exemplar = ? FOR UPDATE");
+    // 1. Verificar se o exemplar existe e está disponível para empréstimo
+    $stmtEx = $pdo->prepare("SELECT id_livro, disponibilidade, tipo_circulacao FROM exemplar WHERE id_exemplar = ? FOR UPDATE");
     $stmtEx->execute([$data->id_exemplar]);
     $exemplar = $stmtEx->fetch(PDO::FETCH_ASSOC);
 
@@ -30,6 +30,22 @@ try {
         exit;
     }
 
+    // 1.1 Regra de negócio (issue): consulta local NUNCA pode ser emprestada,
+    //     independentemente da disponibilidade.
+    if ($exemplar['tipo_circulacao'] === 'consulta_local') {
+        $pdo->rollBack();
+        enviarResposta("erro", "Este exemplar é de consulta local e não pode ser emprestado.", null, 409);
+        exit;
+    }
+
+    // 1.2 Regra de negócio (issue): exemplar em quarentena não pode ser emprestado.
+    if ($exemplar['disponibilidade'] === 'quarentena') {
+        $pdo->rollBack();
+        enviarResposta("erro", "Este exemplar está em quarentena e não pode ser emprestado.", null, 409);
+        exit;
+    }
+
+    // 1.3 Bloqueio genérico para os demais status (emprestado, reservado)
     if ($exemplar['disponibilidade'] !== 'disponivel') {
         $pdo->rollBack();
         enviarResposta("erro", "Este exemplar não está disponível para empréstimo.", null, 409);
