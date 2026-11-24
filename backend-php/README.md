@@ -185,6 +185,55 @@ Erro (400/404/500):
 }
 ```
 
+## 🧪 Como rodar os testes
+
+### Primeira vez na máquina
+
+1. Instale as dependências: `composer install`.
+2. Crie o usuário e o banco de teste (uma vez por máquina):
+
+```bash
+   mysql -u root -p < tests/banco/criar-banco-teste.sql
+```
+
+   Se o root do MySQL não usa senha, use `sudo mysql < tests/banco/criar-banco-teste.sql`.
+3. Confirme que o usuário de teste consegue entrar:
+
+```bash
+   mysql -u epapirus_test -pepapirus_test -e "SELECT 1;"
+```
+
+   Se der `Access denied` porque o usuário já existia com outra senha, corrija com:
+
+```bash
+   sudo mysql -e "ALTER USER 'epapirus_test'@'localhost' IDENTIFIED BY 'epapirus_test'; FLUSH PRIVILEGES;"
+```
+4. O `.env` normal do backend (modelo em `env-exemple.txt`) precisa existir, pois a API de teste ainda lê dele o que não é sobrescrito (ex.: segredo do JWT). Não é preciso criar nenhum `.env` dentro de `tests/`.
+
+### Rodar tudo
+
+```bash
+composer test
+```
+
+O comando sobe a API de teste (porta 8001), roda o PHPUnit e encerra a API ao final. A API de desenvolvimento (porta 8000) não é afetada. Para rodar um teste específico: `composer test -- --filter NomeDoTeste`. Requer bash (Linux ou WSL).
+
+Resultado esperado: `OK (1 test, ...)`.
+
+### Rodar sem o composer
+
+Em um terminal, `bash tests/subir-api-teste.sh`. Em outro, `vendor/bin/phpunit`.
+
+### Problemas comuns
+
+| Mensagem | Causa e solução |
+|---|---|
+| `Access denied for user 'epapirus_test'` | O usuário de teste não existe nesta máquina. Refaça os passos 2 e 3 acima |
+| `já existe um servidor na porta 8001` | Há outra API de teste rodando. Encerre-a (Ctrl+C) e rode de novo |
+| `Undefined array key "DB_HOST"` | A API foi subida sem `-d variables_order=EGPCS`. Use `tests/subir-api-teste.sh` |
+| `Class "Tests\..." not found` | Rode `composer dump-autoload` |
+| `$'\r': command not found` | Final de linha do Windows nos scripts. Rode `sed -i 's/\r$//' tests/*.sh` |
+
 ## ⚠️ Regras de Negócio Importantes
 
 - Integridade: Não é possível excluir Autores com Livros, Livros com Exemplares, ou Pessoas com Empréstimos.
