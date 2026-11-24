@@ -37,9 +37,19 @@ CREATE TABLE IF NOT EXISTS exemplar (
     id_livro INT,
     numero_exemplar INT,
     localizacao VARCHAR(100),
-    disponibilidade ENUM('disponivel','emprestado','reservado') DEFAULT 'disponivel',
+    disponibilidade ENUM('disponivel','emprestado','reservado','quarentena') NOT NULL DEFAULT 'disponivel',
+    estado_fisico ENUM('bom','danificado','perdido','em_restauracao') NOT NULL DEFAULT 'bom',
+    tipo_circulacao ENUM('emprestavel','consulta_local') NOT NULL DEFAULT 'emprestavel',
+    tipo_aquisicao ENUM('compra','doacao','permuta') DEFAULT NULL,
+    data_aquisicao DATE DEFAULT NULL,
+    numero_nota_fiscal VARCHAR(50) DEFAULT NULL,
+    fornecedor VARCHAR(150) DEFAULT NULL,
+    observacao_aquisicao TEXT DEFAULT NULL,
     FOREIGN KEY (id_livro) REFERENCES livro(id_livro)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Opcional (recomendado)
+CREATE INDEX idx_exemplar_emprestimo ON exemplar (tipo_circulacao, disponibilidade);
 
 CREATE TABLE IF NOT EXISTS pessoa (
         id_pessoa INT PRIMARY KEY AUTO_INCREMENT,
