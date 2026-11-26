@@ -68,7 +68,6 @@ export default function ClientDashboardLayout({
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors">
       <Toaster richColors position="top-right" theme="system" />
-      
       <aside
         className={`${
           isCollapsed ? 'w-24' : 'w-72'
@@ -125,6 +124,7 @@ export default function ClientDashboardLayout({
             collapsed={isCollapsed}
           />
 
+          {/* Menu Reservas */}
           <div className="space-y-1">
             <button
               onClick={() => {
@@ -177,6 +177,7 @@ export default function ClientDashboardLayout({
           />
         </nav>
 
+        {/* FOOTER DA SIDEBAR */}
         <div className="p-6 border-t border-gray-100 dark:border-slate-800">
           {isCollapsed ? (
             <div
